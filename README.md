@@ -1,3 +1,3 @@
 code-lab
 ========
-javascript:脚本相关实验内容
+/javascript/: js相关实验内容
