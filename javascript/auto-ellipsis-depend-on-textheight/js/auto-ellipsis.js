@@ -12,17 +12,19 @@ var uaxpUI={
 			var heightFix=objHeight/objLineHeight; //lte ie7
 			var wrapperClassName='ua-maxlen-wrapper';
 			var wrapper='<div class="'+wrapperClassName+'">';
-			execObj.wrapInner(wrapper);
+			if(!execObj.children('.'+wrapperClassName).is('.'+wrapperClassName)){
+				execObj.wrapInner(wrapper);
+			};
 			var wrapperObj=execObj.children('.'+wrapperClassName);
-			wrapperObj.html(wrapperObj.html().replace(/</g,'&lt;').replace(/>/g,'&gt;'));
-		
+			wrapperObj.html(wrapperObj.html().replace(ellipsisSymb,'').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
+
 			setTimeout(function(){
 				var len=wrapperObj.html().length;
 				while(wrapperObj.height()-heightFix>objHeight||wrapperObj.height()-heightFix>objMaxHeight){
 					len--;
-					wrapperObj.html(wrapperObj.html().substr(0,len));
+					wrapperObj.html(wrapperObj.html().replace(ellipsisSymb,'').substr(0,len));
 					if(wrapperObj.height()-heightFix<=objHeight||wrapperObj.height()-heightFix<=objMaxHeight){
-						wrapperObj.html(wrapperObj.html().substr(0,len-adjustLen)+ellipsisSymb);
+						wrapperObj.html(wrapperObj.html().replace(ellipsisSymb,'').substr(0,len-adjustLen)+ellipsisSymb);
 					};
 				};
 				execObj.html(wrapperObj.html());
