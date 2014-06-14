@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<script src="loadScript.js"></script>
+<script>
+	var jsgroup=[
+		'js1.js',
+		'js2.js',
+		'js3.js',
+		'js4.js',
+		'js5.js',
+		'js6.js',
+	];
+	
+	loadScript('js1.js',function(){
+		loadScript('js2.js',function(){
+			loadScript('js3.js',function(){
+				loadScript('js4.js',function(){
+					loadScript('js5.js',function(){
+						loadScript('js6.js',function(){
+							//alert('All scripts are loaded.');
+						});
+					});
+				});
+			});
+		});
+	});
+
+</script>
+</head>
+
+<body>
+
+
+</body>
+</html>

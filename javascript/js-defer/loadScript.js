@@ -1,5 +1,5 @@
 //load JavaScript
-function loadScript(url,callback){
+function loadScript(urls,callback){
 	var script = document.creatElement("script");
 	script.type = "text/javascript";
 	if (script.readyState){ //IE
