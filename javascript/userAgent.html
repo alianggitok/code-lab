@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>无标题文档</title>
+<style>
+.list{border:1px solid #000; border-top:none; border-left:none; font-family:"微软雅黑"}
+.list th,
+.list td{padding:5px; border:1px solid #000; border-right:none; border-bottom:none; line-height:20px; font-size:14px}
+.list th{text-align:center}
+.list thead th,
+.list thead td{font-weight:bold; background:#aaa; text-align:center}
+.list tbody th{background:#ccc}
+.list tr.em th{background:#d9d9d9}
+.list tr.em td{background:#eee}
+</style>
+</head>
+
+<body>
+
+<script>
+document.write(
+	'<table class="list" border="0" cellpadding="0" cellspacing="0">'+
+		'<thead><tr><th>属性名</th><td>返回值</td></tr></thead>'+
+		'<tbody>'+
+			'<tr><th>cpuClass</th><td>'+navigator.cpuClass+'</td></tr>'+
+			'<tr><th>platform</th><td>'+navigator.platform+'</td></tr>'+
+			'<tr class="em"><th>appName</th><td>'+navigator.appName+'</td></tr>'+
+			'<tr><th>product</th><td>'+navigator.product+'</td></tr>'+
+			'<tr><th>productSub</th><td>'+navigator.productSub+'</td></tr>'+
+			'<tr><th>appCodeName</th><td>'+navigator.appCodeName+'</td></tr>'+
+			'<tr><th>appVersion</th><td>'+navigator.appVersion+'</td></tr>'+
+			'<tr class="em"><th>userAgent</th><td>'+navigator.userAgent+'</td></tr>'+
+			'<tr><th>vendorSub</th><td>'+navigator.vendorSub+'</td></tr>'+
+		'</tbody>'+
+	'</table>'
+);
+</script>
+
+</body>
+</html>
