@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>文字超出省略脚本</title>
+	<link rel="stylesheet" href="css/style.css"/>
+	<link rel="stylesheet" href="../../depend-file/js/syntaxhighlighter/3.0.83/styles/shCoreDefault.css"/>
+</head>
+
+<body>
+<h2>[ 文字超出省略的处理脚本应用 ]</h2>
+
+<h3>用法说明</h3>
+<pre>uaxpUI.wordsEllipsis(<em>obj</em>,<em>ellipsisSymb</em>,<em>adjustLen</em>);</pre>
+
+<h4>原理</h4>
+<p>逐字递减，判断文字高度是否超出父元素高度，如果超出则继续减少文字，直至不再超出。基于jQuery。</p>
+
+<h4>参数</h4>
+<p>
+<em>obj</em>: 应用对象<br>
+<em>ellipsisSymb</em>: 省略符号html<br>
+<em>adjustLen</em>: 修正省略字长
+</p>
+
+<h4>必须</h4>
+<p>需在html文档中引用“auto-ellipsis.js”</p>
+<p>需定义对象<em>style</em>的<em>height</em>或<em>max-height</em>值（一般为<em>line-height×行数</em>），且设置<em>overflow</em>为<em>hidden</em></p>
+
+<h3>示例</h3>
+<h4>CSS</h4>
+<pre class="brush: css">
+.words{
+	max-height:48px;
+	line-height:16px;
+	font-size:12px;
+	overflow:hidden
+}
+.ua-ellipsissymb{color:red}
+</pre>
+
+<h4>Javascript</h4>
+<pre class="brush: js">
+$(function(){
+	uaxpUI.wordsEllipsis('.words','&lt;span class="ellipsissymb"&gt;…&lt;/span&gt;',10);
+});
+</pre>
+
+<h4>HTML</h4>
+<pre class="brush: html">
+&lt;p class="words"&gt;
+	文字……文字
+&lt;/p&gt;
+</pre>
+
+<h4>输出</h4>
+<p class="words">The omnipresent menu can´t be applied in many cases because of the screen size. The menu probably would have to be in a vertical way and it could be very uncomfortable if for every single page people would need to scroll down all the menu to see the content. So, only use omnipresent menu if your site has only three links or less on its top navigation and, because of that, it can be horizontal. The solution is to put the navigation on the first page and on the others pages use a link at the top to come back to the first page or use breadcrumbs.</p>
+
+<p class="words">因为屏幕大小的限制，原本无所不在的菜单将无法被完全应用。如果为每个页面都直接应用上相同的菜单，访问者就必须做滚动操作，翻掉菜单才能看到内容。这会让人非常不适。所以只有当你的网站在顶部导航中有少量菜单链接时才考虑把它们放置到每个页面中。为此，它还得是横向水平的。 解决方案是，把导航放置到第一个页面，而在其他页面中尽可能的使用一个链接连向第一个页面，或者使用面包屑式的导航。</p>
+
+<p class="words">ASP.NET、MVC、EF、NHibernate、SQL Server、Oracle、JavaScript、HTML5、CSS3、JQuery、Knockout、Silverlight、WPF、WCF、ADFS</p>
+
+
+<script src="../../depend-file/js/jquery.1.8.2.js"></script>
+
+<script src="../../depend-file/js/syntaxhighlighter/3.0.83/scripts/shCore.js"></script>
+<script src="../../depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushCss.js"></script>
+<script src="../../depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushJScript.js"></script>
+<script src="../../depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushXml.js"></script>
+
+<script src="js/auto-ellipsis.js"></script>
+<script>
+SyntaxHighlighter.all();
+
+$(function(){
+	uaxpUI.wordsEllipsis('.words','<span class="ellipsissymb">…</span>',10);
+});
+</script>
+
+</body>
+</html>
