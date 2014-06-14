@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>文字超出省略脚本</title>
+	<link rel="stylesheet" href="styles/common.css"/>
+	<link rel="stylesheet" href="../depend-file/js/syntaxhighlighter/3.0.83/styles/shCoreDefault.css"/>
+</head>
+
+<body>
+
+<h2>select</h2>
+<div class="section">
+	<div class="ui-select">
+		<ul class="items">
+			<li class="selected default" data-value="">请选择</li>
+			<li data-value="aaa">品牌</li>
+			<li data-value="bbb">商品</li>
+		</ul>
+		<input class="ui-select-result" value="" type="text">
+	</div>
+</div>
+
+<h2>ellpsis</h2>
+<div class="section">
+	<p class="words">The omnipresent menu can´t be applied in many cases because of the screen size. The menu probably would have to be in a vertical way and it could be very uncomfortable if for every single page people would need to scroll down all the menu to see the content. So, only use omnipresent menu if your site has only three links or less on its top navigation and, because of that, it can be horizontal. The solution is to put the navigation on the first page and on the others pages use a link at the top to come back to the first page or use breadcrumbs.</p>
+	<p class="words">ASP.NET、MVC、EF、NHibernate、SQL Server、Oracle、JavaScript、HTML5、CSS3、JQuery、Knockout、Silverlight、WPF、WCF、ADFS</p>
+</div>
+
+<h2>tabbox</h2>
+<div class="section">
+	<div class="ui-tabbox ui-tabbox-hover">
+		<ul class="tabs">
+			<li class="tab"><a href="#">tab1</a></li>
+			<li class="tab"><a href="#">tab2</a></li>
+		</ul>
+		<div class="conts">
+			<div class="cont">1</div>
+			<div class="cont">2</div>
+		</div>
+	</div>
+	
+	<div class="ui-tabbox ui-tabbox-click">
+		<ul class="tabs">
+			<li class="tab"><a href="#">tab1</a></li>
+			<li class="tab"><a href="#">tab2</a></li>
+		</ul>
+		<div class="conts">
+			<div class="cont">1</div>
+			<div class="cont">2</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+<script src="../depend-file/js/jquery.1.8.2.js"></script>
+
+<script src="../depend-file/js/syntaxhighlighter/3.0.83/scripts/shCore.js"></script>
+<script src="../depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushCss.js"></script>
+<script src="../depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushJScript.js"></script>
+<script src="../depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushXml.js"></script>
+
+<script src="js/jquery-ui-widget.js"></script>
+<script>
+SyntaxHighlighter.all();
+
+$(function(){
+	ui.selectStyleInit('.ui-select');
+	ui.wordsEllipsis('.words','<span class="ellipsissymb">…</span>',10);
+	ui.tabbox('.ui-tabbox-hover','hover');
+	ui.tabbox('.ui-tabbox-click','click');
+});
+</script>
+
+</body>
+</html>
