@@ -190,19 +190,23 @@ var ui={
 	
 	picLazyLoad: function (obj, loadingHTML) {
 		loadingHTML=(typeof loadingHTML=='undefined'?'<div>loading...</div>':loadingHTML);
-		windowObj.off('scroll.picLazyLoad');
+		windowObj.off('scroll.picLazyLoad resize.picLazyLoad');
 		$(obj).each(function () {
 			var obj = $(this);
 			var oSrc = obj.attr('data-originsrc');
-			var tmpSrc = $.trim(obj.attr('src'));
+			var tmpSrc = '';
 			var src = '';
 			var scrollTop = 0, windowHeight = 0, objTop = 0, objLeft = 0, objWidth = 0, objHeight = 0;
 			var loadingObj = $(loadingHTML);
+			var maskObj = $('<div class="lazyload-mask"></div>');
 			loadingObj.css({
 				'position': 'absolute',
-				'top': 0,
-				'left': 0,
 				'z-index': 1000
+			});
+			maskObj.css({
+				'position': 'absolute',
+				'background': '#000',
+				'z-index': 999
 			});
 			function resetAttr() {
 				src = $.trim(obj.attr('src'));
@@ -215,20 +219,33 @@ var ui={
 			};
 			function loadpic() {
 				resetAttr();
-				if (src != tmpSrc) { return };
-				//console.log(src+', '+tmpSrc);
 				if ((scrollTop + windowHeight) >= objTop) {
+					if (src != tmpSrc) { return };
 					loadingObj.appendTo('body');
+					maskObj.appendTo('body');
 					var statecheck = setInterval(function () {
 						var protoObj = obj.get(0);
 						var complete = protoObj.complete || protoObj.readyState == 'complete' || protoObj.readyState == 'loaded';
+						resetAttr();
 						loadingObj.offset({
-							top: objTop + (objHeight-loadingObj.height())/ 2,
-							left: objLeft + (objWidth-loadingObj.width())/ 2
+							left: objLeft + (objWidth-loadingObj.width())/ 2,
+							top: objTop + (objHeight-loadingObj.height())/ 2
 						});
+						maskObj.offset({
+							left: objLeft,
+							top: objTop
+						}).css({
+							'width':objWidth+'px',
+							'height':objHeight+'px'
+						}).fadeTo(0,0.3);
 						//console.log('top:' + objTop + ', ' + 'left:' + objLeft)
 						if (complete) {
-							loadingObj.remove();
+							loadingObj.fadeOut('fast',function(){
+								$(this).remove();
+							});
+							maskObj.fadeOut('fast',function(){
+								$(this).remove();
+							});
 							clearInterval(statecheck);
 						};
 						//console.log(protoObj.className + ', ' + complete + ', ' + 'loaded');
@@ -237,7 +254,7 @@ var ui={
 				};
 			};
 			loadpic();
-			windowObj.on('scroll.picLazyLoad', function () {
+			windowObj.on('scroll.picLazyLoad resize.picLazyLoad', function () {
 				loadpic();
 			});
 		});
