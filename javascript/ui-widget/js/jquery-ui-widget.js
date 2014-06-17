@@ -237,13 +237,13 @@ var ui={
 						}).css({
 							'width':objWidth+'px',
 							'height':objHeight+'px'
-						}).fadeTo(0,0.3);
+						}).stop(false,true).fadeTo(0,0.3);
 						//console.log('top:' + objTop + ', ' + 'left:' + objLeft)
 						if (complete) {
-							loadingObj.fadeOut('fast',function(){
+							loadingObj.stop(false,true).fadeOut('fast',function(){
 								$(this).remove();
 							});
-							maskObj.fadeOut('fast',function(){
+							maskObj.stop(false,true).fadeOut('fast',function(){
 								$(this).remove();
 							});
 							clearInterval(statecheck);
