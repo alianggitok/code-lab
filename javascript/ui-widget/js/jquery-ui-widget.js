@@ -1,3 +1,15 @@
+var windowObj=$(window);
+var browserAgent=navigator.userAgent;
+var browserTest={
+	isIE6: function(){
+		return /msie 6/i.test(browserAgent);
+	},
+	isIE7: function(){
+		return /msie 7/i.test(browserAgent);
+	}
+};
+
+
 var ui={
 	/*tabbox*/
 	tabbox: function(obj,motion){
@@ -172,6 +184,61 @@ var ui={
 						$(this).closest(obj).removeClass('active').css('z-index',zindex);
 					});
 				};
+			});
+		});
+	},
+	
+	picLazyLoad: function (obj, loadingHTML) {
+		loadingHTML=(typeof loadingHTML=='undefined'?'<div>loading...</div>':loadingHTML);
+		windowObj.off('scroll.picLazyLoad');
+		$(obj).each(function () {
+			var obj = $(this);
+			var oSrc = obj.attr('data-originsrc');
+			var tmpSrc = $.trim(obj.attr('src'));
+			var src = '';
+			var scrollTop = 0, windowHeight = 0, objTop = 0, objLeft = 0, objWidth = 0, objHeight = 0;
+			var loadingObj = $(loadingHTML);
+			loadingObj.css({
+				'position': 'absolute',
+				'top': 0,
+				'left': 0,
+				'z-index': 1000
+			});
+			function resetAttr() {
+				src = $.trim(obj.attr('src'));
+				scrollTop = windowObj.scrollTop();
+				windowHeight = windowObj.height();
+				objTop = obj.offset().top;
+				objLeft = obj.offset().left;
+				objWidth = obj.width();
+				objHeight = obj.height();
+			};
+			function loadpic() {
+				resetAttr();
+				if (src != tmpSrc) { return };
+				//console.log(src+', '+tmpSrc);
+				if ((scrollTop + windowHeight) >= objTop) {
+					loadingObj.appendTo('body');
+					var statecheck = setInterval(function () {
+						var protoObj = obj.get(0);
+						var complete = protoObj.complete || protoObj.readyState == 'complete' || protoObj.readyState == 'loaded';
+						loadingObj.offset({
+							top: objTop + (objHeight-loadingObj.height())/ 2,
+							left: objLeft + (objWidth-loadingObj.width())/ 2
+						});
+						//console.log('top:' + objTop + ', ' + 'left:' + objLeft)
+						if (complete) {
+							loadingObj.remove();
+							clearInterval(statecheck);
+						};
+						//console.log(protoObj.className + ', ' + complete + ', ' + 'loaded');
+					}, 300);
+					obj.attr('src', oSrc);
+				};
+			};
+			loadpic();
+			windowObj.on('scroll.picLazyLoad', function () {
+				loadpic();
 			});
 		});
 	}
