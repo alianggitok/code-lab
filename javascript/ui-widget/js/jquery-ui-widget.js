@@ -193,12 +193,14 @@ var ui={
 		windowObj.off('scroll.picLazyLoad resize.picLazyLoad');
 		$(obj).each(function () {
 			var obj = $(this);
+			var protoObj = obj.get(0);
 			var originSrc = obj.attr('data-originsrc');
 			var tmpSrc = '';
 			var src = '';
 			var scrollTop = 0, windowHeight = 0, objTop = 0, objLeft = 0, objWidth = 0, objHeight = 0;
 			var loadingObj = $(loadingHTML);
 			var maskObj = $('<div class="lazyload-mask"></div>');
+			var isloaded = false;
 			loadingObj.css({
 				'position': 'absolute',
 				'z-index': 1000
@@ -217,40 +219,44 @@ var ui={
 				objWidth = obj.width();
 				objHeight = obj.height();
 			};
+			function checkState(){
+				isloaded = protoObj.complete || protoObj.readyState == 'complete' || protoObj.readyState == 'loaded';
+			};
+			function processerInit(){
+				loadingObj.offset({
+					left: objLeft + (objWidth-loadingObj.width())/ 2,
+					top: objTop + (objHeight-loadingObj.height())/ 2
+				});
+				maskObj.offset({
+					left: objLeft,
+					top: objTop
+				}).css({
+					'width':objWidth+'px',
+					'height':objHeight+'px'
+				}).stop(false,true).fadeTo(0,0.3);
+			};
 			function loadpic() {
 				resetAttr();
 				if ((scrollTop + windowHeight) >= objTop) {
 					if (src != tmpSrc) { return };
 					loadingObj.appendTo('body');
 					maskObj.appendTo('body');
-					var statecheck = setInterval(function () {
-						var protoObj = obj.get(0);
-						var complete = protoObj.complete || protoObj.readyState == 'complete' || protoObj.readyState == 'loaded';
+					obj.attr('src', originSrc);
+					var loadingProcess = setInterval(function () {
 						resetAttr();
-						loadingObj.offset({
-							left: objLeft + (objWidth-loadingObj.width())/ 2,
-							top: objTop + (objHeight-loadingObj.height())/ 2
-						});
-						maskObj.offset({
-							left: objLeft,
-							top: objTop
-						}).css({
-							'width':objWidth+'px',
-							'height':objHeight+'px'
-						}).stop(false,true).fadeTo(0,0.3);
-						//console.log('top:' + objTop + ', ' + 'left:' + objLeft)
-						if (complete) {
+						processerInit();
+						checkState();
+						if (isloaded) {
 							loadingObj.stop(false,true).fadeOut('fast',function(){
 								$(this).remove();
 							});
 							maskObj.stop(false,true).fadeOut('fast',function(){
 								$(this).remove();
 							});
-							clearInterval(statecheck);
+							clearInterval(loadingProcess);
 						};
 						//console.log(protoObj.className + ', ' + complete + ', ' + 'loaded');
 					}, 300);
-					obj.attr('src', originSrc);
 				};
 			};
 			loadpic();
