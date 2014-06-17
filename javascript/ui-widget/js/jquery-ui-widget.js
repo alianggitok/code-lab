@@ -193,7 +193,7 @@ var ui={
 		windowObj.off('scroll.picLazyLoad resize.picLazyLoad');
 		$(obj).each(function () {
 			var obj = $(this);
-			var oSrc = obj.attr('data-originsrc');
+			var originSrc = obj.attr('data-originsrc');
 			var tmpSrc = '';
 			var src = '';
 			var scrollTop = 0, windowHeight = 0, objTop = 0, objLeft = 0, objWidth = 0, objHeight = 0;
@@ -250,7 +250,7 @@ var ui={
 						};
 						//console.log(protoObj.className + ', ' + complete + ', ' + 'loaded');
 					}, 300);
-					obj.attr('src', oSrc);
+					obj.attr('src', originSrc);
 				};
 			};
 			loadpic();
