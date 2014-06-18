@@ -189,13 +189,12 @@ var ui={
 	},
 	
 	picLazyLoad: function (obj, loadingHTML) {
-		loadingHTML=(typeof loadingHTML=='undefined'?'<div>loading...</div>':loadingHTML);
+		loadingHTML=typeof(loadingHTML)=='undefined'?'<div>loading...</div>':loadingHTML;
 		windowObj.off('scroll.picLazyLoad resize.picLazyLoad');
 		$(obj).each(function () {
 			var obj = $(this);
 			var protoObj = obj.get(0);
 			var originSrc = obj.attr('data-originsrc');
-			var tmpSrc = '';
 			var src = '';
 			var scrollTop = 0, windowHeight = 0, objTop = 0, objLeft = 0, objWidth = 0, objHeight = 0;
 			var loadingObj = $(loadingHTML);
@@ -211,6 +210,7 @@ var ui={
 				'z-index': 999
 			});
 			function resetAttr() {
+				originSrc = obj.attr('data-originsrc');
 				src = $.trim(obj.attr('src'));
 				scrollTop = windowObj.scrollTop();
 				windowHeight = windowObj.height();
@@ -223,6 +223,8 @@ var ui={
 				isloaded = protoObj.complete || protoObj.readyState == 'complete' || protoObj.readyState == 'loaded';
 			};
 			function processerInit(){
+				loadingObj.appendTo('body');
+				maskObj.appendTo('body');
 				loadingObj.offset({
 					left: objLeft + (objWidth-loadingObj.width())/ 2,
 					top: objTop + (objHeight-loadingObj.height())/ 2
@@ -233,24 +235,22 @@ var ui={
 				}).css({
 					'width':objWidth+'px',
 					'height':objHeight+'px'
-				}).stop(false,true).fadeTo(0,0.1);
+				}).fadeTo(0,0.1);
 			};
 			function loadpic() {
 				resetAttr();
 				if ((scrollTop + windowHeight) >= objTop) {
-					if (src != tmpSrc) { return };
-					loadingObj.appendTo('body');
-					maskObj.appendTo('body');
+					if (typeof(originSrc) == 'undefined') { return };
 					obj.attr('src', originSrc);
 					var loadingProcess = setInterval(function () {
 						resetAttr();
 						processerInit();
 						checkState();
 						if (isloaded) {
-							loadingObj.stop(false,true).fadeOut('fast',function(){
+							loadingObj.fadeOut('fast',function(){
 								$(this).remove();
 							});
-							maskObj.stop(false,true).fadeOut('fast',function(){
+							maskObj.fadeOut('fast',function(){
 								$(this).remove();
 							});
 							obj.removeAttr('data-originsrc');
