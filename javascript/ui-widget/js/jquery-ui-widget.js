@@ -223,8 +223,6 @@ var ui={
 				isloaded = protoObj.complete || protoObj.readyState == 'complete' || protoObj.readyState == 'loaded';
 			};
 			function processerInit(){
-				loadingObj.appendTo('body');
-				maskObj.appendTo('body');
 				loadingObj.offset({
 					left: objLeft + (objWidth-loadingObj.width())/ 2,
 					top: objTop + (objHeight-loadingObj.height())/ 2
@@ -242,6 +240,8 @@ var ui={
 				if ((scrollTop + windowHeight) >= objTop) {
 					if (typeof(originSrc) == 'undefined') { return };
 					obj.attr('src', originSrc);
+					loadingObj.appendTo('body');
+					maskObj.appendTo('body');
 					var loadingProcess = setInterval(function () {
 						resetAttr();
 						processerInit();
