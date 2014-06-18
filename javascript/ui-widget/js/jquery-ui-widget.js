@@ -233,7 +233,7 @@ var ui={
 				}).css({
 					'width':objWidth+'px',
 					'height':objHeight+'px'
-				}).stop(false,true).fadeTo(0,0.3);
+				}).stop(false,true).fadeTo(0,0.1);
 			};
 			function loadpic() {
 				resetAttr();
@@ -253,6 +253,7 @@ var ui={
 							maskObj.stop(false,true).fadeOut('fast',function(){
 								$(this).remove();
 							});
+							obj.removeAttr('data-originsrc');
 							clearInterval(loadingProcess);
 						};
 						//console.log(protoObj.className + ', ' + complete + ', ' + 'loaded');
