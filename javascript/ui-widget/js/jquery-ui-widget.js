@@ -235,7 +235,7 @@ var ui={
 				}).css({
 					'width':objWidth+'px',
 					'height':objHeight+'px'
-				}).fadeTo(0,0.1);
+				}).stop(false,true).fadeTo(0,0.1);
 			};
 			function loadpic() {
 				resetAttr();
