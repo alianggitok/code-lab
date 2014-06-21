@@ -204,7 +204,7 @@ var ui = {
 			var check=setInterval(function(){
 				isLoaded=protoObj.complete || protoObj.readyState == 'complete' || protoObj.readyState == 'loaded';
 				if(isLoaded){
-					console.log('img:"'+src+'" is loaded.');
+					console.log('img "'+src+'" is loaded.');
 					clearInterval(check);
 				};
 			},100);
@@ -234,7 +234,7 @@ function  load(execObj) {
 					'img_'+itemN+'\'s attr "data-originsrc" is "'+_execObj.attr('data-originsrc')+'"'
 				);*/
 				changeSrc(_execObj,function(){
-					checkState(_execObj,_execObj.attr('data-originsrc'));
+					checkState(_execObj,_execObj.attr('src'));
 				});
 
 				load(_obj.eq(itemN++));
