@@ -195,51 +195,68 @@ var ui = {
 		_window.off('scroll.picLazyLoad resize.picLazyLoad');
 
 		var _obj=$(obj);
-		var objLen=$(obj).length;
+		var _loaderObj='undefined';
+		var objLen=_obj.length;
 		var itemN=0;
 
-		function checkState(execObj,src){
+		function loaderInit(execObj,loaderObj){
+			_loaderObj.css({
+				'position':'absolute'
+			});
+			setLoader(execObj,loaderObj);
+			_loaderObj.appendTo('body');
+		};
+		function setLoader(execObj,loaderObj){
+			loaderObj.offset({
+				top:execObj.offset().top+(execObj.height()-loaderObj.height())/2,
+				left:execObj.offset().left+(execObj.width()-loaderObj.width())/2
+			});
+		};
+		function checkState(execObj,loaderObj){
 			var isLoaded=false;
 			var protoObj=execObj.get(0);
 			var check=setInterval(function(){
 				isLoaded=protoObj.complete || protoObj.readyState == 'complete' || protoObj.readyState == 'loaded';
+				setLoader(execObj,loaderObj)
 				if(isLoaded){
-					console.log('img "'+src+'" is loaded.');
+					console.log('image "'+execObj.attr('data-originsrc')+'" is loaded.');
+					execObj.removeAttr('data-originsrc');
+					loaderObj.fadeOut('fast',function(){
+						$(this).remove();
+					});
 					clearInterval(check);
 				};
-			},100);
+			},300);
 		};
-		function changeSrc(execObj,callback){
-			execObj.attr('src',execObj.attr('data-originsrc')).removeAttr('data-originsrc');
-			callback();
+		function changeSrc(execObj){
+			console.log('image "'+execObj.attr('data-originsrc')+'" loading.');
+			_loaderObj=$(loadingHTML);
+			loaderInit(execObj,_loaderObj);
+			setLoader(execObj,_loaderObj);
+			execObj.attr('src',execObj.attr('data-originsrc'));
+			checkState(execObj,_loaderObj);
 		};
 		function checkInRange(execObj){
 			var range=_window.height()+_window.scrollTop();
 			var objTop=execObj.offset().top;
 			return objTop < range ? true : false;
 		};
-function  load(execObj) {
+		function load(execObj) {
 			var setSrc=setTimeout(function(){
 				if(itemN>=objLen){
 					clearTimeout(setSrc);
 					return false;
 				};
-				var _execObj=_obj.eq(itemN);
-				if(!checkInRange(_execObj)){
+				execObj=_obj.eq(itemN);
+				if(!checkInRange(execObj)){
 					clearTimeout(setSrc);
 					return false;
 				};
-				/*console.log(
-					'objLen: '+objLen+',\n'+
-					'img_'+itemN+'\'s attr "data-originsrc" is "'+_execObj.attr('data-originsrc')+'"'
-				);*/
-				changeSrc(_execObj,function(){
-					checkState(_execObj,_execObj.attr('src'));
-				});
+				changeSrc(execObj);
 
 				load(_obj.eq(itemN++));
 				
-			},500);
+			},1000);
 		};
 
 		load(_obj.eq(itemN));
@@ -247,87 +264,6 @@ function  load(execObj) {
 			load(_obj.eq(itemN));
 		});
 	}
-
-	/*
-	picLazyLoad: function (obj, loadingHTML) {
-		loadingHTML = typeof (loadingHTML) == 'undefined' ? '<div>loading...</div>' : loadingHTML;
-		_window.off('scroll.picLazyLoad resize.picLazyLoad');
-		$(obj).each(function () {
-			var obj = $(this);
-			var protoObj = obj.get(0);
-			var originSrc = obj.attr('data-originsrc');
-			var src = '';
-			var scrollTop = 0, windowHeight = 0, objTop = 0, objLeft = 0, objWidth = 0, objHeight = 0;
-			var loadingObj = $(loadingHTML);
-			var maskObj = $('<div class="lazyload-mask"></div>');
-			var isloaded = false;
-			loadingObj.css({
-				'position': 'absolute',
-				'z-index': 1000
-			});
-			maskObj.css({
-				'position': 'absolute',
-				'background': '#000',
-				'z-index': 999
-			});
-			function resetAttr() {
-				originSrc = obj.attr('data-originsrc');
-				src = $.trim(obj.attr('src'));
-				scrollTop = _window.scrollTop();
-				windowHeight = _window.height();
-				objTop = obj.offset().top;
-				objLeft = obj.offset().left;
-				objWidth = obj.width();
-				objHeight = obj.height();
-			};
-			function checkState() {
-				isloaded = protoObj.complete || protoObj.readyState == 'complete' || protoObj.readyState == 'loaded';
-			};
-			function processerInit() {
-				loadingObj.offset({
-					left: objLeft + (objWidth - loadingObj.width()) / 2,
-					top: objTop + (objHeight - loadingObj.height()) / 2
-				});
-				maskObj.offset({
-					left: objLeft,
-					top: objTop
-				}).css({
-					'width': objWidth + 'px',
-					'height': objHeight + 'px'
-				}).stop(false, true).fadeTo(0, 0.1);
-			};
-			function loadpic() {
-				resetAttr();
-				if ((scrollTop + windowHeight) >= objTop) {
-					if (typeof (originSrc) == 'undefined') { return };
-					obj.attr('src', originSrc);
-					loadingObj.appendTo('body');
-					maskObj.appendTo('body');
-					var loadingProcess = setInterval(function () {
-						resetAttr();
-						processerInit();
-						checkState();
-						if (isloaded) {
-							loadingObj.fadeOut('fast', function () {
-								$(this).remove();
-							});
-							maskObj.fadeOut('fast', function () {
-								$(this).remove();
-							});
-							obj.removeAttr('data-originsrc');
-							clearInterval(loadingProcess);
-						};
-						//console.log(protoObj.className + ', ' + complete + ', ' + 'loaded');
-					}, 300);
-				};
-			};
-			loadpic();
-			_window.on('scroll.picLazyLoad resize.picLazyLoad', function () {
-				loadpic();
-			});
-		});
-	}
-	*/
 
 };
 
