@@ -190,51 +190,70 @@ var ui = {
 		});
 	},
 
-	picLazyLoad: function (obj, loadingHTML) {
-		loadingHTML = typeof (loadingHTML) == 'undefined' ? '<div>loading...</div>' : loadingHTML;
+	picLazyLoad: function (obj, loaderHTML) {
+		loaderHTML = typeof (loaderHTML) == 'undefined' ? '<div>loading...</div>' : loaderHTML;
 		_window.off('scroll.picLazyLoad resize.picLazyLoad');
 
+		var maskerHTML = '<div></div>';
 		var _obj=$(obj);
 		var _loaderObj='undefined';
+		var _maskerObj='undefined';
 		var _execObj='undefined';
 		var objLen=_obj.length;
 		var itemN=0;
 
-		function loaderInit(execObj,loaderObj){
+		function loaderInit(execObj,loaderObj,maskerObj){
 			loaderObj.css({
+				'position':'absolute'
+			}).addClass('lazyload-loader').appendTo('body');
+			maskerObj.css({
 				'position':'absolute',
-				'display':'none'
-			});
-			setLoader(execObj,loaderObj);
-			loaderObj.appendTo('body');
+				'z-index':loaderObj.css('z-index')-1,
+				'background':'#000',
+				'opacity':.1
+			}).addClass('lazyload-masker').appendTo('body');
+			setLoader(execObj,loaderObj,maskerObj);
 		};
-		function setLoader(execObj,loaderObj){
+		function setLoader(execObj,loaderObj,maskerObj){
 			loaderObj.offset({
 				top:execObj.offset().top+(execObj.height()-loaderObj.height())/2,
 				left:execObj.offset().left+(execObj.width()-loaderObj.width())/2
 			});
+			maskerObj.css({
+				'width':execObj.width(),
+				'height':execObj.height()
+			});
+			maskerObj.offset({
+				top:execObj.offset().top+(execObj.height()-maskerObj.height())/2,
+				left:execObj.offset().left+(execObj.width()-maskerObj.width())/2
+			});
 		};
-		function checkState(execObj,loaderObj,loaderSetting){
+		function removeLoader(loaderObj,maskerObj){
+			loaderObj.fadeOut('fast',function(){
+				$(this).remove();
+			});
+			maskerObj.fadeOut('fast',function(){
+				$(this).remove();
+			});
+		};
+		function checkState(execObj,loaderObj,maskerObj,loaderSetting){
 			var protoObj=execObj.get(0);
 			//protoObj.complete || protoObj.readyState == 'complete' || protoObj.readyState == 'loaded';
 			protoObj.onload=function(){
 				execObj.removeAttr('data-originsrc');
-				loaderObj.fadeOut('fast',function(){
-					$(this).remove();
-				});
 				clearInterval(loaderSetting);
+				removeLoader(loaderObj,maskerObj);
 				protoObj.onload=null;
 				protoObj=null;
 			};
 		};
-		function changeSrc(execObj,loaderObj){
+		function changeSrc(execObj,loaderObj,maskerObj){
 			//console.log('image "'+execObj.attr('data-originsrc')+'" loading.');
-			loaderInit(execObj,loaderObj);
+			loaderInit(execObj,loaderObj,maskerObj);
 			var loaderSetting=setInterval(function(){
-				setLoader(execObj,loaderObj);
+				setLoader(execObj,loaderObj,maskerObj);
 			},200);
-			loaderObj.show();
-			checkState(execObj,loaderObj,loaderSetting);
+			checkState(execObj,loaderObj,maskerObj,loaderSetting);
 			execObj.attr('src',execObj.attr('data-originsrc'));
 		};
 		function checkInRange(execObj){
@@ -254,9 +273,10 @@ var ui = {
 					clearTimeout(setSrc);
 					return false;
 				};
-				_loaderObj=$(loadingHTML);
+				_loaderObj=$(loaderHTML);
+				_maskerObj=$(maskerHTML);
 
-				changeSrc(_execObj,_loaderObj);
+				changeSrc(_execObj,_loaderObj,_maskerObj);
 				itemN++;
 				load();
 			},500);

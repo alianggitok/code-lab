@@ -134,7 +134,7 @@ h2{margin-top:20px}
 
 
 /*lazyload picture*/
-.lazyloader{background:url(../images/loading.gif) 50% 50% no-repeat; width:16px; height:11px;z-index: 1000}
+.lazyload-loader{background:url(../images/loading.gif) 50% 50% no-repeat; width:16px; height:11px; z-index: 1000}
 .piclazyload-list-1 li{float:left; margin:3px}
 .piclazyload-list-1 li img{max-width:100%}
 
