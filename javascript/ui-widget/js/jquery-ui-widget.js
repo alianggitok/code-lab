@@ -243,27 +243,28 @@ var ui = {
 			return objTop < range ? true : false;
 		};
 
-		function load(execObj) {
+		function load() {
 			var setSrc=setTimeout(function(){
 				if(itemN>=objLen){
 					clearTimeout(setSrc);
 					return false;
 				};
-				execObj=_obj.eq(itemN);
-				if(!checkInRange(execObj)){
+				_execObj=_obj.eq(itemN);
+				if(!checkInRange(_execObj)){
 					clearTimeout(setSrc);
 					return false;
 				};
 				_loaderObj=$(loadingHTML);
 
-				changeSrc(execObj,_loaderObj);
-				load(_obj.eq(itemN++));
+				changeSrc(_execObj,_loaderObj);
+				itemN++;
+				load();
 			},500);
 		};
 
-		load(_obj.eq(itemN));
+		load();
 		_window.on('scroll.picLazyLoad resize.picLazyLoad', function () {
-			load(_obj.eq(itemN));
+			load();
 		});
 	}
 
