@@ -225,8 +225,8 @@ var ui = {
 				'width':execObj.width(),
 				'height':execObj.height()
 			}).offset({
-				top:execObj.offset().top+(execObj.height()-maskerObj.height())/2,
-				left:execObj.offset().left+(execObj.width()-maskerObj.width())/2
+				top:execObj.offset().top,
+				left:execObj.offset().left
 			});
 		};
 		function removeLoader(loaderObj,maskerObj){
