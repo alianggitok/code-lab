@@ -230,11 +230,10 @@ var ui = {
 		function changeSrc(execObj,loaderObj){
 			//console.log('image "'+execObj.attr('data-originsrc')+'" loading.');
 			loaderInit(execObj,loaderObj);
-			loaderObj.show();
-			setLoader(execObj,loaderObj);
 			var loaderSetting=setInterval(function(){
 				setLoader(execObj,loaderObj);
-			},300);
+			},200);
+			loaderObj.show();
 			checkState(execObj,loaderObj,loaderSetting);
 			execObj.attr('src',execObj.attr('data-originsrc'));
 		};
@@ -244,27 +243,27 @@ var ui = {
 			return objTop < range ? true : false;
 		};
 
-		function load() {
+		function load(execObj) {
 			var setSrc=setTimeout(function(){
 				if(itemN>=objLen){
 					clearTimeout(setSrc);
 					return false;
 				};
-				_execObj=_obj.eq(itemN);
-				if(!checkInRange(_execObj)){
+				execObj=_obj.eq(itemN);
+				if(!checkInRange(execObj)){
 					clearTimeout(setSrc);
 					return false;
 				};
 				_loaderObj=$(loadingHTML);
 
-				changeSrc(_execObj,_loaderObj);
+				changeSrc(execObj,_loaderObj);
 				load(_obj.eq(itemN++));
-			},1000);
+			},500);
 		};
 
-		load();
+		load(_obj.eq(itemN));
 		_window.on('scroll.picLazyLoad resize.picLazyLoad', function () {
-			load();
+			load(_obj.eq(itemN));
 		});
 	}
 
