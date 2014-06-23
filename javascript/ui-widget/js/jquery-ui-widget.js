@@ -196,11 +196,10 @@ var ui = {
 
 		var maskerHTML = '<div></div>';
 		var _obj=$(obj);
-		var _loaderObj='undefined';
-		var _maskerObj='undefined';
-		var _execObj='undefined';
+		var _loaderObj='', _maskerObj='', _execObj='';
 		var objLen=_obj.length;
 		var itemN=0;
+		var load=null, loaderSetting=null;
 
 		function loaderInit(execObj,loaderObj,maskerObj){
 			loaderObj.css({
@@ -243,16 +242,19 @@ var ui = {
 			protoObj.onload=function(){
 				execObj.removeAttr('data-src');
 				clearInterval(loaderSetting);
+				loaderSetting=null;
 				removeLoader(loaderObj,maskerObj);
 				protoObj.onload=null;
 				protoObj=null;
 			};
 			protoObj.onerror=function(){
 				console.log(imgSrc+' loading is failed.');
+				protoObj.onerror=null;
+				protoObj=null;
 			};
 		};
 		function changeSrc(execObj,loaderObj,maskerObj){
-			//console.log('image "'+execObj.attr('data-src')+'" loading.');
+			console.log('image "'+execObj.attr('data-src')+'" loading.');
 			loaderInit(execObj,loaderObj,maskerObj);
 			var loaderSetting=setInterval(function(){
 				setLoader(execObj,loaderObj,maskerObj);
@@ -267,30 +269,32 @@ var ui = {
 			return objTop < range ? true : false;
 		};
 
-		function load() {
-			var setSrc=setTimeout(function(){
+		function exec(execObj) {
+			load=setTimeout(function(){
+				console.log(execObj.is('[data-src]'));
 				if(itemN>=objLen){
-					clearTimeout(setSrc);
+					clearTimeout(load);
+					load=null;
 					return false;
 				};
-				_execObj=_obj.eq(itemN);
-				if(!checkInRange(_execObj)){
-					clearTimeout(setSrc);
+				execObj=_obj.eq(itemN);
+				if(!checkInRange(execObj)){
+					clearTimeout(load);
+					load=null;
 					return false;
 				};
 				_loaderObj=$(loaderHTML);
 				_maskerObj=$(maskerHTML);
-
-				changeSrc(_execObj,_loaderObj,_maskerObj);
-				itemN++;
-				load();
+				changeSrc(execObj,_loaderObj,_maskerObj);
+				exec(_obj.eq(itemN++));
 			},500);
 		};
 
-		load();
+		exec(_obj.eq(itemN));
 		_window.on('scroll.picLazyLoad resize.picLazyLoad', function () {
-			load();
+			exec(_obj.eq(itemN));
 		});
+		
 	}
 
 };
