@@ -210,7 +210,9 @@ var ui = {
 				'position':'absolute',
 				'z-index':loaderObj.css('z-index')-1,
 				'background':'#000',
-				'opacity':.1
+				'opacity':'.1',
+				'width':execObj.width(),
+				'height':execObj.height()
 			}).addClass('lazyload-masker').appendTo('body');
 			setLoader(execObj,loaderObj,maskerObj);
 		};
@@ -222,8 +224,7 @@ var ui = {
 			maskerObj.css({
 				'width':execObj.width(),
 				'height':execObj.height()
-			});
-			maskerObj.offset({
+			}).offset({
 				top:execObj.offset().top+(execObj.height()-maskerObj.height())/2,
 				left:execObj.offset().left+(execObj.width()-maskerObj.width())/2
 			});
