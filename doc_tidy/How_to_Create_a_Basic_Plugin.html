@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ui-widget</title>
+	<link rel="stylesheet" href="styles/common.css"/>
+	<link rel="stylesheet" href="depend-file/js/syntaxhighlighter/3.0.83/styles/shCoreDefault.css"/>
+</head>
+
+<body>
+
+<h2>如何创建一个基础插件（How to Create a Basic Plugin）</h2>
+<p>有时候，你需要提供一个功能块在你的代码中复用。例如，假设你要在一个jQuery选择器上调用一个方法以执行一系列的操作；也许你希望把一个已经写得非常实用的函数移植到其他项目中……既然如此，何不写个插件呢。</p>
+
+<h3>jQuery对象方法（Object Methods）和公用方法（Utility Methods）</h3>
+<p>在书写自己的插件之前，我们首先必须理解一点——jQuery是如何工作的。看看这段代码：</p>
+<pre class="brush: js">
+$( "a" ).css( "color", "red" );
+</pre>
+<p>这是一段基础的jQuery代码，但是你是否了解在这背后是如何运作的？当你使用<code>$()</code>函数来选择元素，他会返回一个jQuery对象。这个对象包含所有你使用的方法（如<code>.css()</code>，<code>.click()</code>等等）及所有匹配你所书写的选择器的元素。并且这个jQuery对象会从<code>$.fn</code>中获取这些方法。它包含了所有jQuery对象方法，同样也会把我们自己写的方法包含进去。</p>
+<p>此外如jQuery公用的方法<code>$.trim()</code>一般用于清除用户输入的头尾空白字符。公用方法是直接驻留在<code>$()</code>函数本身的函数集。你可以为你索引的DOM元素写一个公用方法插件来扩展jQuery API中无法做到一些事情。</p>
+
+<h3>基础插件编写</h3>
+<p>接下来，我们要创建一个插件让所选元素的文本变成绿色。为达成这一目标，我们要加一个名为<code>greenify</code>的函数到<code>$.fn</code>中，它会像其他jQuery对象方法一样有效。</p>
+<pre class="brush: js">
+$.fn.greenify = function() {
+	this.css( "color", "green" );
+};
+
+$( "a" ).greenify(); // 让所有链接变成绿色
+</pre>
+<p>注意：这里用到的<code>.css()</code>方法，我们使用<code>this</code>而不是<code>$(this)</code>。这是因为我们的<code>greenify</code>函数和<code>.css()</code>一样是相同对象的一部分。</p>
+
+<h3>链式操作（chaining）</h3>
+<p>在这里，为了让我们的插件能够更好“生存”在这个世界里，有几件事情是必须做的。当你在一个选择器上绑上五到六个动作时，可以使用jQuery的其中一个特性——链式操作。这个是先通过所有jQuery对象方法再返回原始jQuery对象（这里有点要注意的地方：例如<code>.width()</code>不带参数的调用会返回所选元素的宽度值，而不支持链式操作）。要让我们的插件支持链式操作，加上一行代码就行：</p>
+<pre class="brush: js">
+$.fn.greenify = function() {
+	this.css( "color", "green" );
+	return this;
+};
+
+$( "a" ).greenify().addClass( "greenified" );
+</pre>
+
+
+
+
+<script type="text/javascript" src="depend-file/js/jquery.1.8.2.js"></script>
+
+<script type="text/javascript" src="depend-file/js/syntaxhighlighter/3.0.83/scripts/shCore.js"></script>
+<script type="text/javascript" src="depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushCss.js"></script>
+<script type="text/javascript" src="depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushXml.js"></script>
+
+<script type="text/javascript">
+SyntaxHighlighter.all();
+</script>
+
+</body>
+</html>

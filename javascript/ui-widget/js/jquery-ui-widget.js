@@ -192,7 +192,6 @@ var ui = {
 
 	picLazyLoad: function (obj, loaderHTML) {
 		loaderHTML = typeof (loaderHTML) == 'undefined' ? '<div>loading...</div>' : loaderHTML;
-		_window.off('scroll.picLazyLoad resize.picLazyLoad');
 
 		var maskerHTML = '<div></div>';
 		var _obj=$(obj);
@@ -254,14 +253,14 @@ var ui = {
 			};
 		};
 		function changeSrc(execObj,loaderObj,maskerObj){
-			console.log('image "'+execObj.attr('data-src')+'" loading.');
+			//console.log('image "'+execObj.attr('data-src')+'" loading.');
 			loaderInit(execObj,loaderObj,maskerObj);
 			var loaderSetting=setInterval(function(){
 				setLoader(execObj,loaderObj,maskerObj);
 			},200);
 			var imgSrc=execObj.attr('data-src');
 			checkState(execObj,imgSrc,loaderObj,maskerObj,loaderSetting);
-			execObj.attr('src',imgSrc);
+			execObj.removeAttr('src').attr('src',imgSrc);
 		};
 		function checkInRange(execObj){
 			var range=_window.height()+_window.scrollTop();
@@ -270,28 +269,29 @@ var ui = {
 		};
 
 		function exec(execObj) {
-			load=setTimeout(function(){
-				console.log(execObj.is('[data-src]'));
+			loadDelay=setTimeout(function(){
 				if(itemN>=objLen){
-					clearTimeout(load);
+					clearTimeout(loadDelay);
 					load=null;
 					return false;
 				};
 				execObj=_obj.eq(itemN);
 				if(!checkInRange(execObj)){
-					clearTimeout(load);
+					clearTimeout(loadDelay);
 					load=null;
 					return false;
 				};
-				_loaderObj=$(loaderHTML);
-				_maskerObj=$(maskerHTML);
-				changeSrc(execObj,_loaderObj,_maskerObj);
+				if($.trim(execObj.attr('src'))==''){
+					_loaderObj=$(loaderHTML);
+					_maskerObj=$(maskerHTML);
+					changeSrc(execObj,_loaderObj,_maskerObj);
+				};
 				exec(_obj.eq(itemN++));
 			},500);
 		};
 
 		exec(_obj.eq(itemN));
-		_window.on('scroll.picLazyLoad resize.picLazyLoad', function () {
+		_window.off('scroll.picLazyLoad resize.picLazyLoad').on('scroll.picLazyLoad resize.picLazyLoad', function () {
 			exec(_obj.eq(itemN));
 		});
 		
