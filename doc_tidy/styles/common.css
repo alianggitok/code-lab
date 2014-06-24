@@ -9,7 +9,7 @@ canvas,object,embed,progress,audio,video,track,map,area,figure,figcaption,
 table,caption,tbody,tfoot,thead,tr,th,td,
 span,a,b,strong,em,mark,blockquote,code,del,abbr,dfn,big,small,time,i,acronym,address,cite,ins,kbd,q,samp,sub,sup,tt,var{margin:0; padding:0; border:none}
 
-body{font-size:12px; line-height:18px; letter-spacing:0; font-family:"微软雅黑", "Arial", "Helvetica", "sans-serif"; background:#fff; color:#000; cursor:default; vertical-align:baseline}
+body{font-size:13px; line-height:20px; letter-spacing:0; font-family:"微软雅黑", "Arial", "Helvetica", "sans-serif"; background:#fff; color:#000; cursor:default; vertical-align:baseline}
 
 :hover{transition-duration:.3s; transition-timing-function:ease; transition-property:none}
 
@@ -22,7 +22,7 @@ ol,ul,dl{list-style:none}
 
 table{border-collapse:collapse; border-spacing:0}
 
-a{text-decoration:none; color:#666}
+a{text-decoration:none; color:green}
 a:link{}
 a:visited{}
 a:hover{text-decoration:underline; color:#000; transition-property:color, border-color, background-color;}

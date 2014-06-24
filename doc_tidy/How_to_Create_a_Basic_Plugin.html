@@ -1,10 +1,10 @@
 <!doctype html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>ui-widget</title>
-	<link rel="stylesheet" href="styles/common.css"/>
-	<link rel="stylesheet" href="depend-file/js/syntaxhighlighter/3.0.83/styles/shCoreDefault.css"/>
+<meta charset="utf-8">
+<title>ui-widget</title>
+<link rel="stylesheet" href="styles/common.css"/>
+<link rel="stylesheet" href="depend-file/js/syntaxhighlighter/3.0.83/styles/shCoreDefault.css"/>
 </head>
 
 <body>
@@ -32,7 +32,7 @@ $( "a" ).greenify(); // 让所有链接变成绿色
 <p>注意：这里用到的<code>.css()</code>方法，我们使用<code>this</code>而不是<code>$(this)</code>。这是因为我们的<code>greenify</code>函数和<code>.css()</code>一样是相同对象的一部分。</p>
 
 <h3>链式操作（chaining）</h3>
-<p>在这里，为了让我们的插件能够更好“生存”在这个世界里，有几件事情是必须做的。当你在一个选择器上绑上五到六个动作时，可以使用jQuery的其中一个特性——链式操作。这个是先通过所有jQuery对象方法再返回原始jQuery对象（这里有点要注意的地方：例如<code>.width()</code>不带参数的调用会返回所选元素的宽度值，而不支持链式操作）。要让我们的插件支持链式操作，加上一行代码就行：</p>
+<p>在这里，为了让我们的插件能够更好“生存”在这个“世界”里，有些事情是必须做的。当你在一个选择器上绑上五到六个动作时，可以使用jQuery的其中一个特性——链式操作。让所有jQuery对象方法返回原始jQuery对象是有技巧的（这里有例外：例如<code>.width()</code>不带参数的调用会返回所选元素的宽度值，而不支持链式操作）。要让我们的插件支持链式操作，加上一行代码就行：</p>
 <pre class="brush: js">
 $.fn.greenify = function() {
 	this.css( "color", "green" );
@@ -41,18 +41,23 @@ $.fn.greenify = function() {
 
 $( "a" ).greenify().addClass( "greenified" );
 </pre>
+<p>注意：链式操作的理念不适用于类似<code>$.trim()</code>的jQuery公用方法。</p>
+<h3>保护别名$，添加作用域</h3>
+<p><code>$</code>变量在众多JavaScript库中使用广泛，如果你在使用jQuery的同时还使用了其他库，你可以通过<code>jQuery.noConflict()</code>让jQuery不使用<code>$</code>。但不管怎样，这将会破坏我们先前写的使用<code>$</code>作为别名的jQuery函数的插件。为了让其他插件正常工作的同时任然使用jQuery的<code>$</code>别名，我们必须把所有的代码放进一个<a href="http://stage.learn.jquery.com/javascript-101/functions/#immediately-invoked-function-expression-iife">立即调用的函数表达式（Immediately Invoked Function Expression）</a>中，并且</p>
 
 
 
 
-<script type="text/javascript" src="depend-file/js/jquery.1.8.2.js"></script>
 
-<script type="text/javascript" src="depend-file/js/syntaxhighlighter/3.0.83/scripts/shCore.js"></script>
-<script type="text/javascript" src="depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushCss.js"></script>
-<script type="text/javascript" src="depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushJScript.js"></script>
-<script type="text/javascript" src="depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushXml.js"></script>
 
-<script type="text/javascript">
+<script src="depend-file/js/jquery.1.8.2.js"></script>
+
+<script src="depend-file/js/syntaxhighlighter/3.0.83/scripts/shCore.js"></script>
+<script src="depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushCss.js"></script>
+<script src="depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushJScript.js"></script>
+<script src="depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushXml.js"></script>
+
+<script>
 SyntaxHighlighter.all();
 </script>
 
