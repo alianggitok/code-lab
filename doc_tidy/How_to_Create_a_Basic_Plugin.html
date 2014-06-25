@@ -122,7 +122,7 @@ $.fn.myNewPlugin = function() {
 
 };
 </pre>
-<p>注意：我们返回的是<code>.each()</code>的结果而非<code>this</code>的返回结果。由于<code>.each()</code>已经是支持链式操作，所以会返回<code>this</code>。这是目前为止我们实践下来比较好的保持链式操作的做法。</p>
+<p>注意：我们返回的结果不是<code>.each()</code>而是返回<code>this</code>。由于<code>.each()</code>已经是支持链式操作，所以会返回<code>this</code>。这是目前为止我们实践下来比较好的保持链式操作的做法。</p>
 
 <h3>接收选项（options）</h3>
 <p>当你的插件变得越来越复杂时，让它通过接收选项变得可定制是个好主意。要做到这点有个最简单的途径，尤其是如果在一个对象字面量（Object Literal）中有很多选项的情况下。让我们修改这个greenify插件使得可以接收一些选项。
@@ -149,6 +149,53 @@ $.fn.myNewPlugin = function() {
  
 }( jQuery ));
 </pre>
+<p>使用范例：</p>
+<pre class="brush: js">
+$( "div" ).greenify({
+	color: "orange"
+});
+</pre>
+<p><code>color</code>的默认值已经通过<code>$.extend()</code>由<code>#556b2f</code>变成了<code>orange</code>。</p>
+
+<h3>把它放到一起</h3>
+<p>这里有个使用了这一技术的小插件供我们来探讨：</p>
+<pre class="brush: js">
+(function( $ ) {
+ 
+	$.fn.showLinkLocation = function() {
+ 
+		this.filter( "a" ).each(function() {
+			var link = $( this );
+			link.append( " (" + link.attr( "href" ) + ")" );
+		});
+ 
+		return this;
+ 
+	};
+ 
+}( jQuery ));
+ 
+// Usage example:
+$( "a" ).showLinkLocation();
+</pre>
+<p>这个小巧的插件遍历所有集合中的锚点并添加<code>href</code>属性到括号里。</p>
+<pre class="brush: html">
+<!-- Before plugin is called: -->
+<a href="page.html">Foo</a>
+ 
+<!-- After plugin is called: -->
+<a href="page.html">Foo (page.html)</a>
+</pre>
+
+
+
+
+
+
+
+
+
+
 
 
 <script src="depend-file/js/jquery.1.8.2.js"></script>
