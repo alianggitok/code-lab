@@ -43,6 +43,7 @@ $( "a" ).greenify().addClass( "greenified" );
 </pre>
 <p>注意：链式操作的理念不适用于类似<code>$.trim()</code>的jQuery公77用方法。</p>
 <h3>保护别名$，添加作用域</h3>
+<<<<<<< HEAD
 <p><code>$</code>变量在众多JavaScript库中使用广泛，如果你在使用jQuery的同时还使用了其他库，你可以通过<code>jQuery.noConflict()</code>让jQuery不使用<code>$</code>。但不管怎样，这将会破坏我们先以<code>$</code>作为别名来书写的jQuery函数的插件。为了让其他插件正常工作的同时任然使用jQuery的<code>$</code>别名，我们必须把所有的代码放进一个立即调用的函数表达式（<a href="http://stage.learn.jquery.com/javascript-101/functions/#immediately-invoked-function-expression-iife">Immediately Invoked Function Expression</a>）中，然后传递一个函数<code>jQuery</code>，同时赋上一个参数<code>$</code>：</p>
 <pre class="brush: js">
 (function ( $ ) {
@@ -72,6 +73,9 @@ $( "a" ).greenify().addClass( "greenified" );
 		this.css( "color", shade );
 		return this;
 	};
+=======
+<p><code>$</code>变量在众多JavaScript库中使用广泛，如果你在使用jQuery的同时还使用了其他库，你可以通过<code>jQuery.noConflict()</code>让jQuery不使用<code>$</code>。但不管怎样，这将会破坏我们先前写的使用<code>$</code>作为别名的jQuery函数的插件。为了让其他插件正常工作的同时任然使用jQuery的<code>$</code>别名，我们必须把所有的代码放进一个“立即调用的函数表达式”（<a href="http://stage.learn.jquery.com/javascript-101/functions/#immediately-invoked-function-expression-iife">Immediately Invoked Function Expression</a>）中，并且</p>
+>>>>>>> origin/master
 
 }( jQuery ));
 </pre>
