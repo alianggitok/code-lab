@@ -186,8 +186,23 @@ $( "a" ).showLinkLocation();
 <!-- After plugin is called: -->
 <a href="page.html">Foo (page.html)</a>
 </pre>
+<p>我们的插件能够优化成这样：</p>
+<pre class="brush: js">
+(function( $ ) {
 
+	$.fn.showLinkLocation = function() {
 
+		this.filter( "a" ).append(function() {
+			return " (" + this.href + ")";
+		});
+
+		return this;
+
+	};
+
+}( jQuery ));
+</pre>
+<p>我们使用<code>.append()</code>方法的功能来接收一个回调，并返回这个回调的值，最终添加到每个集合的元素中。同样得注意，我们没有使用<code>.attr()</code>方法来检索<code>href</code>属性，因为原生的DOM API给了我们能轻松访问名为<code>href</code>的属性。</p>
 
 
 
