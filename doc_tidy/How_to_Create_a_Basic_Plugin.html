@@ -62,10 +62,92 @@ $( "a" ).greenify().addClass( "greenified" );
  
 }( jQuery ));
 </pre>
+<p>此外，一个立即调用的函数最主要的目的是允许我们拥有自己的私有变量。假设我们需要一个不同的（色差的）绿色，并且要求存储（这个颜色值）到一个变量中：</p>
+<pre class="brush: js">
+(function ( $ ) {
 
+	var shade = "#556b2f";
 
+	$.fn.greenify = function() {
+		this.css( "color", shade );
+		return this;
+	};
 
+}( jQuery ));
+</pre>
 
+<h3>最小化插件的封装（footprint）</h3>
+<p>最佳实践是，我们书写的插件只占用<code>$.fn</code>的一个位置。这会降低你的插件被覆盖或覆盖其他插件的可能性。换句话说，像下面的这种写法并不好的：</p>
+<pre class="brush: js">
+(function( $ ) {
+
+	$.fn.openPopup = function() {
+		// Open popup code.
+	};
+ 
+	$.fn.closePopup = function() {
+		// Close popup code.
+	};
+
+}( jQuery ));
+</pre>
+<p>换下面这种写法会更好，它只占用一个位置，并且用参数来控制相应的行为：</p>
+<pre class="brush: js">
+(function( $ ) {
+ 
+	$.fn.popup = function( action ) {
+ 
+		if ( action === "open") {
+			// Open popup code.
+		};
+ 
+		if ( action === "close" ) {
+			// Close popup code.
+		};
+ 
+	};
+ 
+}( jQuery ));
+</pre>
+
+<h3>使用<code>.each()</code>方法</h3>
+<p>典型的jQuery对象都会包含引用一定数量的DOM元素，这就是为什么jQuery对象经常被归类为集合的原因。如果你要对特定的元素做一些操控（如获取一个data属性，计算特定位置等）那么你得使用<code>.each()</code>来遍历元素。</p>
+<pre class="brush: js">
+$.fn.myNewPlugin = function() {
+
+	return this.each(function() {
+		// Do something to each element here.
+	});
+
+};
+</pre>
+<p>注意：我们返回的是<code>.each()</code>的结果而非<code>this</code>的返回结果。由于<code>.each()</code>已经是支持链式操作，所以会返回<code>this</code>。这是目前为止我们实践下来比较好的保持链式操作的做法。</p>
+
+<h3>接收选项（options）</h3>
+<p>当你的插件变得越来越复杂时，让它通过接收选项变得可定制是个好主意。要做到这点有个最简单的途径，尤其是如果在一个对象字面量（Object Literal）中有很多选项的情况下。让我们修改这个greenify插件使得可以接收一些选项。
+</p>
+<pre class="brush: js">
+	(function ( $ ) {
+ 
+	$.fn.greenify = function( options ) {
+ 
+		// This is the easiest way to have default options.
+		var settings = $.extend({
+			// These are the defaults.
+			color: "#556b2f",
+			backgroundColor: "white"
+		}, options );
+ 
+		// Greenify the collection based on the settings variable.
+		return this.css({
+			color: settings.color,
+			backgroundColor: settings.backgroundColor
+		});
+ 
+	};
+ 
+}( jQuery ));
+</pre>
 
 
 <script src="depend-file/js/jquery.1.8.2.js"></script>

@@ -9,14 +9,14 @@ canvas,object,embed,progress,audio,video,track,map,area,figure,figcaption,
 table,caption,tbody,tfoot,thead,tr,th,td,
 span,a,b,strong,em,mark,blockquote,code,del,abbr,dfn,big,small,time,i,acronym,address,cite,ins,kbd,q,samp,sub,sup,tt,var{margin:0; padding:0; border:none}
 
-body{font-size:13px; line-height:20px; letter-spacing:0; font-family:"微软雅黑", "Arial", "Helvetica", "sans-serif"; background:#fff; color:#000; cursor:default; vertical-align:baseline}
+body{font-size:14px; line-height:22px; letter-spacing:0; font-family:"微软雅黑", "Arial", "Helvetica", "sans-serif"; background:#fff; color:#000; cursor:default; vertical-align:baseline}
 
 :hover{transition-duration:.3s; transition-timing-function:ease; transition-property:none}
 
 h1{font-size:32px; line-height:48px}
-h2{font-size:24px; line-height:36px}
-h3{font-size:18px; line-height:27px}
-h4{font-size:14px; line-height:21px}
+h2{font-size:24px; line-height:38px}
+h3{font-size:18px; line-height:30px}
+h4{font-size:14px; line-height:22px}
 
 ol,ul,dl{list-style:none}
 
@@ -92,8 +92,8 @@ label input{vertical-align:middle; margin-right:3px; cursor:pointer}
 
 /**********  **********/
 body{margin:20px}
-h2{margin-top:20px}
-h3{margin-top:20px}
+h2{margin-top:30px}
+h3{margin-top:30px}
 p{margin: 20px 0 0 10px; text-indent: 24px}
 .section{margin-top:10px}
 code{background:#eee; padding:0 3px; margin:0 3px}
