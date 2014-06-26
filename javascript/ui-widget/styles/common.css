@@ -9,7 +9,7 @@ canvas,object,embed,progress,audio,video,track,map,area,figure,figcaption,
 table,caption,tbody,tfoot,thead,tr,th,td,
 span,a,b,strong,em,mark,blockquote,code,del,abbr,dfn,big,small,time,i,acronym,address,cite,ins,kbd,q,samp,sub,sup,tt,var{margin:0; padding:0; border:none; font:inherit}
 
-body{font-size:12px; line-height:16px; letter-spacing:0; font-family:"微软雅黑", "Arial", "Helvetica", "sans-serif"; background:#fff; color:#000; cursor:default; vertical-align:baseline}
+body{font-size:12px; line-height:16px; letter-spacing:0; font-family:"微软雅黑", "Arial", "Helvetica", "sans-serif"; background:#fff; color:#000; cursor:default; vertical-align:baseline; word-wrap:break-word; word-break:break-all}
 
 :hover{transition-duration:.3s; transition-timing-function:ease; transition-property:none}
 
@@ -134,6 +134,7 @@ h2{margin-top:20px}
 
 
 /*lazyload picture*/
+.lazyload{visibility:hidden}
 .lazyload-loader{background:url(../images/loading.gif) 50% 50% no-repeat; width:16px; height:11px; z-index: 1000}
 .piclazyload-list-1 li{float:left; margin:3px}
 .piclazyload-list-1 li img{max-width:100%}

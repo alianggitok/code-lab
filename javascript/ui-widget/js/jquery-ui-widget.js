@@ -262,7 +262,7 @@
 				},200);
 				var imgSrc=execObj.attr('data-src');
 				checkState(execObj,imgSrc,loaderObj,maskerObj,loaderSetting);
-				execObj.removeAttr('src').attr('src',imgSrc);
+				execObj.removeAttr('src').attr('src',imgSrc).css('visibility','visible');
 			};
 			function checkInRange(execObj){
 				var range=_window.height()+_window.scrollTop();
