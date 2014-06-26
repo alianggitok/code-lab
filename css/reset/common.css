@@ -9,7 +9,7 @@ canvas,object,embed,progress,audio,video,track,map,area,figure,figcaption,
 table,caption,tbody,tfoot,thead,tr,th,td,
 span,a,b,strong,em,mark,blockquote,code,del,abbr,dfn,big,small,time,i,acronym,address,cite,ins,kbd,q,samp,sub,sup,tt,var{margin:0; padding:0; border:none; font:inherit}
 
-body{font-size:12px; line-height:16px; letter-spacing:0; font-family:"微软雅黑", "Arial", "Helvetica", "sans-serif"; background:#fff; color:#000; cursor:default; vertical-align:baseline}
+body{font-size:12px; line-height:16px; letter-spacing:0; font-family:"微软雅黑", "Arial", "Helvetica", "sans-serif"; background:#fff; color:#000; cursor:default; vertical-align:baseline; word-wrap:break-word; word-break:break-all}
 
 :hover{transition-duration:.3s; transition-timing-function:ease; transition-property:none}
 
@@ -80,7 +80,6 @@ label input{vertical-align:middle; margin-right:3px; cursor:pointer}
 .ui-form .verifycode .code{margin:0 10px}
 
 .scrollbarlayer{overflow:auto}
-.container{width:960px; margin:0 auto}
 
 /*fix*/
 .clearfix:after {clear:both;content:" ";display:block;height:0;visibility:hidden;}
@@ -96,7 +95,7 @@ label input{vertical-align:middle; margin-right:3px; cursor:pointer}
 .none{display:none}
 .hide{visibility:hidden}
 
-.ellipsis{text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
+.ellipsis-singleline{text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
 
 /*crumbs*/
 .nav-crumbs{padding:0 2px; border-bottom:1px solid #90b830; line-height:18px}
@@ -111,7 +110,8 @@ label input{vertical-align:middle; margin-right:3px; cursor:pointer}
 
 
 /**********layout**********/
-.layout-top,.layout-header,.layout-navig,.layout-main,.layout-footer{min-width:1000px}
+.layout-top,.layout-header,.layout-navig,.layout-main,.layout-footer{min-width:960px}
+.container{width:960px; margin:0 auto}
 
 /**********top**********/
 .layout-top{}
