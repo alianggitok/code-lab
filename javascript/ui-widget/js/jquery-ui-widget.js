@@ -1,4 +1,4 @@
-;(function(){
+;(function(obj){
 
 	var _window=$(window);
 	var browserAgent=navigator.userAgent;
@@ -12,7 +12,7 @@
 	};
 
 
-	return ui = {
+	ui = {
 		/*tabbox*/
 		tabbox: function (obj, motion) {
 			$(obj).each(function () {
@@ -289,7 +289,7 @@
 						changeSrc(execObj,_loaderObj,_maskerObj);
 					};
 					exec(_obj.eq(itemN++));
-				},500);
+				},300);
 			};
 
 			exec(_obj.eq(itemN));
@@ -301,4 +301,4 @@
 
 	};
 
-}());
+}(window.ui));
