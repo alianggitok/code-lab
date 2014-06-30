@@ -193,10 +193,11 @@
 			});
 		},
 
-		picLazyLoad: function (obj, loaderHTML) {
+		picLazyLoad: function (obj, loaderHTML, maskerHTML, requestSrc) {
 			loaderHTML = typeof (loaderHTML) == 'undefined' ? '<div>loading...</div>' : loaderHTML;
-
-			var maskerHTML = '<div></div>';
+			requestSrc = typeof (requestSrc) == 'undefined' ? 'data-src' : requestSrc;
+			maskerHTML = typeof (maskerHTML) == 'undefined' ? '<div></div>' : maskerHTML;
+			
 			var _obj = $(obj);
 			var _loaderObj = '', _maskerObj = '', _execObj = '';
 			var objLen = _obj.length;
@@ -242,7 +243,7 @@
 				var protoObj = execObj.get(0);
 				//protoObj.complete || protoObj.readyState == 'complete' || protoObj.readyState == 'loaded';
 				protoObj.onload = function () {
-					execObj.removeAttr('data-src');
+					execObj.removeAttr(requestSrc);
 					clearInterval(loaderSetting);
 					loaderSetting = null;
 					removeLoader(loaderObj, maskerObj);
@@ -256,12 +257,12 @@
 				};
 			};
 			function changeSrc(execObj, loaderObj, maskerObj) {
-				//console.log('image "'+execObj.attr('data-src')+'" loading.');
+				//console.log('image "'+execObj.attr(requestSrc)+'" loading.');
 				loaderInit(execObj, loaderObj, maskerObj);
 				var loaderSetting = setInterval(function () {
 					setLoader(execObj, loaderObj, maskerObj);
 				}, 200);
-				var imgSrc = execObj.attr('data-src');
+				var imgSrc = execObj.attr(requestSrc);
 				checkState(execObj, imgSrc, loaderObj, maskerObj, loaderSetting);
 				execObj.removeAttr('src').attr('src', imgSrc).css('visibility', 'visible');
 			};

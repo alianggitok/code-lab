@@ -1,0 +1,44 @@
+@charset "utf-8";
+
+/**********global**********/
+/*
+em 计算：目标元素尺寸÷上下文元素尺寸=？
+*/
+html,body,iframe,
+div,h1,h2,h3,h4,h5,h6,p,pre,dl,dt,dd,ol,ul,li,
+nav,header,footer,section,article,aside,details,summary,
+form,label,fieldset,legend,hr,dialog,
+canvas,object,embed,progress,audio,video,track,map,area,figure,figcaption,
+table,caption,tbody,tfoot,thead,tr,th,td,
+span,a,b,strong,em,mark,blockquote,code,del,abbr,dfn,big,small,time,i,acronym,address,cite,ins,kbd,q,samp,sub,sup,tt,var{margin:0; padding:0; border:none; font:inherit}
+
+body{font-size:62.5%; line-height:1.5em; letter-spacing:0; font-family:"微软雅黑", "Arial", "Helvetica", "sans-serif"; background:#fff; color:#000; cursor:default; vertical-align:baseline; word-wrap:break-word; word-break:break-all}
+
+:hover{transition-duration:.3s; transition-timing-function:ease; transition-property:none}
+
+h1{font-size:3.2em}
+h2{font-size:2.4em}
+h3{font-size:1.8em}
+h4{font-size:1.4em}
+
+ol,ul,dl{list-style:none}
+
+table{border-collapse:collapse; border-spacing:0}
+
+a{text-decoration:none; color:#666}
+a:link{}
+a:visited{}
+a:hover{text-decoration:underline; color:#000; transition-property:color, border-color, background-color;}
+a:active{}
+
+img{vertical-align:top; border:none; -ms-interpolation-mode:bicubic;}
+
+
+
+
+/*responsive*/
+/*
+@media screen and (max-width:1220px){
+	.container{width:960px}
+}
+*/
