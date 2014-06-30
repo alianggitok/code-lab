@@ -13,6 +13,17 @@
 
 
 	ui = {
+		/*vertical middle fix for ie*/
+		vAlignMiddleFix: function (obj) {
+			$(obj).each(function () {
+				var txt = $.trim($(this).parent().text());
+				var patch = '<span style="display:inline-block; font-size:0; width:0; overflow:hidden; vertical-align:middle; visibility:hidden">&nbsp;</span>';
+				if (browser.isIE9() && txt == '') {
+					$(this).before(patch);
+				};
+			});
+		},
+
 		/*tabbox*/
 		tabbox: function (obj, motion) {
 			$(obj).each(function () {
