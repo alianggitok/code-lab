@@ -58,8 +58,9 @@
 			adjustLen = typeof (adjustLen) == 'undefined' ? 3 : adjustLen;
 			ellipsisSymb = typeof (ellipsisSymb) == 'undefined' ? '<span class="ua-ellipsissymb">…</span>' : ellipsisSymb;
 			var n = 0;
+			var objLen=$(obj).length;
 			function exec(execObj) {
-				if (n >= $(obj).length) { return false };
+				if (n >= objLen) { return false };
 				_execObj = $(obj).eq(n);
 				var objMaxHeight = parseInt(_execObj.css('max-height')),
 					objHeight = _execObj.height(),
@@ -261,13 +262,9 @@
 					clearInterval(loaderSetting);
 					loaderSetting = null;
 					removeLoader(loaderObj, maskerObj);
-					protoObj.onload = null;
-					protoObj = null;
 				};
 				protoObj.onerror = function () {
 					console.log(imgSrc + ' loading is failed.');
-					protoObj.onerror = null;
-					protoObj = null;
 				};
 			};
 			function changeSrc(execObj, loaderObj, maskerObj) {
