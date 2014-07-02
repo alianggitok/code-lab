@@ -1,4 +1,4 @@
-(function (obj) {
+(function () {
 
 	var _window = $(window);
 	var browserAgent = navigator.userAgent;
@@ -12,7 +12,7 @@
 	};
 
 
-	ui = {
+	window.ui = {
 		/*vertical middle fix for ie*/
 		vAlignMiddleFix: function (obj) {
 			$(obj).each(function () {
@@ -27,9 +27,9 @@
 		/*tabbox*/
 		tabbox: function (obj, motion) {
 			$(obj).each(function () {
-				var _obj = $(this);
-				var _tabObj = _obj.find('.tabs .tab');
-				var _contObj = _obj.find('.conts .cont');
+				var _obj = $(this),
+					_tabObj = _obj.find('.tabs .tab'),
+					_contObj = _obj.find('.conts .cont');
 
 				_contObj.hide();
 				_contObj.first().show();
@@ -61,12 +61,12 @@
 			function exec(execObj) {
 				if (n >= $(obj).length) { return false };
 				_execObj = $(obj).eq(n);
-				var objMaxHeight = parseInt(_execObj.css('max-height'));
-				var objHeight = _execObj.height();
-				var objLineHeight = parseInt(_execObj.css('line-height'));
-				var heightFix = objHeight / objLineHeight; //lte ie7
-				var wrapperClassName = 'ua-maxlen-wrapper';
-				var wrapper = '<div class="' + wrapperClassName + '">';
+				var objMaxHeight = parseInt(_execObj.css('max-height')),
+					objHeight = _execObj.height(),
+					objLineHeight = parseInt(_execObj.css('line-height')),
+					heightFix = objHeight / objLineHeight,
+					wrapperClassName = 'ua-maxlen-wrapper',
+					wrapper = '<div class="' + wrapperClassName + '">';
 				if (!_execObj.children('.' + wrapperClassName).is('.' + wrapperClassName)) {
 					_execObj.wrapInner(wrapper);
 				};
@@ -98,33 +98,32 @@
 				_obj.find('.current,.pointer').remove();
 				_obj.prepend('<div class="current"><p class="txt"></p></div><div class="pointer"><i class="ico"></i></div>');
 
-				var _currentObj = _obj.find('.current');
-				var _currentTxtObj = _currentObj.find('.txt');
-				var _itemsObj = _obj.find('.items');
-				var _defaultObj = _itemsObj.find('.selected');
-				var _valObj = _obj.find('input');
-				var _pointerObj = _obj.find('.pointer');
-				var _pointerIcoObj = _pointerObj.find('.ico');
-				var effectDuration = 150;
-
-				var width = _obj.width();
-				var height = _obj.height();
-				var zindex = _obj.css('z-index') || 0;
-				var paddingLeft = parseInt(_obj.css('padding-left')) || 0;
-				var paddingRight = parseInt(_obj.css('padding-right')) || 0;
-				var borderWidthTop = parseInt(_obj.css('border-top-width')) || 0;
-				var borderWidthBottom = parseInt(_obj.css('border-bottom-width')) || 0;
-				var borderWidthLeft = parseInt(_obj.css('border-left-width')) || 0;
-				var borderWidthRight = parseInt(_obj.css('border-right-width')) || 0;
-				var pointerWidth = _currentObj.outerWidth();
-				var currentPaddingLeft = parseInt(_currentObj.css('padding-left')) || 0;
-				var currentPaddingRight = parseInt(_currentObj.css('padding-right')) || 0;
-				var currentWidth = width - currentPaddingLeft - currentPaddingRight;
-				var pointerWidth = _pointerObj.outerWidth();
+				var _currentObj = _obj.find('.current'),
+					_currentTxtObj = _currentObj.find('.txt'),
+					_itemsObj = _obj.find('.items'),
+					_defaultObj = _itemsObj.find('.selected'),
+					_valObj = _obj.find('input'),
+					_pointerObj = _obj.find('.pointer'),
+					_pointerIcoObj = _pointerObj.find('.ico'),
+					effectDuration = 150;
+				var width = _obj.width(),
+					height = _obj.height(),
+					zindex = _obj.css('z-index') || 0,
+					paddingLeft = parseInt(_obj.css('padding-left')) || 0,
+					paddingRight = parseInt(_obj.css('padding-right')) || 0,
+					borderWidthTop = parseInt(_obj.css('border-top-width')) || 0,
+					borderWidthBottom = parseInt(_obj.css('border-bottom-width')) || 0,
+					borderWidthLeft = parseInt(_obj.css('border-left-width')) || 0,
+					borderWidthRight = parseInt(_obj.css('border-right-width')) || 0,
+					pointerWidth = _currentObj.outerWidth(),
+					currentPaddingLeft = parseInt(_currentObj.css('padding-left')) || 0,
+					currentPaddingRight = parseInt(_currentObj.css('padding-right')) || 0;
+				var currentWidth = width - currentPaddingLeft - currentPaddingRight,
+					pointerWidth = _pointerObj.outerWidth();
 
 				/*init*/
-				var defaultValue = _defaultObj.attr('data-value');
-				var defaultTxt = _defaultObj.text();
+				var defaultValue = _defaultObj.attr('data-value'),
+					defaultTxt = _defaultObj.text();
 
 				_currentTxtObj.html(defaultTxt);
 				_valObj.attr('value', defaultValue).val(defaultValue);
@@ -201,6 +200,7 @@
 						});
 					};
 				});
+
 			});
 		},
 
@@ -209,11 +209,14 @@
 			requestSrc = typeof (requestSrc) == 'undefined' ? 'data-src' : requestSrc;
 			maskerHTML = typeof (maskerHTML) == 'undefined' ? '<div></div>' : maskerHTML;
 			
-			var _obj = $(obj);
-			var _loaderObj = '', _maskerObj = '', _execObj = '';
-			var objLen = _obj.length;
-			var itemN = 0;
-			var load = null, loaderSetting = null;
+			var _obj = $(obj),
+				_loaderObj = '',
+				_maskerObj = '',
+				_execObj = '';
+			var objLen = _obj.length,
+				itemN = 0;
+			var load = null,
+				loaderSetting = null;
 
 			function loaderInit(execObj, loaderObj, maskerObj) {
 				loaderObj.css({
@@ -278,8 +281,8 @@
 				execObj.removeAttr('src').attr('src', imgSrc).css('visibility', 'visible');
 			};
 			function checkInRange(execObj) {
-				var range = _window.height() + _window.scrollTop();
-				var objTop = execObj.offset().top;
+				var range = _window.height() + _window.scrollTop(),
+					objTop = execObj.offset().top;
 				return objTop < range ? true : false;
 			};
 
@@ -314,4 +317,5 @@
 
 	};
 
-} (window.ui));
+
+} ());
