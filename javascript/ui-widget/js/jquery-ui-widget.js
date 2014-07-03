@@ -62,9 +62,9 @@
 			function exec() {
 				if (n >= objLen) { return false; }
 				$_execObj = $(obj).eq(n);
-				var objMaxHeight = parseInt($_execObj.css('max-height'),10),
+				var objMaxHeight = parseInt($_execObj.css('max-height'), 10),
 					objHeight = $_execObj.height(),
-					objLineHeight = parseInt($_execObj.css('line-height'),10),
+					objLineHeight = parseInt($_execObj.css('line-height'), 10),
 					heightFix = objHeight / objLineHeight,
 					wrapperClassName = 'ua-maxlen-wrapper',
 					wrapper = '<div class="' + wrapperClassName + '">';
@@ -110,9 +110,9 @@
 				var width = $_obj.width(),
 					height = $_obj.height(),
 					zindex = $_obj.css('z-index') || 0,
-					paddingLeft = parseInt($_obj.css('padding-left'),10) || 0,
-					currentPaddingLeft = parseInt($_currentObj.css('padding-left'),10) || 0,
-					currentPaddingRight = parseInt($_currentObj.css('padding-right'),10) || 0;
+					paddingLeft = parseInt($_obj.css('padding-left'), 10) || 0,
+					currentPaddingLeft = parseInt($_currentObj.css('padding-left'), 10) || 0,
+					currentPaddingRight = parseInt($_currentObj.css('padding-right'), 10) || 0;
 				var currentWidth = width - currentPaddingLeft - currentPaddingRight,
 					pointerWidth = $_pointerObj.outerWidth();
 
@@ -210,7 +210,7 @@
 				$_execObj = '';
 			var objLen = $_obj.length,
 				itemN = 0;
-			var load = null,
+			var loadDelay = null,
 				loaderSetting = null;
 
 			function loaderInit(execObj, loaderObj, maskerObj) {
@@ -264,7 +264,7 @@
 			function changeSrc(execObj, loaderObj, maskerObj) {
 				//console.log('image "'+execObj.attr(requestSrcAttr)+'" loading.');
 				loaderInit(execObj, loaderObj, maskerObj);
-				var loaderSetting = setInterval(function () {
+				loaderSetting = setInterval(function () {
 					setLoader(execObj, loaderObj, maskerObj);
 				}, 200);
 				var imgSrc = execObj.attr(requestSrcAttr);
@@ -281,13 +281,13 @@
 				loadDelay = setTimeout(function () {
 					if (itemN >= objLen) {
 						clearTimeout(loadDelay);
-						load = null;
+						loadDelay = null;
 						return false;
 					}
 					$_execObj = $_obj.eq(itemN);
 					if (!checkInRange($_execObj)) {
 						clearTimeout(loadDelay);
-						load = null;
+						loadDelay = null;
 						return false;
 					}
 					if ($.trim($_execObj.attr('src')) === '') {
