@@ -1,4 +1,4 @@
-﻿(function () {
+﻿(function (global) {
 
 	var $_window = $(window),
 		browserAgent = navigator.userAgent,
@@ -12,7 +12,7 @@
 		};
 
 
-	window.ui = {
+	global.ui = {
 		/*vertical middle fix for ie*/
 		vAlignMiddleFix: function (obj) {
 			$(obj).each(function () {
@@ -110,10 +110,10 @@
 				var width = $_obj.width(),
 					height = $_obj.height(),
 					zindex = $_obj.css('z-index') || 0,
-					paddingLeft = parseInt($_obj.css('padding-left'), 10) || 0,
-					currentPaddingLeft = parseInt($_currentObj.css('padding-left'), 10) || 0,
-					currentPaddingRight = parseInt($_currentObj.css('padding-right'), 10) || 0;
-				var currentWidth = width - currentPaddingLeft - currentPaddingRight,
+					paddingLeft = parseInt($_obj.css('padding-left'), 10) || 0;
+				var currentPaddingLeft = parseInt($_currentObj.css('padding-left'), 10) || 0,
+					currentPaddingRight = parseInt($_currentObj.css('padding-right'), 10) || 0,
+					currentWidth = width - currentPaddingLeft - currentPaddingRight,
 					pointerWidth = $_pointerObj.outerWidth();
 
 				/*init*/
@@ -310,4 +310,4 @@
 	};
 
 
-} ());
+} (window));
