@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
 
 	var _window = $(window);
 	var browserAgent = navigator.userAgent;
@@ -205,9 +205,9 @@
 			});
 		},
 
-		picLazyLoad: function (obj, loaderHTML, maskerHTML, requestSrc) {
+		picLazyLoad: function (obj, loaderHTML, maskerHTML, requestSrcAttr) {
 			loaderHTML = typeof (loaderHTML) == 'undefined' ? '<div>loading...</div>' : loaderHTML;
-			requestSrc = typeof (requestSrc) == 'undefined' ? 'data-src' : requestSrc;
+			requestSrcAttr = typeof (requestSrcAttr) == 'undefined' ? 'data-src' : requestSrcAttr;
 			maskerHTML = typeof (maskerHTML) == 'undefined' ? '<div></div>' : maskerHTML;
 			
 			var _obj = $(obj),
@@ -258,7 +258,7 @@
 				var protoObj = execObj.get(0);
 				//protoObj.complete || protoObj.readyState == 'complete' || protoObj.readyState == 'loaded';
 				protoObj.onload = function () {
-					execObj.removeAttr(requestSrc);
+					execObj.removeAttr(requestSrcAttr);
 					clearInterval(loaderSetting);
 					loaderSetting = null;
 					removeLoader(loaderObj, maskerObj);
@@ -268,12 +268,12 @@
 				};
 			};
 			function changeSrc(execObj, loaderObj, maskerObj) {
-				//console.log('image "'+execObj.attr(requestSrc)+'" loading.');
+				//console.log('image "'+execObj.attr(requestSrcAttr)+'" loading.');
 				loaderInit(execObj, loaderObj, maskerObj);
 				var loaderSetting = setInterval(function () {
 					setLoader(execObj, loaderObj, maskerObj);
 				}, 200);
-				var imgSrc = execObj.attr(requestSrc);
+				var imgSrc = execObj.attr(requestSrcAttr);
 				checkState(execObj, imgSrc, loaderObj, maskerObj, loaderSetting);
 				execObj.removeAttr('src').attr('src', imgSrc).css('visibility', 'visible');
 			};
