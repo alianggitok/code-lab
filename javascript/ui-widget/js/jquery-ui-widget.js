@@ -62,9 +62,9 @@
 			function exec(execObj) {
 				if (n >= objLen) { return false };
 				_execObj = $(obj).eq(n);
-				var objMaxHeight = parseInt(_execObj.css('max-height')),
+				var objMaxHeight = parseInt(_execObj.css('max-height'),10),
 					objHeight = _execObj.height(),
-					objLineHeight = parseInt(_execObj.css('line-height')),
+					objLineHeight = parseInt(_execObj.css('line-height'),10),
 					heightFix = objHeight / objLineHeight,
 					wrapperClassName = 'ua-maxlen-wrapper',
 					wrapper = '<div class="' + wrapperClassName + '">';
@@ -110,15 +110,15 @@
 				var width = _obj.width(),
 					height = _obj.height(),
 					zindex = _obj.css('z-index') || 0,
-					paddingLeft = parseInt(_obj.css('padding-left')) || 0,
-					paddingRight = parseInt(_obj.css('padding-right')) || 0,
-					borderWidthTop = parseInt(_obj.css('border-top-width')) || 0,
-					borderWidthBottom = parseInt(_obj.css('border-bottom-width')) || 0,
-					borderWidthLeft = parseInt(_obj.css('border-left-width')) || 0,
-					borderWidthRight = parseInt(_obj.css('border-right-width')) || 0,
+					paddingLeft = parseInt(_obj.css('padding-left'),10) || 0,
+					paddingRight = parseInt(_obj.css('padding-right'),10) || 0,
+					borderWidthTop = parseInt(_obj.css('border-top-width'),10) || 0,
+					borderWidthBottom = parseInt(_obj.css('border-bottom-width'),10) || 0,
+					borderWidthLeft = parseInt(_obj.css('border-left-width'),10) || 0,
+					borderWidthRight = parseInt(_obj.css('border-right-width'),10) || 0,
 					pointerWidth = _currentObj.outerWidth(),
-					currentPaddingLeft = parseInt(_currentObj.css('padding-left')) || 0,
-					currentPaddingRight = parseInt(_currentObj.css('padding-right')) || 0;
+					currentPaddingLeft = parseInt(_currentObj.css('padding-left'),10) || 0,
+					currentPaddingRight = parseInt(_currentObj.css('padding-right'),10) || 0;
 				var currentWidth = width - currentPaddingLeft - currentPaddingRight,
 					pointerWidth = _pointerObj.outerWidth();
 
