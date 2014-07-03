@@ -1,15 +1,15 @@
 ﻿(function () {
 
-	var _window = $(window);
-	var browserAgent = navigator.userAgent;
-	var browserTest = {
-		isIE6: function () {
-			return /msie 6/i.test(browserAgent);
-		},
-		isIE7: function () {
-			return /msie 7/i.test(browserAgent);
-		}
-	};
+	var _window = $(window),
+		browserAgent = navigator.userAgent,
+		browserTest = {
+			isIE6: function () {
+				return /msie 6/i.test(browserAgent);
+			},
+			isIE7: function () {
+				return /msie 7/i.test(browserAgent);
+			}
+		};
 
 
 	window.ui = {
@@ -283,31 +283,32 @@
 				return objTop < range ? true : false;
 			};
 
-			function exec(execObj) {
+			function exec() {
 				loadDelay = setTimeout(function () {
 					if (itemN >= objLen) {
 						clearTimeout(loadDelay);
 						load = null;
 						return false;
 					};
-					execObj = _obj.eq(itemN);
-					if (!checkInRange(execObj)) {
+					var _execObj = _obj.eq(itemN);
+					if (!checkInRange(_execObj)) {
 						clearTimeout(loadDelay);
 						load = null;
 						return false;
 					};
-					if ($.trim(execObj.attr('src')) == '') {
+					if ($.trim(_execObj.attr('src')) == '') {
 						_loaderObj = $(loaderHTML);
 						_maskerObj = $(maskerHTML);
-						changeSrc(execObj, _loaderObj, _maskerObj);
+						changeSrc(_execObj, _loaderObj, _maskerObj);
 					};
-					exec(_obj.eq(itemN++));
+					itemN+=1;
+					exec();
 				}, 300);
 			};
 
-			exec(_obj.eq(itemN));
+			exec();
 			_window.off('scroll.picLazyLoad resize.picLazyLoad').on('scroll.picLazyLoad resize.picLazyLoad', function () {
-				exec(_obj.eq(itemN));
+				exec();
 			});
 
 		}
