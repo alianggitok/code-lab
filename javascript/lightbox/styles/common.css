@@ -1,0 +1,109 @@
+@charset "utf-8";
+
+/**********global**********/
+html,body,iframe,
+div,h1,h2,h3,h4,h5,h6,p,pre,dl,dt,dd,ol,ul,li,
+nav,header,footer,section,article,aside,details,summary,
+form,label,fieldset,legend,hr,dialog,
+canvas,object,embed,progress,audio,video,track,map,area,figure,figcaption,
+table,caption,tbody,tfoot,thead,tr,th,td,
+span,a,b,strong,em,mark,blockquote,code,del,abbr,dfn,big,small,time,i,acronym,address,cite,ins,kbd,q,samp,sub,sup,tt,var{margin:0; padding:0; border:none; font:inherit}
+
+body{font-size:12px; line-height:16px; letter-spacing:0; font-family:"微软雅黑", "Arial", "Helvetica", "sans-serif"; background:#fff; color:#000; cursor:default; vertical-align:baseline; word-wrap:break-word; word-break:break-all}
+
+:hover{transition-duration:.3s; transition-timing-function:ease; transition-property:none}
+
+h1{font-size:32px; line-height:48px}
+h2{font-size:24px; line-height:36px}
+h3{font-size:18px; line-height:27px}
+h4{font-size:14px; line-height:21px}
+
+ol,ul,dl{list-style:none}
+
+table{border-collapse:collapse; border-spacing:0}
+
+a{text-decoration:none; color:#666}
+a:link{}
+a:visited{}
+a:hover{text-decoration:underline; color:#000; transition-property:color, border-color, background-color;}
+a:active{}
+
+img{vertical-align:top; border:none; -ms-interpolation-mode:bicubic;}
+
+label{vertical-align:middle}
+label input{vertical-align:middle; margin-right:3px; cursor:pointer}
+.chk_indeterminate{-webkit-appearance:none; width:13px; height:13px; background:url(../images/chk_indeterminate.gif) 0 0 no-repeat}
+
+/*icon*/
+.ico{display:inline-block; border:none; background:url(../images/icons.png) transparent 0 0 no-repeat; overflow:hidden; vertical-align:middle; text-align:center; width:12px; height:12px; }
+
+/*button*/
+.btn{display:inline-block; border:none; background:transparent 0 0 no-repeat; overflow:visible; cursor:pointer; text-align:center; vertical-align:top; text-decoration:none; font-weight:normal; font-size:12px; box-sizing:content-box; -moz-box-sizing:content-box; padding:0; margin:0}
+.btn .patch{display:inline-block; font-size:0; width:0; line-height:0; overflow:hidden; vertical-align:middle; visibility:hidden}
+.btn:hover{text-decoration:none; transition-property:border-color,color}
+
+/*input text*/
+.ui-text{padding:0 3px; height:30px; line-height:30px; border:1px solid #ccc; border-right-color:#e1e1e1; border-bottom-color:#e1e1e1; color:#999; display:inline-block; vertical-align:middle; overflow:hidden; box-shadow:inset 2px 2px 8px 0 #eee}
+.ui-text input{border:none; height:30px; line-height:30px; margin:0; width:100%; background:transparent; vertical-align:top}
+
+/*textarea*/
+.ui-textarea{display:inline-block; zoom:1; *display:inline; padding:3px; height:90px; border:1px solid #ccc; border-right-color:#e1e1e1; border-bottom-color:#e1e1e1; color:#999; overflow:hidden; box-shadow:inset 2px 2px 8px 0 #eee; line-height:18px}
+.ui-textarea .wrap{display:inline-block; width:100%; height:100%; overflow:auto}
+.ui-textarea textarea{border:none; line-height:18px; margin:0; padding:0; width:100%; height:100%; background:transparent; resize:none}
+
+/*form*/
+.ui-form dl{font-size:14px; line-height:32px}
+.ui-form dt{width:240px; float:left; text-align:right; line-height:18px; padding:7px 10px 7px 0}
+.ui-form dd{width:730px; float:left;}
+.ui-form .symbol-required{color:red}
+.ui-form .ui-form-tips{margin-bottom:10px; line-height:18px; color:#666; font-size:12px}
+.ui-form .ui-text{width:250px; margin-bottom:10px; margin-right:10px}
+.ui-form .ui-text-address{width:500px; margin-right:10px}
+.ui-form .ui-textarea{height:144px; margin-bottom:10px; margin-right:10px}
+.ui-form .ui-select{width:156px; margin-bottom:10px; margin-right:10px; top:0; left:0}
+.ui-form .ui-uploadpic .list{margin-bottom:10px}
+.ui-form .ui-form-error{background-color:#fcc; box-shadow:none; border-color:red}
+.ui-form .ui-form-validinfo{display:inline-block; color:red; padding:5px; border:1px solid #fcd; line-height:16px; vertical-align:top; background:#fcc; border-radius:5px; margin-top:2px}
+.ui-form .ui-form-validinfo .ico{width:12px; height:12px}
+.ui-form .btn{padding:0 16px; height:28px; line-height:28px; font-size:14px; margin-bottom:10px}
+.ui-form .btn .ico{margin-right:3px}
+.ui-form .exec .btn{height:32px; line-height:32px; margin-bottom:0; margin-left:5px}
+.ui-form .verifycode .ui-text{width:100px}
+.ui-form .verifycode .code{margin:0 10px}
+
+.scrollbarlayer{overflow:auto}
+.container{width:960px; margin:0 auto}
+
+/*fix*/
+.clearfix:after {clear:both;content:" ";display:block;height:0;visibility:hidden;}
+.clearfix {zoom:1;}
+
+.txt_left{text-align:left}
+.txt_right{text-align:right}
+.txt_center{text-align:center}
+
+.widthfull{width:100%}
+.widthInit{width:auto}
+
+.none{display:none}
+.hide{visibility:hidden}
+
+.ellipsis{text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
+
+/**********widgets**********/
+body{margin:20px}
+h2{margin-top:20px}
+.section{margin-top:10px}
+
+
+/*lightbox*/
+.lightbox{position:absolute; top:0; left:0; padding:6px; border:1px solid #ccc; background:#fff}
+.lightbox .pic{width:300px; height:300px; background:#000; overflow:hidden; position:relative}
+.lightbox .pic .btn{position:absolute; top:0}
+.lightbox .nav-prev{width:45%; height:100%; left:0; text-align:left}
+.lightbox .nav-next{width:45%; height:100%; right:0; text-align:right}
+
+
+
+
+

@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ui-widget</title>
+	<link rel="stylesheet" href="styles/common.css"/>
+	<link rel="stylesheet" href="../depend-file/js/syntaxhighlighter/3.0.83/styles/shCoreDefault.css"/>
+	<style>
+	.upload-pic{}
+	.upload-pic-list .pic{float:left; width:160px; height:160px; overflow:hidden; padding:5px; border:1px solid #ccc; background:#fff; margin:0 10px 10px 0}
+	.upload-pic-list .pic a{ display:block; width:160px; height:160px; overflow:hidden}
+	</style>
+</head>
+
+<body>
+
+<h2>lightbox</h2>
+<div class="section">
+	<div class="upload-pic">
+		<div class="upload-pic-list">
+			<ul class="clearfix">
+				<li class="pic"><a href="images/1.jpg" data-lightbox-gp="lightbox1" title="标题1"><img src="images/1.jpg" alt="1"></a></li>
+				<li class="pic"><a href="images/2.jpg" data-lightbox-gp="lightbox1" title="标题2"><img src="images/2.jpg" alt="2"></a></li>
+				<li class="pic"><a href="images/3.jpg" data-lightbox-gp="lightbox1" title="标题3"><img src="images/3.jpg" alt="3"></a></li>
+				<li class="pic"><a href="images/4.jpg" data-lightbox-gp="lightbox1" title="标题4"><img src="images/4.jpg" alt="4"></a></li>
+				<li class="pic"><a href="images/5.jpg" data-lightbox-gp="lightbox1" title="标题5"><img src="images/5.jpg" alt="5"></a></li>
+				<li class="pic"><a href="images/6.jpg" data-lightbox-gp="lightbox1" title="标题6"><img src="images/6.jpg" alt="6"></a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+<script type="text/javascript" src="../depend-file/js/jquery.1.8.2.js"></script>
+
+<script type="text/javascript" src="../depend-file/js/syntaxhighlighter/3.0.83/scripts/shCore.js"></script>
+<script type="text/javascript" src="../depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushCss.js"></script>
+<script type="text/javascript" src="../depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="../depend-file/js/syntaxhighlighter/3.0.83/scripts/shBrushXml.js"></script>
+
+<script type="text/javascript" src="js/jquery-lightbox.js"></script>
+<script type="text/javascript">
+SyntaxHighlighter.all();
+
+$(function(){
+	uaLightBox('.upload-pic .pic a')
+});
+</script>
+
+</body>
+</html>
