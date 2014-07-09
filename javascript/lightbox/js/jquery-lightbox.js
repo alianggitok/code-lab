@@ -1,5 +1,5 @@
 //========================================================
-//	uaLightBox for You An Xian Pin B2B Site
+//	uaLightBox
 //	Depend on jQuery v1.7.2+
 //	Code by Warren Chen
 //	Create date: 2014-7-9
