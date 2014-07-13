@@ -97,12 +97,9 @@ h2{margin-top:20px}
 
 
 /*lightbox*/
-.lightbox{position:absolute; top:0; left:0; padding:6px; border:1px solid #ccc; background:#fff}
+.lightbox{position:absolute; top:0; left:0; padding:6px; border:1px solid #ccc; background:#fff; box-shadow: 0 0 10px 0 rgba(2, 0, 0, 0.20)}
 .lightbox .wrapper{position: relative}
-.lightbox .pic{width:300px; height:300px; background:#000; overflow:hidden; position:relative}
-.lightbox .pic .btn{position:absolute; top:0}
-.lightbox .nav-prev{width:45%; height:100%; left:0; text-align:left}
-.lightbox .nav-next{width:45%; height:100%; right:0; text-align:right}
+.lightbox .picholder{background:#000 url(../images/loading2.gif) 50% 50% no-repeat; overflow:hidden; position:relative}
 .lightbox .btn-close {position: absolute;}
 
 

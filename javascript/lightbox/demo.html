@@ -19,12 +19,12 @@
 	<div class="upload-pic">
 		<div class="upload-pic-list">
 			<ul class="clearfix">
-				<li class="pic"><a href="images/1.jpg" data-lightbox-gp="lightbox1" title="标题1"><img src="images/1.jpg" alt="1"></a></li>
-				<li class="pic"><a href="images/2.jpg" data-lightbox-gp="lightbox1" title="标题2"><img src="images/2.jpg" alt="2"></a></li>
-				<li class="pic"><a href="images/3.jpg" data-lightbox-gp="lightbox1" title="标题3"><img src="images/3.jpg" alt="3"></a></li>
-				<li class="pic"><a href="images/4.jpg" data-lightbox-gp="lightbox1" title="标题4"><img src="images/4.jpg" alt="4"></a></li>
-				<li class="pic"><a href="images/5.jpg" data-lightbox-gp="lightbox1" title="标题5"><img src="images/5.jpg" alt="5"></a></li>
-				<li class="pic"><a href="images/6.jpg" data-lightbox-gp="lightbox1" title="标题6"><img src="images/6.jpg" alt="6"></a></li>
+				<li class="pic"><a href="images/1.jpg" data-lightbox-gp="lightbox1" title="标题1" target="_blank"><img src="images/xxx.jpg" alt="1"></a></li>
+				<li class="pic"><a href="images/2.jpg" data-lightbox-gp="lightbox1" title="标题2" target="_blank"><img src="images/xxx.jpg" alt="2"></a></li>
+				<li class="pic"><a href="images/3.jpg" data-lightbox-gp="lightbox1" title="标题3" target="_blank"><img src="images/xxx.jpg" alt="3"></a></li>
+				<li class="pic"><a href="images/4.jpg" data-lightbox-gp="lightbox1" title="标题4" target="_blank"><img src="images/xxx.jpg" alt="4"></a></li>
+				<li class="pic"><a href="images/5.jpg" data-lightbox-gp="lightbox1" title="标题5" target="_blank"><img src="images/xxx.jpg" alt="5"></a></li>
+				<li class="pic"><a href="images/6.jpg" data-lightbox-gp="lightbox1" title="标题6" target="_blank"><img src="images/xxx.jpg" alt="6"></a></li>
 			</ul>
 		</div>
 	</div>
@@ -43,11 +43,13 @@
 
 <script type="text/javascript" src="js/jquery-lightbox.js"></script>
 <script type="text/javascript">
-SyntaxHighlighter.all();
+	SyntaxHighlighter.all();
 
-$(function(){
-	lightBox('.upload-pic .pic a')
-});
+	$(function () {
+		$('.upload-pic .pic a').lightBox({
+			triggerGroup:'[data-lightbox-gp="lightbox1"]'
+		});
+	});
 </script>
 
 </body>
