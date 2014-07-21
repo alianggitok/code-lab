@@ -50,9 +50,14 @@ h2{margin-top:20px}
 /*lightbox*/
 .lightbox{position:absolute; top:0; left:0; padding:6px; border:1px solid #ccc; background:#fff; box-shadow: 0 0 10px 0 rgba(2, 0, 0, 0.20)}
 .lightbox .wrapper{position: relative}
-
 .lightbox .picholder{background:#000 url(../images/loading2.gif) 50% 50% no-repeat; overflow:hidden}
-.lightbox .btn-close {position: absolute;}
+.lightbox .nav{position: absolute}
+.lightbox .nav .btn{padding: 6px 10px; background: #fff; margin-top: 80px}
+.lightbox .nav-prev{left: 0}
+.lightbox .nav-next{right: 0}
+.lightbox .nav{position: absolute; top: 0}
+.lightbox .info{margin-top: 6px}
+.lightbox .btn-close{position: absolute;}
 
 
 

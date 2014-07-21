@@ -6,11 +6,11 @@
 				boxWrapperClass:'wrapper',
 				picHolderClass:'picholder',
 				origPicSrcAttr:'href',
-				navPrevHTML:'<a class="btn nav nav-prev" title="上一张"><i class="ico"></i></a>',
-				navNextHTML:'<a class="btn nav nav-next" title="下一张"><i class="ico"></i></a>',
+				navPrevHTML:'<div class="nav nav-prev"><a class="btn" title="上一张"><i class="ico"></i>上一张</a><div>',
+				navNextHTML:'<div class="nav nav-next"><a class="btn" title="下一张">下一张<i class="ico"></i></a><div>',
 				btnCloseHTML:'<a class="btn btn-close" title="关闭"><i class="ico"></i>关闭</a>',
 				refObj:window,
-				effectDuration:600
+				effectDuration:300
 			},
 			opts=$.extend(defaults,options),
 			boxHTML=''+
@@ -64,39 +64,32 @@
 			_btnClose.appendTo(_boxWrapper);
 			_navPrev.appendTo(_boxWrapper);
 			_navNext.appendTo(_boxWrapper);
-			_boxWrapper.children().not(_picHolder).css('display','none');
-			_img.attr('src','').css('display','none');
 			_box.css({
 				'display':'none',
 				'position': 'absolute',
 				'top':trigger.offset().top,
 				'left':trigger.offset().left
-			}).appendTo('body');
+			}).appendTo('body').stop(false,true).fadeTo(opts.effectDuration,1);
+			var width=trigger.width()-(_box.outerWidth()-_box.width()),
+				height=trigger.height()-(_box.outerHeight()-_box.height());
 			_picHolder.css({
-				'width':trigger.width()-(_box.outerWidth()-_box.width()),
-				'height':trigger.height()-(_box.outerHeight()-_box.height())
+				'width':width+'px',
+				'height':height+'px',
+				'line-height':height+'px',
+				'text-align':'center',
+				'vertical-align':'middle'
 			});
-			_box.stop(false,true).fadeTo(opts.effectDuration,1);
-		};
-		function changePic(current,callback){
-			console.log(origPicSrc[current]);
-			_img.attr('src',origPicSrc[current]);
-			_title.html(title[current]);
-			_page.html(current+1+'/'+len);
-			checkImgStatusTimer=setInterval(function(){
-				console.log('check');
-				if(isLoaded(_imgProto)){
-					callback();
-					clearInterval(checkImgStatusTimer);
-					checkImgStatusTimer=null;
-				};
-			},100);
+			_boxWrapper.children().not(_picHolder).css('display','none');
+			_img.attr('src','').css({
+				'display':'none',
+				'vertical-align':'middle'
+			});
 		};
 		function boxResize(){
-			_img.css('display','block');
 			_picHolder.stop(false,true).animate({
-				'width':_img.outerWidth(),
-				'height':_img.outerHeight()
+				'width':_img.outerWidth()+'px',
+				'height':_img.outerHeight()+'px',
+				'line-height':_img.outerHeight()+'px'
 			},opts.effectDuration);
 		}
 		function boxPosition(){
@@ -106,6 +99,39 @@
 				'left':(_ref.width()-boxWidth)/2,
 				'top':(_ref.height()-boxHeight)/2
 			},opts.effectDuration);
+		};
+		function changePic(current){
+			console.log(origPicSrc[current]);
+			clearInterval(checkImgStatusTimer);
+			clearTimeout(positionDelay);
+			_img.attr('src',origPicSrc[current]).hide();
+			_title.html(title[current]);
+			_page.html(current+1+'/'+len);
+			checkImgStatusTimer=setInterval(function(){
+				console.log('check');
+				if(isLoaded(_imgProto)){
+					positionDelay=setTimeout(function(){
+						_boxWrapper.children().not(_picHolder).show();
+						_img.stop(false,true).fadeTo(opts.effectDuration,1);
+						boxResize();
+						boxPosition();
+					},opts.effectDuration);
+					clearInterval(checkImgStatusTimer);
+					checkImgStatusTimer=null;
+				};
+			},100);
+		};
+		function prev(){
+			if(current<=0){
+				return false;
+			};
+			changePic(current-=1);
+		};
+		function next(){
+			if(current+1>=len){
+				return false;
+			};
+			changePic(current+=1);
 		};
 		function closeBox(callback){
 			_box.stop(false,true).fadeOut(opts.effectDuration,function(){
@@ -121,13 +147,7 @@
 			current=$(this).index(triggerSelector);
 			console.log(current);
 			init(current);
-			changePic(current,function(){
-				positionDelay=setTimeout(function(){
-					_boxWrapper.children().not(_picHolder).css('display','block');
-					boxResize();
-					boxPosition();
-				},opts.effectDuration);
-			});
+			changePic(current);
 			$(window).on({
 				'resize.lightbox':
 				function(){
@@ -145,6 +165,18 @@
 				'click.lightbox':
 				function(){
 					closeBox();
+				}
+			});
+			_navPrev.off('click.lightbox').on({
+				'click.lightbox':
+				function(){
+					prev();
+				}
+			});
+			_navNext.off('click.lightbox').on({
+				'click.lightbox':
+				function(){
+					next();
 				}
 			});
 
