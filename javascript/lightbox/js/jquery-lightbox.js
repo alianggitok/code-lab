@@ -2,7 +2,7 @@
 //	lightbox 1.0
 //	Depend on jQuery v1.7.2+
 //	Code by Warren Chen on 2014-7-9
-//	已知问题：ie9+读取图片尺寸两次
+//	已知问题：当同时存在两个浮层，通过“关闭”按钮关闭其中一个后，另一个的相关操作的事件无响应（初步构想：为浮层添加current类）
 /*========================================================*/
 
 ;(function ($) {
@@ -28,8 +28,8 @@
 				'	<div class="'+opts.boxWrapper.replace('.','')+'">'+
 				'		<div class="'+opts.picHolder.replace('.','')+'"></div>'+
 				'		<div class="info">'+
-				'			<span class="tit"></span>'+
-				'			<span class="page"></span>'+
+				'			<div class="tit"></div>'+
+				'			<div class="page"></div>'+
 				'		</div>'+
 				'	</div>'+
 				'</div>',
@@ -56,6 +56,7 @@
 			picOrigHeight=0,
 			picWidth=0,
 			picHeight=0,
+			checkPicLoadStatus=null,
 			positionDelay=null;
 
 		for(var i=0; i<len; i++){
@@ -65,6 +66,7 @@
 
 		console.log('===>'+$(this).selector+': \n'+triggerSelector+', \n'+title+', \n'+origPicSrc);
 
+		/********** functions **********/
 		function isLoaded(obj){
 			console.log(
 				'checking: '+
@@ -75,20 +77,23 @@
 			return obj.complete || obj.readyState === 'complete' || obj.readyState === 'loaded';
 		};
 		function init(){
+			clearInterval(checkPicLoadStatus);
 			clearTimeout(positionDelay);
 			_img.attr('src','');
 		};
 		function boxInit(current){
-			var trigger=_trigger.eq(current);
 			init();
+			var trigger=_trigger.eq(current);
 			_trigger.removeClass('current');
 			trigger.addClass('current');
+			$(opts.box).removeClass('active');
+			_box.addClass('active');
 			_btnClose.appendTo(_boxWrapper);
 			_prev.appendTo(_boxWrapper).append(_btnPrev);
 			_next.appendTo(_boxWrapper).append(_btnNext);
 			_box.css({
 				'display':'none',
-				'position': 'absolute',
+				'position':'absolute',
 				'top':trigger.offset().top,
 				'left':trigger.offset().left
 			}).appendTo('body').stop(false,true).fadeTo(opts.effectDuration,1);
@@ -100,7 +105,7 @@
 				'line-height':height+'px',
 				'text-align':'center',
 				'vertical-align':'middle',
-				'font-size': '0'
+				'font-size':'0'
 			});
 			_boxWrapper.children().not(_picHolder).css('display','none');
 			_img.css({
@@ -134,7 +139,7 @@
 			_img.stop(false,true).fadeOut(opts.effectDuration,function(){
 				init();
 				_img.attr('src',origPicSrc[current]);
-				_imgProto.onload=_imgProto.onreadystatechange=function(){
+				checkPicLoadStatus=setInterval(function(){
 					if(isLoaded(_imgProto)){
 						positionDelay=setTimeout(function(){
 							picOrigWidth=_img.outerWidth();
@@ -144,43 +149,21 @@
 							boxResize(picOrigWidth,picOrigHeight);
 							boxPosition(picOrigWidth,picOrigHeight);
 						},opts.effectDuration);
+						clearInterval(checkPicLoadStatus);
+						checkPicLoadStatus=null;
 					};
-				};
+				},100);
 			});
 			_title.html(title[current]);
 			_page.html(current+1+'/'+len);
-		};
-		function prev(){
-			if(current<=0){
-				return false;
-			};
-			changePic(current-=1);
-		};
-		function next(){
-			if(current+1>=len){
-				return false;
-			};
-			changePic(current+=1);
-		};
-		function closeBox(boxObj){
-			boxObj.stop(false,true).fadeOut(opts.effectDuration,function(){
-				$(this).remove();
-			});
-			init();
-		};
-
-		_trigger.on('click',function(e){
-			e.preventDefault();
-			current=$(this).index(triggerSelector);
-			$(window).off('resize.lightbox keydown.lightbox');
-			boxInit(current);
-			changePic(current);
-			$(window).on({
+			$(window).off('resize.lightbox').on({
 				'resize.lightbox':
 				function(){
 					boxResize(picOrigWidth,picOrigHeight);
 					boxPosition(picOrigWidth,picOrigHeight);
-				},
+				}
+			});
+			$(document).off('keydown.lightbox').on({
 				'keydown.lightbox':
 				function(e){
 					var keyCode=e.which||e.keyCode;
@@ -214,9 +197,35 @@
 					next();
 				}
 			});
+		};
+		function prev(){
+			if(current<=0){
+				return false;
+			};
+			changePic(current-=1);
+		};
+		function next(){
+			if(current+1>=len){
+				return false;
+			};
+			changePic(current+=1);
+		};
+		function closeBox(boxObj){
+			boxObj.removeClass('active');
+			//boxObj.siblings().addClass('active');
+			boxObj.stop(false,true).fadeOut(opts.effectDuration,function(){
+				$(this).remove();
+			});
+			init();
+		};
 
+		/********** exec **********/
+		_trigger.off('click.lightbox').on('click.lightbox',function(e){
+			current=$(this).index(triggerSelector);
+			boxInit(current);
+			changePic(current);
+			e.preventDefault();
 		});
-
 
 
 	};
