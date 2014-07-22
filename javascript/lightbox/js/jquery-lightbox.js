@@ -1,8 +1,8 @@
 /*========================================================*/
 //	lightbox 1.0
 //	Depend on jQuery v1.7.2+
-//	Code by Warren Chen
-//	Create date: 2014-7-9
+//	Code by Warren Chen on 2014-7-9
+//	已知问题：ie9+读取图片尺寸两次
 /*========================================================*/
 
 ;(function ($) {
@@ -26,9 +26,7 @@
 			boxHTML=''+
 				'<div class="'+opts.box.replace('.','')+'">'+
 				'	<div class="'+opts.boxWrapper.replace('.','')+'">'+
-				'		<div class="'+opts.picHolder.replace('.','')+'">'+
-				'			<img class="pic" src="#">'+
-				'		</div>'+
+				'		<div class="'+opts.picHolder.replace('.','')+'"></div>'+
 				'		<div class="info">'+
 				'			<span class="tit"></span>'+
 				'			<span class="page"></span>'+
@@ -38,7 +36,7 @@
 			_box=$(boxHTML),
 			_boxWrapper=_box.find(opts.boxWrapper),
 			_picHolder=_box.find(opts.picHolder),
-			_img=_picHolder.find('.pic'),
+			_img=$('<img class="pic" src="" alt="">'),
 			_imgProto=_img.get(0),
 			_title=_box.find('.info .tit'),
 			_page=_box.find('.info .page'),
@@ -58,7 +56,6 @@
 			picOrigHeight=0,
 			picWidth=0,
 			picHeight=0,
-			checkImgStatusTimer=null,
 			positionDelay=null;
 
 		for(var i=0; i<len; i++){
@@ -69,11 +66,17 @@
 		console.log('===>'+$(this).selector+': \n'+triggerSelector+', \n'+title+', \n'+origPicSrc);
 
 		function isLoaded(obj){
+			console.log(
+				'checking: '+
+				'[obj.complete: '+obj.complete+'], '+
+				'[obj.readyState: '+obj.readyState+'], '+
+				'[obj.readyState: '+obj.readyState+']'
+			);
 			return obj.complete || obj.readyState === 'complete' || obj.readyState === 'loaded';
 		};
 		function init(){
-			clearInterval(checkImgStatusTimer);
 			clearTimeout(positionDelay);
+			_img.attr('src','');
 		};
 		function boxInit(current){
 			var trigger=_trigger.eq(current);
@@ -100,10 +103,11 @@
 				'font-size': '0'
 			});
 			_boxWrapper.children().not(_picHolder).css('display','none');
-			_img.attr('src','').css({
+			_img.css({
 				'display':'none',
 				'vertical-align':'middle'
-			});
+			}).appendTo(_picHolder);
+
 		};
 		function boxResize(picOrigWidth,picOrigHeight){
 			_img.stop(false,true).show(opts.effectDuration);
@@ -126,27 +130,25 @@
 			},opts.effectDuration);
 		};
 		function changePic(current){
-			console.log(current+': '+origPicSrc[current]);
-			init();
+			console.log('===>'+current+': '+origPicSrc[current]);
 			_img.stop(false,true).fadeOut(opts.effectDuration,function(){
+				init();
 				_img.attr('src',origPicSrc[current]);
+				_imgProto.onload=_imgProto.onreadystatechange=function(){
+					if(isLoaded(_imgProto)){
+						positionDelay=setTimeout(function(){
+							picOrigWidth=_img.outerWidth();
+							picOrigHeight=_img.outerHeight();
+							console.log(picOrigWidth+', '+picOrigHeight);
+							_boxWrapper.children().not(_picHolder).show();
+							boxResize(picOrigWidth,picOrigHeight);
+							boxPosition(picOrigWidth,picOrigHeight);
+						},opts.effectDuration);
+					};
+				};
 			});
 			_title.html(title[current]);
 			_page.html(current+1+'/'+len);
-			checkImgStatusTimer=setInterval(function(){
-				console.log('checked');
-				if(isLoaded(_imgProto)){
-					positionDelay=setTimeout(function(){
-						picOrigWidth=_img.outerWidth();
-						picOrigHeight=_img.outerHeight();
-						_boxWrapper.children().not(_picHolder).show();
-						boxResize(picOrigWidth,picOrigHeight);
-						boxPosition(picOrigWidth,picOrigHeight);
-					},opts.effectDuration);
-					clearInterval(checkImgStatusTimer);
-					checkImgStatusTimer=null;
-				};
-			},100);
 		};
 		function prev(){
 			if(current<=0){
