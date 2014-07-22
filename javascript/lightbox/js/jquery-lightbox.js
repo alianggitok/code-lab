@@ -20,7 +20,7 @@
 				btnCloseHTML:'<a class="btn btn-close" title="关闭"><i class="ico"></i>关闭</a>',
 				refObj:window,
 				effectDuration:300,
-				sizeLimit:true,
+				sizeLimit:true
 			},
 			opts=$.extend(defaults,options),
 			boxHTML=''+
