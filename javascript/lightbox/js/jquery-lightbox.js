@@ -152,7 +152,7 @@
 						clearInterval(checkPicLoadStatus);
 						checkPicLoadStatus=null;
 					};
-				},100);
+				},300);
 			});
 			_title.html(title[current]);
 			_page.html(current+1+'/'+len);
@@ -215,8 +215,9 @@
 			//boxObj.siblings().addClass('active');
 			boxObj.stop(false,true).fadeOut(opts.effectDuration,function(){
 				$(this).remove();
+				init();
+				console.log('closed');
 			});
-			init();
 		};
 
 		/********** exec **********/
