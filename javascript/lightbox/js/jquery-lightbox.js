@@ -170,6 +170,7 @@
 					//console.log('keydown: '+keyCode);
 					if(keyCode===27){
 						closeBox($(opts.box));
+						e.preventDefault();
 					}else if(keyCode===37){
 						prev();
 						e.preventDefault();
