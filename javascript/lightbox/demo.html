@@ -19,12 +19,25 @@
 	<div class="upload-pic">
 		<div class="upload-pic-list">
 			<ul class="clearfix">
-				<li class="pic"><a href="images/1.jpg" data-lightbox-gp="lightbox1" title="标题1" target="_blank"><img src="images/xxx.jpg" alt="1"></a></li>
-				<li class="pic"><a href="images/2.jpg" data-lightbox-gp="lightbox1" title="标题2" target="_blank"><img src="images/xxx.jpg" alt="2"></a></li>
-				<li class="pic"><a href="images/3.jpg" data-lightbox-gp="lightbox1" title="标题3" target="_blank"><img src="images/xxx.jpg" alt="3"></a></li>
-				<li class="pic"><a href="images/4.jpg" data-lightbox-gp="lightbox2" title="标题4" target="_blank"><img src="images/xxx.jpg" alt="4"></a></li>
-				<li class="pic"><a href="images/5.jpg" data-lightbox-gp="lightbox2" title="标题5" target="_blank"><img src="images/xxx.jpg" alt="5"></a></li>
-				<li class="pic"><a href="images/6.jpg" data-lightbox-gp="lightbox2" title="标题6" target="_blank"><img src="images/xxx.jpg" alt="6"></a></li>
+				<li class="pic"><a href="images/1-big.jpg" data-lightbox-gp="lightbox1" title="标题1" target="_blank"><img src="images/1.jpg" alt="1"></a></li>
+				<li class="pic"><a href="images/2-big.jpg" data-lightbox-gp="lightbox1" title="标题2" target="_blank"><img src="images/2.jpg" alt="2"></a></li>
+				<li class="pic"><a href="images/3-big.jpg" data-lightbox-gp="lightbox1" title="标题3" target="_blank"><img src="images/3.jpg" alt="3"></a></li>
+			</ul>
+			<ul class="clearfix">
+				<li class="pic"><a href="images/4-big.jpg" data-lightbox-gp="lightbox2" title="标题4" target="_blank"><img src="images/4.jpg" alt="4"></a></li>
+				<li class="pic"><a href="images/5-big.jpg" data-lightbox-gp="lightbox2" title="标题5" target="_blank"><img src="images/5.jpg" alt="5"></a></li>
+				<li class="pic"><a href="images/6-big.jpg" data-lightbox-gp="lightbox2" title="标题6" target="_blank"><img src="images/6.jpg" alt="6"></a></li>
+			</ul>
+			<ul class="clearfix">
+				<li class="pic"><a href="images/7-big.jpg" data-lightbox-gp="lightbox3" title="标题7" target="_blank"><img src="images/7.jpg" alt="7"></a></li>
+				<li class="pic"><a href="images/8-big.jpg" data-lightbox-gp="lightbox3" title="标题8" target="_blank"><img src="images/8.jpg" alt="8"></a></li>
+				<li class="pic"><a href="images/9-big.gif" data-lightbox-gp="lightbox3" title="标题9" target="_blank"><img src="images/9.jpg" alt="9"></a></li>
+			</ul>
+			<ul class="clearfix">
+				<li class="pic"><a href="images/10-big.jpg" data-lightbox-gp="lightbox4" title="标题10" target="_blank"><img src="images/10.jpg" alt="10"></a></li>
+				<li class="pic"><a href="images/11-big.gif" data-lightbox-gp="lightbox4" title="标题11" target="_blank"><img src="images/11.jpg" alt="11"></a></li>
+				<li class="pic"><a href="images/12-big.jpg" data-lightbox-gp="lightbox4" title="标题12" target="_blank"><img src="images/12.jpg" alt="12"></a></li>
+				<li class="pic"><a href="images/13-big.jpg" data-lightbox-gp="lightbox4" title="标题13" target="_blank"><img src="images/13.jpg" alt="13"></a></li>
 			</ul>
 		</div>
 	</div>
@@ -35,8 +48,10 @@
 <script type="text/javascript" src="js/jquery-lightbox.js"></script>
 <script type="text/javascript">
 	$(function () {
-		$('.upload-pic .pic a[data-lightbox-gp="lightbox1"]').lightBox();
-		$('.upload-pic .pic a[data-lightbox-gp="lightbox2"]').lightBox();
+		$('a[data-lightbox-gp="lightbox1"]').lightBox();
+		$('a[data-lightbox-gp="lightbox2"]').lightBox();
+		$('a[data-lightbox-gp="lightbox3"]').lightBox();
+		$('a[data-lightbox-gp="lightbox4"]').lightBox();
 	});
 </script>
 

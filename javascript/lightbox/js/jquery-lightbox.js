@@ -2,7 +2,7 @@
 //	lightbox 1.0
 //	Depend on jQuery v1.7.2+
 //	Code by Warren Chen on 2014-7-9
-//	已知问题：当同时存在两个浮层，通过“关闭”按钮关闭其中一个后，另一个的相关操作的事件无响应（初步构想：为浮层添加current类）
+//	已知问题：关闭无效
 /*========================================================*/
 
 ;(function ($) {
@@ -31,6 +31,7 @@
 				'			<div class="tit"></div>'+
 				'			<div class="page"></div>'+
 				'		</div>'+
+				'		<div class="exec"></div>'+
 				'	</div>'+
 				'</div>',
 			_box=$(boxHTML),
@@ -67,6 +68,10 @@
 		console.log('===>'+$(this).selector+': \n'+triggerSelector+', \n'+title+', \n'+origPicSrc);
 
 		/********** functions **********/
+		function init(){
+			clearInterval(checkPicLoadStatus);
+			clearTimeout(positionDelay);
+		};
 		function isLoaded(obj){
 			console.log(
 				'checking: '+
@@ -76,13 +81,9 @@
 			);
 			return obj.complete || obj.readyState === 'complete' || obj.readyState === 'loaded';
 		};
-		function init(){
-			clearInterval(checkPicLoadStatus);
-			clearTimeout(positionDelay);
-			_img.attr('src','');
-		};
 		function boxInit(current){
 			init();
+			//$('html').css('overflow','hidden');
 			var trigger=_trigger.eq(current);
 			_trigger.removeClass('current');
 			trigger.addClass('current');
@@ -116,19 +117,29 @@
 		};
 		function boxResize(picOrigWidth,picOrigHeight){
 			_img.stop(false,true).show(opts.effectDuration);
+			var picPaddingX=_box.outerWidth()-_picHolder.width(),
+				picPaddingY=_box.outerHeight()-_picHolder.height(),
+				boxWidth=picPaddingX+picOrigWidth,
+				boxHeight=picPaddingY+picOrigHeight,
+				refWidth=_ref.width(),
+				refHeight=_ref.height();
+			picWidth=boxWidth>refWidth?refWidth-picPaddingX:picOrigWidth;
+			picHeight=boxHeight>refHeight?refHeight-picPaddingY:picOrigHeight;
 			_picHolder.stop(false,true).animate({
-				'width':picOrigWidth+'px',
-				'height':picOrigHeight+'px',
-				'line-height':picOrigHeight+'px'
-			},opts.effectDuration);
-		}
-		function boxPosition(picOrigWidth,picOrigHeight){
+				'width':picWidth+'px',
+				'height':picHeight+'px',
+				'line-height':picHeight+'px'
+			},opts.effectDuration,function(){
+				//$('html').css('overflow','auto');
+			});
+		};
+		function boxPosition(picWidth,picHeight){
 			var refWidth=_ref.width(),
 				refHeight=_ref.height(),
-				boxWidth=_box.outerWidth()-_picHolder.outerWidth()+picOrigWidth,
-				boxHeight=_box.outerHeight()-_picHolder.outerHeight()+picOrigHeight,
-				boxTop=boxHeight>refHeight?0:(refHeight-boxHeight)/2,
-				boxLeft=boxWidth>refWidth?0:(refWidth-boxWidth)/2;
+				boxWidth=_box.outerWidth()-_picHolder.outerWidth()+picWidth,
+				boxHeight=_box.outerHeight()-_picHolder.outerHeight()+picHeight,
+				boxTop=boxHeight>refHeight?_ref.scrollTop():(refHeight-boxHeight)/2+_ref.scrollTop(),
+				boxLeft=boxWidth>refWidth?_ref.scrollLeft():(refWidth-boxWidth)/2+_ref.scrollLeft();
 			_box.stop(false,true).animate({
 				'left':boxLeft,
 				'top':boxTop
@@ -138,7 +149,7 @@
 			console.log('===>'+current+': '+origPicSrc[current]);
 			_img.stop(false,true).fadeOut(opts.effectDuration,function(){
 				init();
-				_img.attr('src',origPicSrc[current]);
+				_img.attr('src','').attr('src',origPicSrc[current]);
 				checkPicLoadStatus=setInterval(function(){
 					if(isLoaded(_imgProto)){
 						positionDelay=setTimeout(function(){
@@ -147,7 +158,7 @@
 							console.log(picOrigWidth+', '+picOrigHeight);
 							_boxWrapper.children().not(_picHolder).show();
 							boxResize(picOrigWidth,picOrigHeight);
-							boxPosition(picOrigWidth,picOrigHeight);
+							boxPosition(picWidth,picHeight);
 						},opts.effectDuration);
 						clearInterval(checkPicLoadStatus);
 						checkPicLoadStatus=null;
@@ -156,11 +167,13 @@
 			});
 			_title.html(title[current]);
 			_page.html(current+1+'/'+len);
+		};
+		function events(){
 			$(window).off('resize.lightbox').on({
 				'resize.lightbox':
 				function(){
 					boxResize(picOrigWidth,picOrigHeight);
-					boxPosition(picOrigWidth,picOrigHeight);
+					boxPosition(picWidth,picHeight);
 				}
 			});
 			$(document).off('keydown.lightbox').on({
@@ -169,7 +182,7 @@
 					var keyCode=e.which||e.keyCode;
 					//console.log('keydown: '+keyCode);
 					if(keyCode===27){
-						closeBox($(opts.box));
+						closeBox();
 						e.preventDefault();
 					}else if(keyCode===37){
 						prev();
@@ -183,7 +196,7 @@
 			_btnClose.off('click.lightbox').on({
 				'click.lightbox':
 				function(){
-					closeBox(_box);
+					closeBox();
 				}
 			});
 			_btnPrev.off('click.lightbox').on({
@@ -199,6 +212,18 @@
 				}
 			});
 		};
+		function open(current){
+			console.log('boxLength: '+_box.siblings(opts.box).length);
+			boxInit(current);
+			if(_box.siblings(opts.box).length<1){
+				changePic(current);
+			}else{
+				closeBox(function(){
+					changePic(current);
+				});
+			};
+			events();
+		};
 		function prev(){
 			if(current<=0){
 				return false;
@@ -211,21 +236,23 @@
 			};
 			changePic(current+=1);
 		};
-		function closeBox(boxObj){
+		function closeBox(callback){
+			callback=typeof(callback)==='undefined'?function(){}:callback;
+			var boxObj=_box.siblings(opts.box);
 			boxObj.removeClass('active');
-			//boxObj.siblings().addClass('active');
+			//boxObj.siblings(opts.box).addClass('active');
 			boxObj.stop(false,true).fadeOut(opts.effectDuration,function(){
-				$(this).remove();
+				boxObj.remove();
 				init();
 				console.log('closed');
+				callback();
 			});
 		};
 
 		/********** exec **********/
 		_trigger.off('click.lightbox').on('click.lightbox',function(e){
 			current=$(this).index(triggerSelector);
-			boxInit(current);
-			changePic(current);
+			open(current);
 			e.preventDefault();
 		});
 
