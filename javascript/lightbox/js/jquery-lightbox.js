@@ -76,6 +76,10 @@
 			clearTimeout(positionDelay);
 			clearTimeout(fixDelay);
 			_img.attr('src','');
+			_img.css({
+				'width':'auto',
+				'height':'auto'
+			});
 		};
 		function checkKey(key,currentKey){
 			var len=key.length;
@@ -137,17 +141,17 @@
 				boxHeight=picPaddingY+picOrigHeight,
 				refWidth=_ref.width(),
 				refHeight=_ref.height(),
-				//zoomScaleX=(refWidth-picPaddingX)/picOrigWidth;
-			picWidth=boxWidth>refWidth?(refWidth-picPaddingX):picOrigWidth;
-			picHeight=boxHeight>refHeight?(refHeight-picPaddingY):picOrigHeight;
+				zoomScale=1;
+			picWidth=boxWidth>refWidth?refWidth-picPaddingX:picOrigWidth;
+			picHeight=boxHeight>refHeight?refHeight-picPaddingY:picOrigHeight;
 			_picHolder.stop(false,true).animate({
 				'width':picWidth+'px',
 				'height':picHeight+'px',
 				'line-height':picHeight+'px'
 			},opts.effectDuration);
 			_img.stop(false,true).animate({
-				'width':picWidth+'px',
-				'height':picHeight+'px'
+				'width':picOrigWidth+'px',
+				'height':picOrigHeight+'px'
 			},opts.effectDuration);
 		};
 		function boxPosition(picWidth,picHeight){
