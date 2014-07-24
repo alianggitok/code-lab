@@ -60,7 +60,8 @@
 			picWidth=0,
 			picHeight=0,
 			checkPicLoadStatus=null,
-			positionDelay=null;
+			positionDelay=null,
+			fixDelay=null;
 
 		for(var i=0; i<len; i++){
 			origPicSrc[i]=_trigger.eq(i).attr(opts.origPicSrcAttr);
@@ -73,6 +74,7 @@
 		function init(){
 			clearInterval(checkPicLoadStatus);
 			clearTimeout(positionDelay);
+			clearTimeout(fixDelay);
 			_img.attr('src','');
 		};
 		function isLoaded(obj){
@@ -86,7 +88,7 @@
 		};
 		function boxInit(current){
 			init();
-			//$('html').css('overflow','hidden');
+			$('html').css('overflow','hidden');
 			var trigger=_trigger.eq(current);
 			_trigger.removeClass('current');
 			trigger.addClass('current');
@@ -100,7 +102,7 @@
 				'position':'absolute',
 				'top':trigger.offset().top,
 				'left':trigger.offset().left
-			}).appendTo('body').stop(false,true).fadeTo(opts.effectDuration,1);
+			}).appendTo('body');
 			var width=trigger.width()-(_box.outerWidth()-_box.width()),
 				height=trigger.height()-(_box.outerHeight()-_box.height());
 			_picHolder.css({
@@ -152,12 +154,13 @@
 		function changePic(current){
 			console.log('===>'+current+': '+origPicSrc[current]);
 			_loader.stop(false,true).fadeIn(opts.effectDuration);
+			_trigger.removeClass('current').eq(current).addClass('current');
 			_img.stop(false,true).fadeOut(opts.effectDuration,function(){
 				init();
 				_img.attr('src',origPicSrc[current]);
 				checkPicLoadStatus=setInterval(function(){
 					if(isLoaded(_imgProto)){
-						positionDelay=setTimeout(function(){
+						fixDelay=setTimeout(function(){
 							picOrigWidth=_img.outerWidth();
 							picOrigHeight=_img.outerHeight();
 							console.log(picOrigWidth+', '+picOrigHeight);
@@ -181,12 +184,13 @@
 
 		function open(current){
 			boxInit(current);
+			_box.stop(false,true).fadeTo(opts.effectDuration,1);
 			var otherBoxs=_box.siblings(opts.box);
 			console.log('boxLength: '+otherBoxs.length);
 			if(otherBoxs.length<1){
 				changePic(current);
 			}else{
-				closeBox(otherBoxs,function(){
+				close(otherBoxs,function(){
 					changePic(current);
 				});
 			};
@@ -204,12 +208,13 @@
 			};
 			changePic(current+=1);
 		};
-		function closeBox(boxObj,callback){
+		function close(boxObj,callback){
 			boxObj=typeof(boxObj)==='undefined'?_box.siblings(opts.box).andSelf():boxObj;
 			callback=typeof(callback)==='undefined'?function(){}:callback;
 			boxObj.removeClass('active');
-			//boxObj.siblings(opts.box).addClass('active');
+			//boxObj.prev(opts.box).addClass('active');
 			events.clearEvents();
+			$('html').css('overflow','auto');
 			boxObj.stop(false,true).fadeOut(opts.effectDuration,function(){
 				boxObj.remove();
 				init();
@@ -225,7 +230,10 @@
 					'resize.lightbox':
 					function(){
 						boxResize(picOrigWidth,picOrigHeight);
-						boxPosition(picWidth,picHeight);
+						clearTimeout(positionDelay);
+						positionDelay=setTimeout(function(){
+							boxPosition(picWidth,picHeight);
+						},opts.effectDuration);
 					}
 				});
 			},
@@ -251,7 +259,7 @@
 					function(e){
 						var keyCode=e.which||e.keyCode;
 						if(keyCode===27){
-							closeBox();
+							close();
 							e.preventDefault();
 						};
 					}
@@ -269,23 +277,27 @@
 		function bindElementEvents(){
 			_btnClose.off('click.lightbox').on({
 				'click.lightbox':
-				function(){
-					closeBox();
+				function(e){
+					close();
+					e.preventDefault();
 				}
 			});
 			_btnPrev.off('click.lightbox').on({
 				'click.lightbox':
-				function(){
+				function(e){
 					prev();
+					e.preventDefault();
 				}
 			});
 			_btnNext.off('click.lightbox').on({
 				'click.lightbox':
-				function(){
+				function(e){
 					next();
+					e.preventDefault();
 				}
 			});
 		};
+
 		/********** exec **********/
 		_trigger.off('click.lightbox').on('click.lightbox',function(e){
 			current=$(this).index(triggerSelector);
