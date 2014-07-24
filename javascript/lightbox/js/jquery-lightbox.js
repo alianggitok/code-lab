@@ -2,7 +2,7 @@
 //	lightbox 1.0
 //	Depend on jQuery v1.7.2+
 //	Code by Warren Chen on 2014-7-9
-//	已知问题：图片大小调整
+//	已知问题：图片大小调整、导航位置调整、样式调整
 /*========================================================*/
 
 ;(function ($) {
@@ -77,6 +77,14 @@
 			clearTimeout(fixDelay);
 			_img.attr('src','');
 		};
+		function checkKey(key,currentKey){
+			var len=key.length;
+			for(var i=0; i<len; i++){
+				if(currentKey===key[i]){
+					return true;
+				};
+			};
+		};
 		function isLoaded(obj){
 			console.log(
 				'checking: '+
@@ -135,9 +143,7 @@
 				'width':picWidth+'px',
 				'height':picHeight+'px',
 				'line-height':picHeight+'px'
-			},opts.effectDuration,function(){
-				//$('html').css('overflow','auto');
-			});
+			},opts.effectDuration);
 		};
 		function boxPosition(picWidth,picHeight){
 			var refWidth=_ref.width(),
@@ -186,7 +192,6 @@
 			boxInit(current);
 			_box.stop(false,true).fadeTo(opts.effectDuration,1);
 			var otherBoxs=_box.siblings(opts.box);
-			console.log('boxLength: '+otherBoxs.length);
 			if(otherBoxs.length<1){
 				changePic(current);
 			}else{
@@ -242,12 +247,12 @@
 					'keydown.lightbox-keyBoardNav':
 					function(e){
 						var keyCode=e.which||e.keyCode;
-						//console.log('keydown: '+keyCode);
 						if(keyCode===37){
 							prev();
-							e.preventDefault();
 						}else if(keyCode===39){
 							next();
+						};
+						if(checkKey([33,34,35,36,37,38,39,40],keyCode)){
 							e.preventDefault();
 						};
 					}
@@ -260,6 +265,8 @@
 						var keyCode=e.which||e.keyCode;
 						if(keyCode===27){
 							close();
+						};
+						if(checkKey([27],keyCode)){
 							e.preventDefault();
 						};
 					}
