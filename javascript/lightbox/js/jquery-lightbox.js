@@ -2,7 +2,7 @@
 //	lightbox 1.0
 //	Depend on jQuery v1.7.2+
 //	Code by Warren Chen on 2014-7-9
-//	已知问题：关闭无效
+//	已知问题：图片大小调整
 /*========================================================*/
 
 ;(function ($) {
@@ -20,13 +20,14 @@
 				btnCloseHTML:'<a class="btn btn-close" title="关闭"><i class="ico"></i>关闭</a>',
 				refObj:window,
 				effectDuration:300,
+				checkFreq:200,
 				sizeLimit:true
 			},
 			opts=$.extend(defaults,options),
 			boxHTML=''+
 				'<div class="'+opts.box.replace('.','')+'">'+
 				'	<div class="'+opts.boxWrapper.replace('.','')+'">'+
-				'		<div class="'+opts.picHolder.replace('.','')+'"></div>'+
+				'		<div class="'+opts.picHolder.replace('.','')+'"><div class="loader"></div></div>'+
 				'		<div class="info">'+
 				'			<div class="tit"></div>'+
 				'			<div class="page"></div>'+
@@ -39,6 +40,7 @@
 			_picHolder=_box.find(opts.picHolder),
 			_img=$('<img class="pic" src="" alt="">'),
 			_imgProto=_img.get(0),
+			_loader=_picHolder.find('.loader'),
 			_title=_box.find('.info .tit'),
 			_page=_box.find('.info .page'),
 			_prev=$(opts.navPrevHTML),
@@ -71,6 +73,7 @@
 		function init(){
 			clearInterval(checkPicLoadStatus);
 			clearTimeout(positionDelay);
+			_img.attr('src','');
 		};
 		function isLoaded(obj){
 			console.log(
@@ -113,10 +116,11 @@
 				'display':'none',
 				'vertical-align':'middle'
 			}).appendTo(_picHolder);
-
+			_loader.css({
+				'display':'none'
+			});
 		};
 		function boxResize(picOrigWidth,picOrigHeight){
-			_img.stop(false,true).show(opts.effectDuration);
 			var picPaddingX=_box.outerWidth()-_picHolder.width(),
 				picPaddingY=_box.outerHeight()-_picHolder.height(),
 				boxWidth=picPaddingX+picOrigWidth,
@@ -147,9 +151,10 @@
 		};
 		function changePic(current){
 			console.log('===>'+current+': '+origPicSrc[current]);
+			_loader.stop(false,true).fadeIn(opts.effectDuration);
 			_img.stop(false,true).fadeOut(opts.effectDuration,function(){
 				init();
-				_img.attr('src','').attr('src',origPicSrc[current]);
+				_img.attr('src',origPicSrc[current]);
 				checkPicLoadStatus=setInterval(function(){
 					if(isLoaded(_imgProto)){
 						positionDelay=setTimeout(function(){
@@ -157,42 +162,108 @@
 							picOrigHeight=_img.outerHeight();
 							console.log(picOrigWidth+', '+picOrigHeight);
 							_boxWrapper.children().not(_picHolder).show();
+							_loader.stop(false,true).fadeOut(opts.effectDuration);
+							_img.stop(false,true).show(opts.effectDuration);
 							boxResize(picOrigWidth,picOrigHeight);
 							boxPosition(picWidth,picHeight);
-						},opts.effectDuration);
+							events.windowResize();
+							events.keyBoardNav();
+							bindElementEvents();
+						},opts.checkFreq);
 						clearInterval(checkPicLoadStatus);
 						checkPicLoadStatus=null;
 					};
-				},300);
+				},opts.checkFreq);
 			});
 			_title.html(title[current]);
 			_page.html(current+1+'/'+len);
 		};
-		function events(){
-			$(window).off('resize.lightbox').on({
-				'resize.lightbox':
-				function(){
-					boxResize(picOrigWidth,picOrigHeight);
-					boxPosition(picWidth,picHeight);
-				}
+
+		function open(current){
+			boxInit(current);
+			var otherBoxs=_box.siblings(opts.box);
+			console.log('boxLength: '+otherBoxs.length);
+			if(otherBoxs.length<1){
+				changePic(current);
+			}else{
+				closeBox(otherBoxs,function(){
+					changePic(current);
+				});
+			};
+			events.keyBoardEsc();
+		};
+		function prev(){
+			if(current<=0){
+				return false;
+			};
+			changePic(current-=1);
+		};
+		function next(){
+			if(current+1>=len){
+				return false;
+			};
+			changePic(current+=1);
+		};
+		function closeBox(boxObj,callback){
+			boxObj=typeof(boxObj)==='undefined'?_box.siblings(opts.box).andSelf():boxObj;
+			callback=typeof(callback)==='undefined'?function(){}:callback;
+			boxObj.removeClass('active');
+			//boxObj.siblings(opts.box).addClass('active');
+			events.clearEvents();
+			boxObj.stop(false,true).fadeOut(opts.effectDuration,function(){
+				boxObj.remove();
+				init();
+				console.log('closed');
+				callback();
 			});
-			$(document).off('keydown.lightbox').on({
-				'keydown.lightbox':
-				function(e){
-					var keyCode=e.which||e.keyCode;
-					//console.log('keydown: '+keyCode);
-					if(keyCode===27){
-						closeBox();
-						e.preventDefault();
-					}else if(keyCode===37){
-						prev();
-						e.preventDefault();
-					}else if(keyCode===39){
-						next();
-						e.preventDefault();
-					};
-				}
-			});
+		};
+
+		/********** events **********/
+		var events={
+			windowResize:function(){
+				$(window).off('resize.lightbox').on({
+					'resize.lightbox':
+					function(){
+						boxResize(picOrigWidth,picOrigHeight);
+						boxPosition(picWidth,picHeight);
+					}
+				});
+			},
+			keyBoardNav:function(){
+				$(document).off('keydown.lightbox-keyBoardNav').on({
+					'keydown.lightbox-keyBoardNav':
+					function(e){
+						var keyCode=e.which||e.keyCode;
+						//console.log('keydown: '+keyCode);
+						if(keyCode===37){
+							prev();
+							e.preventDefault();
+						}else if(keyCode===39){
+							next();
+							e.preventDefault();
+						};
+					}
+				});
+			},
+			keyBoardEsc:function(){
+				$(document).off('keydown.lightbox-keyBoardEsc').on({
+					'keydown.lightbox-keyBoardEsc':
+					function(e){
+						var keyCode=e.which||e.keyCode;
+						if(keyCode===27){
+							closeBox();
+							e.preventDefault();
+						};
+					}
+				});
+			},
+			clearEvents:function(){
+				$(window).off('resize.lightbox');
+				$(document).off('keydown.lightbox-keyBoardEsc');
+				$(document).off('keydown.lightbox-keyBoardNav');
+			}
+		};
+		function bindElementEvents(){
 			_btnClose.off('click.lightbox').on({
 				'click.lightbox':
 				function(){
@@ -212,43 +283,6 @@
 				}
 			});
 		};
-		function open(current){
-			console.log('boxLength: '+_box.siblings(opts.box).length);
-			boxInit(current);
-			if(_box.siblings(opts.box).length<1){
-				changePic(current);
-			}else{
-				closeBox(function(){
-					changePic(current);
-				});
-			};
-			events();
-		};
-		function prev(){
-			if(current<=0){
-				return false;
-			};
-			changePic(current-=1);
-		};
-		function next(){
-			if(current+1>=len){
-				return false;
-			};
-			changePic(current+=1);
-		};
-		function closeBox(callback){
-			callback=typeof(callback)==='undefined'?function(){}:callback;
-			var boxObj=_box.siblings(opts.box);
-			boxObj.removeClass('active');
-			//boxObj.siblings(opts.box).addClass('active');
-			boxObj.stop(false,true).fadeOut(opts.effectDuration,function(){
-				boxObj.remove();
-				init();
-				console.log('closed');
-				callback();
-			});
-		};
-
 		/********** exec **********/
 		_trigger.off('click.lightbox').on('click.lightbox',function(e){
 			current=$(this).index(triggerSelector);
