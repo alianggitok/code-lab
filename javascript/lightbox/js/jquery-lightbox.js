@@ -136,13 +136,18 @@
 				boxWidth=picPaddingX+picOrigWidth,
 				boxHeight=picPaddingY+picOrigHeight,
 				refWidth=_ref.width(),
-				refHeight=_ref.height();
-			picWidth=boxWidth>refWidth?refWidth-picPaddingX:picOrigWidth;
-			picHeight=boxHeight>refHeight?refHeight-picPaddingY:picOrigHeight;
+				refHeight=_ref.height(),
+				//zoomScaleX=(refWidth-picPaddingX)/picOrigWidth;
+			picWidth=boxWidth>refWidth?(refWidth-picPaddingX):picOrigWidth;
+			picHeight=boxHeight>refHeight?(refHeight-picPaddingY):picOrigHeight;
 			_picHolder.stop(false,true).animate({
 				'width':picWidth+'px',
 				'height':picHeight+'px',
 				'line-height':picHeight+'px'
+			},opts.effectDuration);
+			_img.stop(false,true).animate({
+				'width':picWidth+'px',
+				'height':picHeight+'px'
 			},opts.effectDuration);
 		};
 		function boxPosition(picWidth,picHeight){
@@ -177,7 +182,7 @@
 							boxPosition(picWidth,picHeight);
 							events.windowResize();
 							events.keyBoardNav();
-							bindElementEvents();
+							events.bindElementEvents();
 						},opts.checkFreq);
 						clearInterval(checkPicLoadStatus);
 						checkPicLoadStatus=null;
@@ -279,30 +284,30 @@
 				_btnClose.off('click.lightbox');
 				_btnPrev.off('click.lightbox');
 				_btnNext.off('click.lightbox');
+			},
+			bindElementEvents:function(){
+				_btnClose.off('click.lightbox').on({
+					'click.lightbox':
+					function(e){
+						close();
+						e.preventDefault();
+					}
+				});
+				_btnPrev.off('click.lightbox').on({
+					'click.lightbox':
+					function(e){
+						prev();
+						e.preventDefault();
+					}
+				});
+				_btnNext.off('click.lightbox').on({
+					'click.lightbox':
+					function(e){
+						next();
+						e.preventDefault();
+					}
+				});
 			}
-		};
-		function bindElementEvents(){
-			_btnClose.off('click.lightbox').on({
-				'click.lightbox':
-				function(e){
-					close();
-					e.preventDefault();
-				}
-			});
-			_btnPrev.off('click.lightbox').on({
-				'click.lightbox':
-				function(e){
-					prev();
-					e.preventDefault();
-				}
-			});
-			_btnNext.off('click.lightbox').on({
-				'click.lightbox':
-				function(e){
-					next();
-					e.preventDefault();
-				}
-			});
 		};
 
 		/********** exec **********/
