@@ -261,6 +261,9 @@
 				$(window).off('resize.lightbox');
 				$(document).off('keydown.lightbox-keyBoardEsc');
 				$(document).off('keydown.lightbox-keyBoardNav');
+				_btnClose.off('click.lightbox');
+				_btnPrev.off('click.lightbox');
+				_btnNext.off('click.lightbox');
 			}
 		};
 		function bindElementEvents(){
