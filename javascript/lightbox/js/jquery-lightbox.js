@@ -2,7 +2,7 @@
 //	lightbox 1.0
 //	Depend on jQuery v1.7.2+
 //	Code by Warren Chen on 2014-7-9
-//	已知问题：图片大小调整、导航位置调整、样式调整
+//	已知问题：导航位置调整、样式调整
 /*========================================================*/
 
 ;(function ($) {
@@ -19,9 +19,11 @@
 				btnNextHTML:'<a class="btn" title="下一张">下一张<i class="ico"></i></a>',
 				btnCloseHTML:'<a class="btn btn-close" title="关闭"><i class="ico"></i>关闭</a>',
 				refObj:window,
+				refPaddingFixX:10,
+				refPaddingFixY:10,
 				effectDuration:300,
 				checkFreq:200,
-				sizeLimit:true
+				picResize:false
 			},
 			opts=$.extend(defaults,options),
 			boxHTML=''+
@@ -43,6 +45,7 @@
 			_loader=_picHolder.find('.loader'),
 			_title=_box.find('.info .tit'),
 			_page=_box.find('.info .page'),
+			_exec=_box.find('.exec'),
 			_prev=$(opts.navPrevHTML),
 			_btnPrev=$(opts.btnPrevHTML),
 			_next=$(opts.navNextHTML),
@@ -59,9 +62,12 @@
 			picOrigHeight=0,
 			picWidth=0,
 			picHeight=0,
+			picScaleX=1,
+			picScaleY=1,
 			checkPicLoadStatus=null,
-			positionDelay=null,
-			fixDelay=null;
+			boxResizeDelay=null,
+			boxPositionDelay=null,
+			loadedFixDelay=null;
 
 		for(var i=0; i<len; i++){
 			origPicSrc[i]=_trigger.eq(i).attr(opts.origPicSrcAttr);
@@ -73,8 +79,9 @@
 		/********** functions **********/
 		function init(){
 			clearInterval(checkPicLoadStatus);
-			clearTimeout(positionDelay);
-			clearTimeout(fixDelay);
+			clearTimeout(boxResizeDelay);
+			clearTimeout(boxPositionDelay);
+			clearTimeout(loadedFixDelay);
 			_img.attr('src','');
 			_img.css({
 				'width':'auto',
@@ -100,13 +107,15 @@
 		};
 		function boxInit(current){
 			init();
-			$('html').css('overflow','hidden');
+			if(opts.picResize){
+				$('html').css('overflow','hidden');
+			};
 			var trigger=_trigger.eq(current);
 			_trigger.removeClass('current');
 			trigger.addClass('current');
 			$(opts.box).removeClass('active');
 			_box.addClass('active');
-			_btnClose.appendTo(_boxWrapper);
+			_btnClose.appendTo(_exec);
 			_prev.appendTo(_boxWrapper).append(_btnPrev);
 			_next.appendTo(_boxWrapper).append(_btnNext);
 			_box.css({
@@ -128,10 +137,35 @@
 			_boxWrapper.children().not(_picHolder).css('display','none');
 			_img.css({
 				'display':'none',
-				'vertical-align':'middle'
+				'vertical-align':'middle',
+				'-ms-interpolation-mode':'bicubic'
 			}).appendTo(_picHolder);
 			_loader.css({
 				'display':'none'
+			});
+		};
+		function navInit(width,height){
+			_prev.stop(false,true).animate({
+				'width':width*.5+'px',
+				'height':height+'px',
+				'line-height':height+'px'
+			},opts.effectDuration,function(){
+				if(_prev.width()<_btnPrev.outerWidth()||_prev.height()<_btnPrev.outerHeight()){
+					_btnPrev.hide();
+				}else{
+					_btnPrev.show();
+				};
+			});
+			_next.stop(false,true).animate({
+				'width':width*.5+'px',
+				'height':height+'px',
+				'line-height':height+'px'
+			},opts.effectDuration,function(){
+				if(_next.width()<_btnNext.outerWidth()||_next.height()<_btnNext.outerHeight()){
+					_btnNext.hide();
+				}else{
+					_btnNext.show();
+				};
 			});
 		};
 		function boxResize(picOrigWidth,picOrigHeight){
@@ -139,20 +173,49 @@
 				picPaddingY=_box.outerHeight()-_picHolder.height(),
 				boxWidth=picPaddingX+picOrigWidth,
 				boxHeight=picPaddingY+picOrigHeight,
-				refWidth=_ref.width(),
-				refHeight=_ref.height(),
-				zoomScale=1;
-			picWidth=boxWidth>refWidth?refWidth-picPaddingX:picOrigWidth;
-			picHeight=boxHeight>refHeight?refHeight-picPaddingY:picOrigHeight;
+				refWidth=_ref.width()-opts.refPaddingFixX*2,
+				refHeight=_ref.height()-opts.refPaddingFixY*2;
+			function getWidth(){
+				picWidth=refWidth-picPaddingX;
+				picScaleX=picWidth/picOrigWidth;
+				picHeight=picOrigHeight*picScaleX;
+			};
+			function getHeight(){
+				picHeight=refHeight-picPaddingY;
+				picScaleY=picHeight/picOrigHeight;
+				picWidth=picOrigWidth*picScaleY;
+			};
+			if(opts.picResize){
+				if(boxWidth>=refWidth){
+					getWidth();
+					if(picHeight>=refHeight-picPaddingY){
+						getHeight();
+					};
+				};
+				if(boxHeight>=refHeight){
+					getHeight();
+					if(picWidth>=refWidth-picPaddingX){
+						getWidth();
+					};
+				};
+				if(boxWidth<refWidth&&boxHeight<refHeight){
+					picWidth=picOrigWidth;
+					picHeight=picOrigHeight;
+				};
+			}else{
+				picWidth=picOrigWidth;
+				picHeight=picOrigHeight;
+			};
 			_picHolder.stop(false,true).animate({
 				'width':picWidth+'px',
 				'height':picHeight+'px',
 				'line-height':picHeight+'px'
 			},opts.effectDuration);
 			_img.stop(false,true).animate({
-				'width':picOrigWidth+'px',
-				'height':picOrigHeight+'px'
+				'width':picWidth+'px',
+				'height':picHeight+'px'
 			},opts.effectDuration);
+			navInit(picWidth,picHeight);
 		};
 		function boxPosition(picWidth,picHeight){
 			var refWidth=_ref.width(),
@@ -175,15 +238,18 @@
 				_img.attr('src',origPicSrc[current]);
 				checkPicLoadStatus=setInterval(function(){
 					if(isLoaded(_imgProto)){
-						fixDelay=setTimeout(function(){
-							picOrigWidth=_img.outerWidth();
-							picOrigHeight=_img.outerHeight();
+						loadedFixDelay=setTimeout(function(){
+							picOrigWidth=picWidth=_img.outerWidth();
+							picOrigHeight=picHeight=_img.outerHeight();
 							console.log(picOrigWidth+', '+picOrigHeight);
 							_boxWrapper.children().not(_picHolder).show();
 							_loader.stop(false,true).fadeOut(opts.effectDuration);
 							_img.stop(false,true).show(opts.effectDuration);
 							boxResize(picOrigWidth,picOrigHeight);
 							boxPosition(picWidth,picHeight);
+							if(opts.picResize){
+								events.refScrollBoxPosition();
+							}
 							events.windowResize();
 							events.keyBoardNav();
 							events.bindElementEvents();
@@ -228,7 +294,9 @@
 			boxObj.removeClass('active');
 			//boxObj.prev(opts.box).addClass('active');
 			events.clearEvents();
-			$('html').css('overflow','auto');
+			if(opts.picResize){
+				$('html').css('overflow','auto');
+			};
 			boxObj.stop(false,true).fadeOut(opts.effectDuration,function(){
 				boxObj.remove();
 				init();
@@ -240,14 +308,28 @@
 		/********** events **********/
 		var events={
 			windowResize:function(){
-				$(window).off('resize.lightbox').on({
-					'resize.lightbox':
+				$(window).off('resize.lightbox-resize').on({
+					'resize.lightbox-resize':
 					function(){
-						boxResize(picOrigWidth,picOrigHeight);
-						clearTimeout(positionDelay);
-						positionDelay=setTimeout(function(){
+						clearTimeout(boxResizeDelay);
+						clearTimeout(boxPositionDelay);
+						boxResizeDelay=setTimeout(function(){
+							boxResize(picOrigWidth,picOrigHeight);
+						},50);
+						boxPositionDelay=setTimeout(function(){
 							boxPosition(picWidth,picHeight);
-						},opts.effectDuration);
+						},50);
+					}
+				});
+			},
+			refScrollBoxPosition:function(){
+				_ref.off('scroll.lightbox-boxPosition').on({
+					'scroll.lightbox-boxPosition':
+					function(){
+						clearTimeout(boxPositionDelay);
+						boxPositionDelay=setTimeout(function(){
+							boxPosition(picWidth,picHeight);
+						},50);
 					}
 				});
 			},
@@ -282,7 +364,8 @@
 				});
 			},
 			clearEvents:function(){
-				$(window).off('resize.lightbox');
+				$(window).off('resize.lightbox-resize');
+				_ref.off('scroll.lightbox-boxPosition');
 				$(document).off('keydown.lightbox-keyBoardEsc');
 				$(document).off('keydown.lightbox-keyBoardNav');
 				_btnClose.off('click.lightbox');

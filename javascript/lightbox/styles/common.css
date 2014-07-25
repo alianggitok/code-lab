@@ -52,13 +52,14 @@ h2{margin-top:20px}
 .lightbox .wrapper{position: relative}
 .lightbox .picholder{position: relative; background:#000 url(../images/loading2.gif) 50% 50% no-repeat; overflow: hidden}
 .lightbox .picholder .loader{background:#000 url(../images/loading2.gif) 50% 50% no-repeat; position:absolute; top: 0; left: 0; width: 100%; height: 100%}
-.lightbox .nav{position: absolute}
-.lightbox .nav .btn{padding: 6px 10px; background: #fff; margin-top: 80px}
-.lightbox .nav-prev{left: 0}
-.lightbox .nav-next{right: 0}
+.lightbox .nav{position: absolute; vertical-align:middle}
+.lightbox .nav .btn{display:inline-block; padding: 6px 10px; background: #fff; vertical-align:middle; line-height: 16px}
+.lightbox .nav-prev{left: -1px; text-align: left}
+.lightbox .nav-next{right: -1px; text-align: right}
 .lightbox .nav{position: absolute; top: 0}
-.lightbox .info{margin-top: 6px}
-.lightbox .btn-close{position: absolute;}
+.lightbox .info{margin-top: 6px; float: left}
+.lightbox .exec{margin-top: 6px; text-align: right}
+.lightbox .btn-close{}
 
 
 
