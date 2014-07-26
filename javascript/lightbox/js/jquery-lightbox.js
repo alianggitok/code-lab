@@ -9,21 +9,21 @@
 
 	$.fn.lightBox = function(options){
 		var defaults={
-				box:'.lightbox',
-				boxWrapper:'.wrapper',
-				picHolder:'.picholder',
-				origPicSrcAttr:'href',
-				navPrevHTML:'<div class="nav nav-prev"></div>',
-				navNextHTML:'<div class="nav nav-next"></div>',
-				btnPrevHTML:'<a class="btn" title="上一张"><i class="ico"></i>上一张</a>',
-				btnNextHTML:'<a class="btn" title="下一张">下一张<i class="ico"></i></a>',
-				btnCloseHTML:'<a class="btn btn-close" title="关闭"><i class="ico"></i>关闭</a>',
-				refObj:window,
-				refPaddingFixX:10,
-				refPaddingFixY:10,
-				effectDuration:300,
+				box:'.lightbox',/*主 class 名*/
+				boxWrapper:'.wrapper',/*盒子 class 名*/
+				picHolder:'.picholder',/*图片占位层 class 名*/
+				origPicSrcAttr:'href',/*原图src属性名*/
+				navPrevHTML:'<div class="nav nav-prev"></div>',/*导航上一张触发层 HTML*/
+				navNextHTML:'<div class="nav nav-next"></div>',/*导航下一张触发层 HTML*/
+				btnPrevHTML:'<a class="btn" title="上一张"><i class="ico"></i>上一张</a>',/*导航翻上一张按钮 HTML*/
+				btnNextHTML:'<a class="btn" title="下一张">下一张<i class="ico"></i></a>',/*导航翻下一张按钮 HTML*/
+				btnCloseHTML:'<a class="btn btn-close" title="关闭"><i class="ico"></i>关闭</a>',/*关闭按钮 HTML*/
+				refObj:window,/*定位及尺寸参照元素对象*/
+				refPaddingFixX:10,/*定位及尺寸参照元素的内边距修正*/
+				refPaddingFixY:10,/*定位及尺寸参照元素的内边距修正*/
+				effectDuration:300,/*动画持续时长*/
 				checkFreq:200,/*检查图片状态的频率*/
-				picResize:true
+				picResize:true/*是否随参照元素调整图片大小（等比例）*/
 			},
 			opts=$.extend(defaults,options),
 			boxHTML=''+
@@ -67,12 +67,13 @@
 			checkPicLoadStatus=null,
 			boxResizeDelay=null,
 			boxPositionDelay=null,
-			loadedFixDelay=null;
+			loadedFixDelay=null,
+			events={};
 
 		for(var i=0; i<triggerLen; i++){
 			origPicSrc[i]=_trigger.eq(i).attr(opts.origPicSrcAttr);
 			title[i]=_trigger.eq(i).attr('title');
-		};
+		}
 
 		console.log('===>'+$(this).selector+': \n'+triggerSelector+', \n'+title+', \n'+origPicSrc);
 
@@ -87,15 +88,15 @@
 				'width':'auto',
 				'height':'auto'
 			});
-		};
+		}
 		function checkKey(key,currentKey){
 			var keyLen=key.length;
 			for(var i=0; i<keyLen; i++){
 				if(currentKey===key[i]){
 					return true;
-				};
-			};
-		};
+				}
+			}
+		}
 		function isLoaded(obj){
 			console.log(
 				'checking: '+
@@ -104,12 +105,12 @@
 				'[obj.readyState: '+obj.readyState+']'
 			);
 			return obj.complete || obj.readyState === 'complete' || obj.readyState === 'loaded';
-		};
+		}
 		function boxInit(current){
 			init();
 			if(opts.picResize){
 				$('html').css('overflow','hidden');
-			};
+			}
 			var trigger=_trigger.eq(current);
 			_trigger.removeClass('current');
 			trigger.addClass('current');
@@ -149,33 +150,33 @@
 			_btnNext.css({
 				'display':'none'
 			});
-		};
+		}
 		function navInit(width,height){
 			_prev.stop(false,true).animate({
-				'width':width*.5+'px',
+				'width':width*0.5+'px',
 				'height':height+'px',
 				'line-height':height+'px'
 			},opts.effectDuration,function(){
 				if(_prev.width()<_btnPrev.outerWidth()||_prev.height()<_btnPrev.outerHeight()){
 					_btnPrev.hide();
-				};
+				}
 			});
 			_next.stop(false,true).animate({
-				'width':width*.5+'px',
+				'width':width*0.5+'px',
 				'height':height+'px',
 				'line-height':height+'px'
 			},opts.effectDuration,function(){
 				if(_next.width()<_btnNext.outerWidth()||_next.height()<_btnNext.outerHeight()){
 					_btnNext.hide();
-				};
+				}
 			});
 			if(current<=0){
 				_btnPrev.hide();
-			};
+			}
 			if(current>=triggerLen-1){
 				_btnNext.hide();
-			};
-		};
+			}
+		}
 		function boxResize(picOrigWidth,picOrigHeight){
 			var picPaddingX=_box.outerWidth()-_picHolder.width(),
 				picPaddingY=_box.outerHeight()-_picHolder.height(),
@@ -187,33 +188,33 @@
 				picWidth=refWidth-picPaddingX;
 				picScaleX=picWidth/picOrigWidth;
 				picHeight=picOrigHeight*picScaleX;
-			};
+			}
 			function getHeight(){
 				picHeight=refHeight-picPaddingY;
 				picScaleY=picHeight/picOrigHeight;
 				picWidth=picOrigWidth*picScaleY;
-			};
+			}
 			if(opts.picResize){
 				if(boxWidth>=refWidth){
 					getWidth();
 					if(picHeight>=refHeight-picPaddingY){
 						getHeight();
-					};
-				};
+					}
+				}
 				if(boxHeight>=refHeight){
 					getHeight();
 					if(picWidth>=refWidth-picPaddingX){
 						getWidth();
-					};
-				};
+					}
+				}
 				if(boxWidth<refWidth&&boxHeight<refHeight){
 					picWidth=picOrigWidth;
 					picHeight=picOrigHeight;
-				};
+				}
 			}else{
 				picWidth=picOrigWidth;
 				picHeight=picOrigHeight;
-			};
+			}
 			_picHolder.stop(false,true).animate({
 				'width':picWidth+'px',
 				'height':picHeight+'px',
@@ -224,7 +225,7 @@
 				'height':picHeight+'px'
 			},opts.effectDuration);
 			navInit(picWidth,picHeight);
-		};
+		}
 		function boxPosition(picWidth,picHeight){
 			var refWidth=_ref.width(),
 				refHeight=_ref.height(),
@@ -236,7 +237,7 @@
 				'left':boxLeft,
 				'top':boxTop
 			},opts.effectDuration);
-		};
+		}
 		function changePic(current){
 			console.log('===>'+current+': '+origPicSrc[current]);
 			_loader.stop(false,true).fadeIn(opts.effectDuration);
@@ -264,12 +265,12 @@
 						},opts.checkFreq);
 						clearInterval(checkPicLoadStatus);
 						checkPicLoadStatus=null;
-					};
+					}
 				},opts.checkFreq);
 			});
 			_title.html(title[current]);
 			_page.html(current+1+'/'+triggerLen);
-		};
+		}
 
 		function open(current){
 			boxInit(current);
@@ -281,21 +282,21 @@
 				close(otherBoxs,function(){
 					changePic(current);
 				});
-			};
+			}
 			events.keyBoardEsc();
-		};
+		}
 		function prev(){
 			if(current<=0){
 				return false;
-			};
+			}
 			changePic(current-=1);
-		};
+		}
 		function next(){
 			if(current+1>=triggerLen){
 				return false;
-			};
+			}
 			changePic(current+=1);
-		};
+		}
 		function close(boxObj,callback){
 			boxObj=typeof(boxObj)==='undefined'?_box.siblings(opts.box).andSelf():boxObj;
 			callback=typeof(callback)==='undefined'?function(){}:callback;
@@ -304,17 +305,17 @@
 			events.clearEvents();
 			if(opts.picResize){
 				$('html').css('overflow','auto');
-			};
+			}
 			boxObj.stop(false,true).fadeOut(opts.effectDuration,function(){
 				boxObj.remove();
 				init();
 				console.log('closed');
 				callback();
 			});
-		};
+		}
 
 		/********** events **********/
-		var events={
+		events={
 			windowResize:function(){
 				$(window).off('resize.lightbox-resize').on({
 					'resize.lightbox-resize':
@@ -350,10 +351,10 @@
 							prev();
 						}else if(keyCode===39){
 							next();
-						};
+						}
 						if(checkKey([33,34,35,36,37,38,39,40],keyCode)){
 							e.preventDefault();
-						};
+						}
 					}
 				});
 			},
@@ -364,10 +365,10 @@
 						var keyCode=e.which||e.keyCode;
 						if(keyCode===27){
 							close();
-						};
+						}
 						if(checkKey([27],keyCode)){
 							e.preventDefault();
-						};
+						}
 					}
 				});
 			},
@@ -394,27 +395,27 @@
 					}
 				});
 				_prev.off('mouseenter.lightbox').on({
-					'mouseenter.lightbox':
+					'mousemove.lightbox':
 					function(){
 						if(current>0){
-							_btnPrev.show();
-						};
+							_btnPrev.stop(false,true).fadeIn(opts.effectDuration);
+						}
 					},
 					'mouseleave.lightbox':
 					function(){
-						_btnPrev.hide();
+						_btnPrev.stop(false,true).fadeOut(opts.effectDuration);
 					}
 				});
 				_next.off('mouseenter.lightbox').on({
-					'mouseenter.lightbox':
+					'mousemove.lightbox':
 					function(){
 						if(current<triggerLen-1){
-							_btnNext.show();
-						};
+							_btnNext.stop(false,true).fadeIn(opts.effectDuration);
+						}
 					},
 					'mouseleave.lightbox':
 					function(){
-						_btnNext.hide();
+						_btnNext.stop(false,true).fadeOut(opts.effectDuration);
 					}
 				});
 			},
