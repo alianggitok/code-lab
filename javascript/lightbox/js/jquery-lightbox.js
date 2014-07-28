@@ -136,7 +136,8 @@
 					'top':refTop+_ref.scrollTop()+'px',
 					'left':refLeft+_ref.scrollLeft()+'px',
 					'width':_ref.outerWidth()+'px',
-					'height':_ref.outerHeight()+'px'
+					'height':_ref.outerHeight()+'px',
+					'z-index':opts.maskerZIndex
 				}).appendTo('body');
 			}
 			_btnClose.appendTo(_exec);
