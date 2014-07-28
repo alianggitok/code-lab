@@ -95,7 +95,7 @@ label input{vertical-align:middle; margin-right:3px; cursor:pointer}
 .none{display:none}
 .hide{visibility:hidden}
 
-.ellipsis-singleline{text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
+.ellipsis-singleline{text-overflow:ellipsis; overflow:hidden; white-space:nowrap; word-wrap: normal; word-break: normal}
 
 /*crumbs*/
 .nav-crumbs{padding:0 2px; border-bottom:1px solid #90b830; line-height:18px}

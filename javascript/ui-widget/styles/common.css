@@ -72,7 +72,6 @@ label input{vertical-align:middle; margin-right:3px; cursor:pointer}
 .ui-form .verifycode .code{margin:0 10px}
 
 .scrollbarlayer{overflow:auto}
-.container{width:960px; margin:0 auto}
 
 /*fix*/
 .clearfix:after {clear:both;content:" ";display:block;height:0;visibility:hidden;}
@@ -88,19 +87,17 @@ label input{vertical-align:middle; margin-right:3px; cursor:pointer}
 .none{display:none}
 .hide{visibility:hidden}
 
-.ellipsis{text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
+.ellipsis-singleline{text-overflow:ellipsis; overflow:hidden; white-space:nowrap; word-wrap: normal; word-break: normal}
+
 
 /**********widgets**********/
 body{margin:20px}
 h2{margin-top:20px}
 .section{margin-top:10px}
 
-
-
 /*ellipsis*/
 .words{margin-top:10px; max-height:48px; line-height:16px; font-size:12px; overflow:hidden; background:#f2f2f2; border:1px solid #ccc; padding:10px}
 .ellipsissymb{color:red}
-
 
 /*select*/
 .ui-select{display:inline-block; zoom:1; *display:inline; position:relative; border:1px solid #e5e5e5; white-space:nowrap; vertical-align:middle; width:100px; background:#fff; height:24px; line-height:24px; text-align:left; z-index:200}
@@ -122,7 +119,6 @@ h2{margin-top:20px}
 .ui-select.active .current{border-bottom:1px dotted #ccc}
 .ui-select.active .pointer .ico{background-position:-36px 0}
 
-
 /*tabbox*/
 .ui-tabbox{margin-top:10px}
 .ui-tabbox .tabs{height:30px; line-height:30px}
@@ -131,7 +127,6 @@ h2{margin-top:20px}
 .ui-tabbox .tabs .tab.current a{background:#90b830; color:#fff}
 .ui-tabbox .tabs .tab:hover a{background:#693; color:#fff; transition-property:color, background-color}
 .ui-tabbox .conts{border:1px solid #ccc; padding:10px}
-
 
 /*lazyload picture*/
 .lazyload{visibility:hidden}

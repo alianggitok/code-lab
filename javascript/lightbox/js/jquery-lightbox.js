@@ -2,17 +2,23 @@
 //	lightbox 1.0
 //	Depend on jQuery v1.7.2+
 //	Code by Warren Chen on 2014-7-9
-//	已知问题：导航位置调整、样式调整
+//	已知问题：样式调整
 /*========================================================*/
 
 ;(function ($) {
 
-	$.fn.lightBox = function(options){
+	$.fn.lightBox = function lightBox(options){
+		console.log('===>'+lightBox.name)
 		var defaults={
 				box:'.lightbox',/*主 class 名*/
 				boxWrapper:'.wrapper',/*盒子 class 名*/
 				picHolder:'.picholder',/*图片占位层 class 名*/
 				origPicSrcAttr:'href',/*原图src属性名*/
+				mask:true,/*是否开启遮罩层*/
+				masker:'.masker',/*遮罩层 class 名*/
+				maskerBgColor:'#000',/*是否开启遮罩层*/
+				maskerZIndex:'1001',/*遮罩层层级*/
+				maskerOpacity:.5,/*遮罩透明度*/
 				navPrevHTML:'<div class="nav nav-prev"></div>',/*导航上一张触发层 HTML*/
 				navNextHTML:'<div class="nav nav-next"></div>',/*导航下一张触发层 HTML*/
 				btnPrevHTML:'<a class="btn" title="上一张"><i class="ico"></i>上一张</a>',/*导航翻上一张按钮 HTML*/
@@ -51,7 +57,12 @@
 			_next=$(opts.navNextHTML),
 			_btnNext=$(opts.btnNextHTML),
 			_btnClose=$(opts.btnCloseHTML),
+			maskerCSS='position:absolute; display:none; padding:0; margin:0; border:none; top:0; left:0; width:auto; height:auto',
+			maskerHTML='<div class="'+opts.masker.replace('.','')+'" style="'+maskerCSS+'"></div>',
+			_masker=$(maskerHTML),
 			_ref=$(opts.refObj),
+			refTop=_ref.get(0).hasOwnProperty('offsetTop')?_ref.offset().top:0,
+			refLeft=_ref.get(0).hasOwnProperty('offsetLeft')?_ref.offset().left:0,
 			_trigger=$(this),
 			triggerSelector=$(this).selector,
 			triggerLen=_trigger.length,
@@ -75,7 +86,11 @@
 			title[i]=_trigger.eq(i).attr('title');
 		}
 
-		console.log('===>'+$(this).selector+': \n'+triggerSelector+', \n'+title+', \n'+origPicSrc);
+		console.log(
+			'selector: '+triggerSelector+'\n'+
+			'title: '+title+'\n'+
+			'origPicSrc:'+origPicSrc
+		);
 
 		/********** functions **********/
 		function init(){
@@ -114,16 +129,26 @@
 			var trigger=_trigger.eq(current);
 			_trigger.removeClass('current');
 			trigger.addClass('current');
-			$(opts.box).removeClass('active');
-			_box.addClass('active');
+			if(opts.mask){
+				_masker.css({
+					'display':'none',
+					'background-color':opts.maskerBgColor,
+					'top':refTop+_ref.scrollTop()+'px',
+					'left':refLeft+_ref.scrollLeft()+'px',
+					'width':_ref.outerWidth()+'px',
+					'height':_ref.outerHeight()+'px'
+				}).appendTo('body');
+			}
 			_btnClose.appendTo(_exec);
 			_prev.appendTo(_boxWrapper).append(_btnPrev);
 			_next.appendTo(_boxWrapper).append(_btnNext);
-			_box.css({
+			$(opts.box).removeClass('active');
+			_box.addClass('active').css({
 				'display':'none',
 				'position':'absolute',
 				'top':trigger.offset().top,
-				'left':trigger.offset().left
+				'left':trigger.offset().left,
+				'z-index':Number(opts.maskerZIndex)+1
 			}).appendTo('body');
 			var width=trigger.width()-(_box.outerWidth()-_box.width()),
 				height=trigger.height()-(_box.outerHeight()-_box.height());
@@ -238,6 +263,22 @@
 				'top':boxTop
 			},opts.effectDuration);
 		}
+		function maskerPosition(){
+			if(opts.mask){
+				_masker.css({
+					'top':_ref.scrollTop()+'px',
+					'left':_ref.scrollLeft()+'px'
+				});
+			};
+		}
+		function maskerResize(){
+			if(opts.mask){
+				_masker.css({
+					'width':_ref.outerWidth()+'px',
+					'height':_ref.outerHeight()+'px'
+				});
+			};
+		}
 		function changePic(current){
 			console.log('===>'+current+': '+origPicSrc[current]);
 			_loader.stop(false,true).fadeIn(opts.effectDuration);
@@ -259,6 +300,9 @@
 							if(opts.picResize){
 								events.refScrollBoxPosition();
 							}
+							if(opts.mask){
+								events.refScrollMaskerPosition();
+							}
 							events.windowResize();
 							events.keyBoardNav();
 							events.bindElementEvents();
@@ -274,12 +318,16 @@
 
 		function open(current){
 			boxInit(current);
+			if(opts.mask){
+				_masker.stop(false,true).fadeTo(opts.effectDuration,opts.maskerOpacity);
+			}
 			_box.stop(false,true).fadeTo(opts.effectDuration,1);
-			var otherBoxs=_box.siblings(opts.box);
+			var otherBoxs=_box.siblings(opts.box),
+				otherMasker=_masker.siblings(opts.masker);
 			if(otherBoxs.length<1){
 				changePic(current);
 			}else{
-				close(otherBoxs,function(){
+				close(otherBoxs,otherMasker,function(){
 					changePic(current);
 				});
 			}
@@ -297,21 +345,26 @@
 			}
 			changePic(current+=1);
 		}
-		function close(boxObj,callback){
+		function close(boxObj,maskerObj,callback){
 			boxObj=typeof(boxObj)==='undefined'?_box.siblings(opts.box).andSelf():boxObj;
-			callback=typeof(callback)==='undefined'?function(){}:callback;
-			boxObj.removeClass('active');
-			boxObj.prev(opts.box).addClass('active');
+			maskerObj=typeof(maskerObj)==='undefined'?_masker.siblings(opts.masker).andSelf():maskerObj;
+			callback=typeof(callback)!=='function'?function(){}:callback;
 			events.clearEvents();
-			if(opts.picResize){
-				$('html').css('overflow','auto');
-			}
 			boxObj.stop(false,true).fadeOut(opts.effectDuration,function(){
-				boxObj.remove();
+				boxObj.removeClass('active').remove();
+				boxObj.prev(opts.box).addClass('active');
+				if(opts.picResize){
+					$('html').css('overflow','auto');
+				}
 				init();
 				console.log('closed');
 				callback();
 			});
+			if(opts.mask){
+				maskerObj.stop(false,true).fadeOut(opts.effectDuration,function(){
+					maskerObj.remove();
+				});
+			}
 		}
 
 		/********** events **********/
@@ -324,10 +377,11 @@
 						clearTimeout(boxPositionDelay);
 						boxResizeDelay=setTimeout(function(){
 							boxResize(picOrigWidth,picOrigHeight);
-						},50);
+						},100);
 						boxPositionDelay=setTimeout(function(){
 							boxPosition(picWidth,picHeight);
-						},50);
+						},100);
+						maskerResize();
 					}
 				});
 			},
@@ -338,7 +392,16 @@
 						clearTimeout(boxPositionDelay);
 						boxPositionDelay=setTimeout(function(){
 							boxPosition(picWidth,picHeight);
-						},50);
+						},100);
+						maskerPosition();
+					}
+				});
+			},
+			refScrollMaskerPosition:function(){
+				_ref.off('scroll.lightbox-maskerPosition').on({
+					'scroll.lightbox-maskerPosition':
+					function(){
+						maskerPosition();
 					}
 				});
 			},
@@ -421,7 +484,7 @@
 			},
 			clearEvents:function(){
 				$(window).off('resize.lightbox-resize');
-				_ref.off('scroll.lightbox-boxPosition');
+				_ref.off('scroll.lightbox-boxPosition scroll.lightbox-maskerPosition');
 				$(document).off('keydown.lightbox-keyBoardEsc');
 				$(document).off('keydown.lightbox-keyBoardNav');
 				_btnClose.off('.lightbox');
