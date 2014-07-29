@@ -17,14 +17,14 @@
 				mask:true,/*是否开启遮罩层*/
 				masker:'.masker',/*遮罩层 class 名*/
 				maskerBgColor:'#000',/*是否开启遮罩层*/
-				maskerZIndex:'1001',/*遮罩层层级*/
+				maskerZIndex:1001,/*遮罩层层级*/
 				maskerOpacity:.5,/*遮罩透明度*/
 				navPrevHTML:'<div class="nav nav-prev"></div>',/*导航上一张触发层 HTML*/
 				navNextHTML:'<div class="nav nav-next"></div>',/*导航下一张触发层 HTML*/
 				btnPrevHTML:'<a class="btn" title="上一张"><i class="ico"></i>上一张</a>',/*导航翻上一张按钮 HTML*/
 				btnNextHTML:'<a class="btn" title="下一张">下一张<i class="ico"></i></a>',/*导航翻下一张按钮 HTML*/
 				btnCloseHTML:'<a class="btn btn-close" title="关闭"><i class="ico"></i>关闭</a>',/*关闭按钮 HTML*/
-				refObj:window,/*定位及尺寸参照元素对象*/
+				ref:window,/*定位及尺寸参照元素对象*/
 				refPaddingFixX:10,/*定位及尺寸参照元素的内边距修正*/
 				refPaddingFixY:10,/*定位及尺寸参照元素的内边距修正*/
 				effectDuration:300,/*动画持续时长*/
@@ -60,13 +60,16 @@
 			maskerCSS='position:absolute; display:none; padding:0; margin:0; border:none; top:0; left:0; width:auto; height:auto',
 			maskerHTML='<div class="'+opts.masker.replace('.','')+'" style="'+maskerCSS+'"></div>',
 			_masker=$(maskerHTML),
-			_ref=$(opts.refObj),
-			refTop=_ref.get(0).hasOwnProperty('offsetTop')?_ref.offset().top:0,
-			refLeft=_ref.get(0).hasOwnProperty('offsetLeft')?_ref.offset().left:0,
 			_trigger=$(this),
 			triggerSelector=$(this).selector,
 			triggerLen=_trigger.length,
 			current=0,
+			_ref=$(opts.ref),
+			_refProto=_ref.get(0),
+			refTop=_refProto.hasOwnProperty('offsetTop')?_ref.offset().top:0,
+			refLeft=_refProto.hasOwnProperty('offsetLeft')?_ref.offset().left:0,
+			refWidth=_ref.outerWidth(),
+			refHeight=_ref.outerHeight(),
 			origPicSrc=[],
 			title=[],
 			picOrigWidth=0,
@@ -124,8 +127,12 @@
 		function boxInit(current){
 			init();
 			if(opts.picResize){
-				$('html').css('overflow','hidden');
-			}
+				if(opts.ref===window){
+					$('html').css('overflow','hidden');
+				}else{
+					_ref.css('overflow','hidden');
+				}
+			};
 			var trigger=_trigger.eq(current);
 			_trigger.removeClass('current');
 			trigger.addClass('current');
@@ -135,8 +142,8 @@
 					'background-color':opts.maskerBgColor,
 					'top':refTop+_ref.scrollTop()+'px',
 					'left':refLeft+_ref.scrollLeft()+'px',
-					'width':_ref.outerWidth()+'px',
-					'height':_ref.outerHeight()+'px',
+					'width':refWidth+'px',
+					'height':refHeight+'px',
 					'z-index':opts.maskerZIndex
 				}).appendTo('body');
 			}
@@ -177,20 +184,20 @@
 				'display':'none'
 			});
 		}
-		function navInit(width,height){
+		function navInit(navRefWidth,navRefHeight){
 			_prev.stop(false,true).animate({
-				'width':width*0.5+'px',
-				'height':height+'px',
-				'line-height':height+'px'
+				'width':navRefWidth*0.5+'px',
+				'height':navRefHeight+'px',
+				'line-height':navRefHeight+'px'
 			},opts.effectDuration,function(){
 				if(_prev.width()<_btnPrev.outerWidth()||_prev.height()<_btnPrev.outerHeight()){
 					_btnPrev.hide();
 				}
 			});
 			_next.stop(false,true).animate({
-				'width':width*0.5+'px',
-				'height':height+'px',
-				'line-height':height+'px'
+				'width':navRefWidth*0.5+'px',
+				'height':navRefHeight+'px',
+				'line-height':navRefHeight+'px'
 			},opts.effectDuration,function(){
 				if(_next.width()<_btnNext.outerWidth()||_next.height()<_btnNext.outerHeight()){
 					_btnNext.hide();
@@ -207,9 +214,9 @@
 			var picPaddingX=_box.outerWidth()-_picHolder.width(),
 				picPaddingY=_box.outerHeight()-_picHolder.height(),
 				boxWidth=picPaddingX+picOrigWidth,
-				boxHeight=picPaddingY+picOrigHeight,
-				refWidth=_ref.width()-opts.refPaddingFixX*2,
-				refHeight=_ref.height()-opts.refPaddingFixY*2;
+				boxHeight=picPaddingY+picOrigHeight;
+			refWidth=_ref.outerWidth()-opts.refPaddingFixX*2;
+			refHeight=_ref.outerHeight()-opts.refPaddingFixY*2;
 			function getWidth(){
 				picWidth=refWidth-picPaddingX;
 				picScaleX=picWidth/picOrigWidth;
@@ -253,22 +260,25 @@
 			navInit(picWidth,picHeight);
 		}
 		function boxPosition(picWidth,picHeight){
-			var refWidth=_ref.width(),
-				refHeight=_ref.height(),
-				boxWidth=_box.outerWidth()-_picHolder.outerWidth()+picWidth,
+			refWidth=_ref.outerWidth();
+			refHeight=_ref.outerHeight();
+			var boxWidth=_box.outerWidth()-_picHolder.outerWidth()+picWidth,
 				boxHeight=_box.outerHeight()-_picHolder.outerHeight()+picHeight,
-				boxTop=boxHeight>refHeight?_ref.scrollTop():(refHeight-boxHeight)/2+_ref.scrollTop(),
-				boxLeft=boxWidth>refWidth?_ref.scrollLeft():(refWidth-boxWidth)/2+_ref.scrollLeft();
+				boxTop=(boxHeight>refHeight?_ref.scrollTop():(refHeight-boxHeight)/2+_ref.scrollTop())+refTop,
+				boxLeft=(boxWidth>refWidth?_ref.scrollLeft():(refWidth-boxWidth)/2+_ref.scrollLeft())+refLeft;
+
 			_box.stop(false,true).animate({
 				'left':boxLeft,
 				'top':boxTop
 			},opts.effectDuration);
 		}
 		function maskerPosition(){
+			refTop=_refProto.hasOwnProperty('offsetTop')?_ref.offset().top:0;
+			refLeft=_refProto.hasOwnProperty('offsetLeft')?_ref.offset().left:0;
 			if(opts.mask){
 				_masker.css({
-					'top':_ref.scrollTop()+'px',
-					'left':_ref.scrollLeft()+'px'
+					'top':_ref.scrollTop()+refTop+'px',
+					'left':_ref.scrollLeft()+refLeft+'px'
 				});
 			};
 		}
@@ -289,6 +299,8 @@
 				_img.attr('src',origPicSrc[current]);
 				checkPicLoadStatus=setInterval(function(){
 					if(isLoaded(_imgProto)){
+						maskerPosition();
+						maskerResize();
 						loadedFixDelay=setTimeout(function(){
 							picOrigWidth=picWidth=_img.outerWidth();
 							picOrigHeight=picHeight=_img.outerHeight();
@@ -355,7 +367,11 @@
 				boxObj.removeClass('active').remove();
 				boxObj.prev(opts.box).addClass('active');
 				if(opts.picResize){
-					$('html').css('overflow','auto');
+					if(opts.ref===window){
+						$('html').css('overflow','auto');
+					}else{
+						_ref.css('overflow','auto');
+					}
 				}
 				init();
 				console.log('closed');
@@ -364,6 +380,10 @@
 			if(opts.mask){
 				maskerObj.stop(false,true).fadeOut(opts.effectDuration,function(){
 					maskerObj.remove();
+				});
+			}else{
+				$(opts.masker).stop(false,true).fadeOut(opts.effectDuration,function(){
+					$(opts.masker).remove();
 				});
 			}
 		}
@@ -374,6 +394,8 @@
 				$(window).off('resize.lightbox-resize').on({
 					'resize.lightbox-resize':
 					function(){
+						maskerResize();
+						maskerPosition();
 						clearTimeout(boxResizeDelay);
 						clearTimeout(boxPositionDelay);
 						boxResizeDelay=setTimeout(function(){
@@ -382,7 +404,6 @@
 						boxPositionDelay=setTimeout(function(){
 							boxPosition(picWidth,picHeight);
 						},100);
-						maskerResize();
 					}
 				});
 			},
@@ -458,8 +479,8 @@
 						e.preventDefault();
 					}
 				});
-				_prev.off('mouseenter.lightbox').on({
-					'mousemove.lightbox':
+				_prev.off('mouseenter.lightbox mouseleave.lightbox').on({
+					'mouseenter.lightbox':
 					function(){
 						if(current>0){
 							_btnPrev.stop(false,true).fadeIn(opts.effectDuration);
@@ -470,8 +491,8 @@
 						_btnPrev.stop(false,true).fadeOut(opts.effectDuration);
 					}
 				});
-				_next.off('mouseenter.lightbox').on({
-					'mousemove.lightbox':
+				_next.off('mouseenter.lightbox mouseleave.lightbox').on({
+					'mouseenter.lightbox':
 					function(){
 						if(current<triggerLen-1){
 							_btnNext.stop(false,true).fadeIn(opts.effectDuration);
@@ -486,8 +507,7 @@
 			clearEvents:function(){
 				$(window).off('resize.lightbox-resize');
 				_ref.off('scroll.lightbox-boxPosition scroll.lightbox-maskerPosition');
-				$(document).off('keydown.lightbox-keyBoardEsc');
-				$(document).off('keydown.lightbox-keyBoardNav');
+				$(document).off('keydown.lightbox-keyBoardEsc keydown.lightbox-keyBoardNav');
 				_btnClose.off('.lightbox');
 				_btnPrev.off('.lightbox');
 				_btnNext.off('.lightbox');
