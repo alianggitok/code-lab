@@ -45,6 +45,8 @@
 				'</div>',
 			_box=$(boxHTML),
 			_boxWrapper=_box.find(opts.boxWrapper),
+			_ref=$(opts.ref),
+			_refProto=_ref.get(0),
 			_picHolder=_box.find(opts.picHolder),
 			_img=$('<img class="pic" src="" alt="">'),
 			_imgProto=_img.get(0),
@@ -64,12 +66,10 @@
 			triggerSelector=$(this).selector,
 			triggerLen=_trigger.length,
 			current=0,
-			_ref=$(opts.ref),
-			_refProto=_ref.get(0),
-			refTop=_refProto.hasOwnProperty('offsetTop')?_ref.offset().top:0,
-			refLeft=_refProto.hasOwnProperty('offsetLeft')?_ref.offset().left:0,
-			refWidth=_ref.outerWidth(),
-			refHeight=_ref.outerHeight(),
+			refTop=0,
+			refLeft=0,
+			refWidth=0,
+			refHeight=0,
 			origPicSrc=[],
 			title=[],
 			picOrigWidth=0,
@@ -140,13 +140,11 @@
 				_masker.css({
 					'display':'none',
 					'background-color':opts.maskerBgColor,
-					'top':refTop+_ref.scrollTop()+'px',
-					'left':refLeft+_ref.scrollLeft()+'px',
-					'width':refWidth+'px',
-					'height':refHeight+'px',
 					'z-index':opts.maskerZIndex
 				}).appendTo('body');
 			}
+			maskerPosition();
+			maskerResize();
 			_btnClose.appendTo(_exec);
 			_prev.appendTo(_boxWrapper).append(_btnPrev);
 			_next.appendTo(_boxWrapper).append(_btnNext);
@@ -283,10 +281,12 @@
 			};
 		}
 		function maskerResize(){
+			refWidth=_ref.outerWidth();
+			refHeight=_ref.outerHeight();
 			if(opts.mask){
 				_masker.css({
-					'width':_ref.outerWidth()+'px',
-					'height':_ref.outerHeight()+'px'
+					'width':refWidth+'px',
+					'height':refHeight+'px'
 				});
 			};
 		}
@@ -299,11 +299,11 @@
 				_img.attr('src',origPicSrc[current]);
 				checkPicLoadStatus=setInterval(function(){
 					if(isLoaded(_imgProto)){
+						picOrigWidth=picWidth=_img.outerWidth();
+						picOrigHeight=picHeight=_img.outerHeight();
 						maskerPosition();
 						maskerResize();
 						loadedFixDelay=setTimeout(function(){
-							picOrigWidth=picWidth=_img.outerWidth();
-							picOrigHeight=picHeight=_img.outerHeight();
 							console.log(picOrigWidth+', '+picOrigHeight);
 							_boxWrapper.children().not(_picHolder).show();
 							_loader.stop(false,true).fadeOut(opts.effectDuration);
