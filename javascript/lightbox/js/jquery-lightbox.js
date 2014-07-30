@@ -184,7 +184,7 @@
 		}
 		function navInit(navRefWidth,navRefHeight){
 			_prev.stop(false,true).animate({
-				'width':navRefWidth*0.5+'px',
+				'width':navRefWidth*0.45+'px',
 				'height':navRefHeight+'px',
 				'line-height':navRefHeight+'px'
 			},opts.effectDuration,function(){
@@ -193,7 +193,7 @@
 				}
 			});
 			_next.stop(false,true).animate({
-				'width':navRefWidth*0.5+'px',
+				'width':navRefWidth*0.45+'px',
 				'height':navRefHeight+'px',
 				'line-height':navRefHeight+'px'
 			},opts.effectDuration,function(){
