@@ -10,7 +10,7 @@
 	$.fn.lightBox = function lightBox(options){
 		console.log('===>'+lightBox.name)
 		var defaults={
-				box:'.lightbox',/*主 class 名*/
+				box:'.lightbox',/*弹层 class 名*/
 				boxWrapper:'.wrapper',/*盒子 class 名*/
 				picHolder:'.picholder',/*图片占位层 class 名*/
 				origPicSrcAttr:'href',/*原图src属性名*/
