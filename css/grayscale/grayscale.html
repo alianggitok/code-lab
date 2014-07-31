@@ -13,7 +13,10 @@
 	filter: grayscale(100%);
 	filter: url(grayscale.svg#grayscale);/*for ff*/
 
-	filter: gray;
+	filter:progid:DXImageTransform.Microsoft.BasicImage(GrayScale=1);
+	filter:gray;
+	height:100%;/*ie7下需给定元素高度*/
+	zoom:1/*ie6下需触发haslayout，或用其他可触发haslayout的属性*/
 }
 </style>
 </head>
@@ -25,6 +28,8 @@ normal:
 
 gray:
 <div class="grayscale"><img src="1.jpg"></div>
+
+
 
 </body>
 </html>
