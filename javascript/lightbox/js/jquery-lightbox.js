@@ -258,7 +258,9 @@
 			_img.stop(false,true).animate({
 				'width':picWidth+'px',
 				'height':picHeight+'px'
-			},opts.effectDuration);
+			},opts.effectDuration,function(){
+				_img.stop(false,true).fadeIn(opts.effectDuration);
+			});
 			navInit(picWidth,picHeight);
 		}
 		function boxPosition(picWidth,picHeight){
@@ -312,7 +314,6 @@
 							/*console.log(picOrigWidth+', '+picOrigHeight);*/
 							_boxWrapper.children().not(_picHolder).show();
 							_loader.stop(false,true).fadeOut(opts.effectDuration);
-							_img.stop(false,true).show(opts.effectDuration);
 							boxResize(picOrigWidth,picOrigHeight);
 							boxPosition(picWidth,picHeight);
 						},opts.checkFreq);
