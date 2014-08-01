@@ -298,33 +298,33 @@
 		function changePic(current){
 			/*console.log('===>'+current+': '+origPicSrc[current]);*/
 			_loader.stop(false,true).fadeIn(opts.effectDuration);
-			_trigger.removeClass('current').eq(current).addClass('current');
 			_img.stop(false,true).fadeOut(opts.effectDuration,function(){
 				init();
+				_trigger.removeClass('current').eq(current).addClass('current');
 				_img.attr('src',origPicSrc[current]);
 				checkPicLoadStatus=setInterval(function(){
 					if(isLoaded(_imgProto)){
-						picOrigWidth=picWidth=_img.outerWidth();
-						picOrigHeight=picHeight=_img.outerHeight();
 						maskerPosition();
 						maskerResize();
 						loadedFixDelay=setTimeout(function(){
+							picOrigWidth=picWidth=_img.outerWidth();
+							picOrigHeight=picHeight=_img.outerHeight();
 							/*console.log(picOrigWidth+', '+picOrigHeight);*/
 							_boxWrapper.children().not(_picHolder).show();
 							_loader.stop(false,true).fadeOut(opts.effectDuration);
 							_img.stop(false,true).show(opts.effectDuration);
 							boxResize(picOrigWidth,picOrigHeight);
 							boxPosition(picWidth,picHeight);
-							if(opts.picResize){
-								events.refScrollBoxPosition();
-							}
-							if(opts.mask){
-								events.refScrollMaskerPosition();
-							}
-							events.windowResize();
-							events.keyBoardNav();
-							events.bindElementEvents();
 						},opts.checkFreq);
+						if(opts.picResize){
+							events.refScrollBoxPosition();
+						}
+						if(opts.mask){
+							events.refScrollMaskerPosition();
+						}
+						events.windowResize();
+						events.keyBoardNav();
+						events.bindElementEvents();
 						clearInterval(checkPicLoadStatus);
 						checkPicLoadStatus=null;
 					}
@@ -435,13 +435,13 @@
 					'keydown.lightbox-keyBoardNav':
 					function(e){
 						var keyCode=e.which||e.keyCode;
+						if(checkKey([33,34,35,36,37,38,39,40],keyCode)){
+							e.preventDefault();
+						}
 						if(keyCode===37){
 							prev();
 						}else if(keyCode===39){
 							next();
-						}
-						if(checkKey([33,34,35,36,37,38,39,40],keyCode)){
-							e.preventDefault();
 						}
 					}
 				});
@@ -451,11 +451,11 @@
 					'keydown.lightbox-keyBoardEsc':
 					function(e){
 						var keyCode=e.which||e.keyCode;
-						if(keyCode===27){
-							close();
-						}
 						if(checkKey([27],keyCode)){
 							e.preventDefault();
+						}
+						if(keyCode===27){
+							close();
 						}
 					}
 				});
