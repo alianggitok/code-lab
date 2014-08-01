@@ -2,13 +2,13 @@
 //	lightbox 1.0
 //	Depend on jQuery v1.7.2+
 //	Code by Warren Chen on 2014-7-9
-//	已知问题：样式调整
+//	issues：ie6 image resize has faults
 /*========================================================*/
 
 ;(function ($) {
 
 	$.fn.lightBox = function lightBox(options){
-		console.log('===>'+lightBox.name)
+		/*console.log('===>'+lightBox.name)*/
 		var defaults={
 				box:'.lightbox',/*弹层 class 名*/
 				boxWrapper:'.wrapper',/*盒子 class 名*/
@@ -89,11 +89,13 @@
 			title[i]=_trigger.eq(i).attr('title');
 		}
 
+		/*
 		console.log(
 			'selector: '+triggerSelector+'\n'+
 			'title: '+title+'\n'+
 			'origPicSrc:'+origPicSrc
 		);
+		*/
 
 		/********** functions **********/
 		function init(){
@@ -106,6 +108,13 @@
 				'width':'auto',
 				'height':'auto'
 			});
+			if(opts.picResize){
+				if(opts.ref===window){
+					$('html').css('overflow','hidden');
+				}else{
+					_ref.css('overflow','hidden');
+				}
+			};
 		}
 		function checkKey(key,currentKey){
 			var keyLen=key.length;
@@ -116,23 +125,18 @@
 			}
 		}
 		function isLoaded(obj){
+			/*
 			console.log(
 				'checking: '+
 				'[obj.complete: '+obj.complete+'], '+
 				'[obj.readyState: '+obj.readyState+'], '+
 				'[obj.readyState: '+obj.readyState+']'
 			);
+			*/
 			return obj.complete || obj.readyState === 'complete' || obj.readyState === 'loaded';
 		}
 		function boxInit(current){
 			init();
-			if(opts.picResize){
-				if(opts.ref===window){
-					$('html').css('overflow','hidden');
-				}else{
-					_ref.css('overflow','hidden');
-				}
-			};
 			var trigger=_trigger.eq(current);
 			_trigger.removeClass('current');
 			trigger.addClass('current');
@@ -271,8 +275,9 @@
 			},opts.effectDuration);
 		}
 		function maskerPosition(){
-			refTop=_refProto.hasOwnProperty('offsetTop')?_ref.offset().top:0;
-			refLeft=_refProto.hasOwnProperty('offsetLeft')?_ref.offset().left:0;
+			var hasPropertyOffset=typeof(_ref.offset())!=='undefined';
+			refTop=hasPropertyOffset?_ref.offset().top:0;
+			refLeft=hasPropertyOffset?_ref.offset().left:0;
 			if(opts.mask){
 				_masker.css({
 					'top':_ref.scrollTop()+refTop+'px',
@@ -291,7 +296,7 @@
 			};
 		}
 		function changePic(current){
-			console.log('===>'+current+': '+origPicSrc[current]);
+			/*console.log('===>'+current+': '+origPicSrc[current]);*/
 			_loader.stop(false,true).fadeIn(opts.effectDuration);
 			_trigger.removeClass('current').eq(current).addClass('current');
 			_img.stop(false,true).fadeOut(opts.effectDuration,function(){
@@ -304,7 +309,7 @@
 						maskerPosition();
 						maskerResize();
 						loadedFixDelay=setTimeout(function(){
-							console.log(picOrigWidth+', '+picOrigHeight);
+							/*console.log(picOrigWidth+', '+picOrigHeight);*/
 							_boxWrapper.children().not(_picHolder).show();
 							_loader.stop(false,true).fadeOut(opts.effectDuration);
 							_img.stop(false,true).show(opts.effectDuration);
@@ -366,15 +371,13 @@
 			boxObj.stop(false,true).fadeOut(opts.effectDuration,function(){
 				boxObj.removeClass('active').remove();
 				boxObj.prev(opts.box).addClass('active');
-				if(opts.picResize){
-					if(opts.ref===window){
-						$('html').css('overflow','auto');
-					}else{
-						_ref.css('overflow','auto');
-					}
-				}
 				init();
-				console.log('closed');
+				if(opts.ref===window){
+					$('html').css('overflow','auto');
+				}else{
+					_ref.css('overflow','auto');
+				}
+				/*console.log('closed');*/
 				callback();
 			});
 			if(opts.mask){
