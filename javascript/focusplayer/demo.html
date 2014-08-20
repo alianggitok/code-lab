@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>focusplayer</title>
+	<link rel="stylesheet" href="styles/common.css"/>
+	<link rel="stylesheet" href="../depend-file/js/syntaxhighlighter/3.0.83/styles/shCoreDefault.css"/>
+	<style>
+	.ellipsis-singleline{text-overflow:ellipsis; overflow:hidden; white-space:nowrap; word-wrap: normal; word-break: normal}
+
+	.focusbox{float:left; position:relative; width:436px; height:360px; overflow:hidden; margin-top:1px}
+	.focusbox .tabs{position:absolute; bottom:0; left:0; width:100%; z-index:19}
+	.focusbox .tabs .wrapper{width:366px; height:54px; overflow:hidden; padding:12px 35px; border-top:1px solid #333; background:#242424}
+	.focusbox .tabs ul{width:376px; height:54px; overflow:hidden}
+	.focusbox .tabs li{float:left; width:80px; height:50px; overflow:hidden; border:2px solid #999; cursor:pointer; margin-right:10px}
+	.focusbox .tabs img{width:80px}
+	.focusbox .tabs .current{border-color:#90b830}
+	.focusbox .nav{position:absolute; top:309px; z-index:20}
+	.focusbox .nav .ico{width:12px; height:24px; background-position:-48px -96px}
+	.focusbox .nav-prev{left:11px}
+	.focusbox .nav-next{right:11px}
+	.focusbox .nav-next .ico{background-position:-60px -96px}
+	.focusbox .pics{width:436px; height:360px; overflow:hidden}
+	.focusbox .intro{position:absolute; color:#fff; text-align:center; padding:5px 0; z-index:20; width:100%; bottom:78px}
+	</style>
+</head>
+
+<body>
+
+<h2>focusplayer</h2>
+<div class="focusbox">
+	<a class="btn nav nav-prev" href="#"><i class="ico">&lt;</i></a>
+	<a class="btn nav nav-next" href="#"><i class="ico">&gt;</i></a>
+	<div class="intro ellipsis-single">&nbsp;</div>
+	<div class="tabs">
+		<div class="wrapper">
+			<ul>
+				<li><img src="images/436-360_01.jpg" alt=""></li>
+				<li><img src="images/436-360_02.jpg" alt=""></li>
+				<li><img src="images/436-360_03.jpg" alt=""></li>
+				<li><img src="images/436-360_04.jpg" alt=""></li>
+			</ul>
+		</div>
+	</div>
+	<div class="pics">
+		<ul>
+			<li><a href="#1"><img src="images/436-360_01.jpg" alt="中食展（Sial）在上海举行1"></a></li>
+			<li><a href="#2"><img src="images/436-360_02.jpg" alt="中食展（Sial）在上海举行2"></a></li>
+			<li><a href="#3"><img src="images/436-360_03.jpg" alt="中食展（Sial）在上海举行3"></a></li>
+			<li><a href="#4"><img src="images/436-360_04.jpg" alt="中食展（Sial）在上海举行4"></a></li>
+		</ul>
+	</div>
+</div>
+
+
+<script type="text/javascript" src="../depend-file/js/jquery.1.8.2.js"></script>
+<script type="text/javascript" src="js/jquery-slideplayer-1.2.js"></script>
+<script type="text/javascript">
+$(function () {
+	$('.focusbox').slidePlayer({
+		conts:'.pics ul',
+		contItem:'li',
+		showTabs:true,
+		tabs:'.tabs ul',
+		tabItem:'li',
+		tabChangeFunc:'mousemove',
+		showNav:true,
+		navPrev:'.nav-prev',
+		navNext:'.nav-next',
+		showIntro:true,
+		intro:'.intro',
+		autoTime:6000,
+		effect:'flash',
+		effectEasing:'linear',
+		effectDuration:600
+	});
+});
+</script>
+
+</body>
+</html>

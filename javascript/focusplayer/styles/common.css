@@ -1,0 +1,53 @@
+@charset "utf-8";
+
+/**********global**********/
+html,body,iframe,
+div,h1,h2,h3,h4,h5,h6,p,pre,dl,dt,dd,ol,ul,li,
+nav,header,footer,section,article,aside,details,summary,
+form,label,fieldset,legend,hr,dialog,
+canvas,object,embed,progress,audio,video,track,map,area,figure,figcaption,
+table,caption,tbody,tfoot,thead,tr,th,td,
+span,a,b,strong,em,mark,blockquote,code,del,abbr,dfn,big,small,time,i,acronym,address,cite,ins,kbd,q,samp,sub,sup,tt,var{margin:0; padding:0; border:none; font:inherit}
+
+body{font-size:12px; line-height:16px; letter-spacing:0; font-family:"微软雅黑", "Arial", "Helvetica", "sans-serif"; background:#fff; color:#000; cursor:default; vertical-align:baseline; word-wrap:break-word; word-break:break-all}
+
+:hover{transition-duration:.3s; transition-timing-function:ease; transition-property:none}
+
+h1{font-size:32px; line-height:48px}
+h2{font-size:24px; line-height:36px}
+h3{font-size:18px; line-height:27px}
+h4{font-size:14px; line-height:21px}
+
+ol,ul,dl{list-style:none}
+
+table{border-collapse:collapse; border-spacing:0}
+
+a{text-decoration:none; color:#666}
+a:link{}
+a:visited{}
+a:hover{text-decoration:underline; color:#000; transition-property:color, border-color, background-color;}
+a:active{}
+
+img{vertical-align:top; border:none; -ms-interpolation-mode:bicubic;}
+
+/*icon*/
+.ico{display:inline-block; border:none; background:url(../images/icons.png) transparent 0 0 no-repeat; overflow:hidden; vertical-align:middle; text-align:center; width:12px; height:12px; }
+
+/*button*/
+.btn{display:inline-block; border:none; background:transparent 0 0 no-repeat; overflow:visible; cursor:pointer; text-align:center; vertical-align:top; text-decoration:none; font-weight:normal; font-size:12px; box-sizing:content-box; -moz-box-sizing:content-box; padding:0; margin:0}
+.btn:hover{text-decoration:none; transition-property:border-color,color}
+
+/*fix*/
+.clearfix:after {clear:both;content:" ";display:block;height:0;visibility:hidden;}
+.clearfix {zoom:1;}
+
+/**********widgets**********/
+body{margin:20px}
+h2{margin-top:20px}
+.section{margin-top:10px}
+
+
+
+
+
+
