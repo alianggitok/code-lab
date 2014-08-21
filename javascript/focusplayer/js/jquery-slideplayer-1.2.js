@@ -269,9 +269,9 @@
 					};
 					checkPicLoadStatus=setInterval(function(){
 						status=isLoaded(contItem.eq(vCurrent).find('img'));
-						endTime=new Date().getTime()+opts.checkPicStatusTime;
-						runtime=endTime-startTime;
-						//console.log('===>startTime: '+startTime+'\n    endTime:   '+endTime+'\n    ['+vCurrent+'], '+status+', '+runtime);
+						endTime=new Date().getTime();
+						runtime=endTime-startTime+opts.checkPicStatusTime;
+						console.log('===>startTime: '+startTime+'\n    endTime:   '+endTime+'\n    ['+vCurrent+'], '+status+', '+runtime);
 						if(status&&(runtime>=opts.autoTime)){
 							roll('next');
 						};
