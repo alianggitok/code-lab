@@ -354,13 +354,13 @@
 		}
 		function prev(){
 			if(current<=0){
-				return false;
+				return;
 			}
 			changePic(current-=1);
 		}
 		function next(){
 			if(current+1>=triggerLen){
-				return false;
+				return;
 			}
 			changePic(current+=1);
 		}
