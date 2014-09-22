@@ -42,24 +42,40 @@ img{vertical-align:top; border:none; -ms-interpolation-mode:bicubic;}
 .clearfix {zoom:1;}
 
 /**********widgets**********/
+html{position: relative}
 body{margin:20px}
 h2{margin-top:20px}
 .section{margin-top:10px}
 
 
 /*lightbox*/
+.noselect{
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.onmove{cursor: move}
+
 .lightbox{position:absolute; top:0; left:0; padding:6px; border:1px solid #ccc; background:#fff; box-shadow: 0 0 10px 0 rgba(2, 0, 0, 0.20)}
 .lightbox .wrapper{position: relative}
+.lightbox .ico{width:12px; height: 12px; background-image: url(../images/ico-lightbox.png)}
 .lightbox .picholder{position: relative; background:#000 url(../images/loading2.gif) 50% 50% no-repeat; overflow: hidden}
 .lightbox .picholder .loader{background:#000 url(../images/loading2.gif) 50% 50% no-repeat; position:absolute; top: 0; left: 0; width: 100%; height: 100%}
 .lightbox .nav{position: absolute; vertical-align:middle}
 .lightbox .nav .btn{display:inline-block; padding: 6px 10px; background: #fff; vertical-align:middle; line-height: 16px; cursor:pointer}
 .lightbox .nav-prev{left: -1px; text-align: left}
+.lightbox .nav-prev .btn{padding-left: 3px}
+.lightbox .nav-prev .ico{background-position: 0 -12px}
 .lightbox .nav-next{right: -1px; text-align: right}
+.lightbox .nav-next .btn{padding-right: 3px}
+.lightbox .nav-next .ico{background-position: -12px -12px}
 .lightbox .nav{position: absolute; top: 0}
 .lightbox .info{margin-top: 6px}
-.lightbox .exec{position: absolute; bottom: 0; right: 0; margin-top: 6px; text-align: right}
-.lightbox .btn-close{cursor:pointer}
+.lightbox .exec{position: absolute; bottom: 0; right: 0; text-align: right}
+.lightbox .exec .btn{margin-left:6px}
+.lightbox .btn-full .ico{background-position: -12px 0}
+.lightbox .btn-close .ico{background-position: 0 0}
 
 
 

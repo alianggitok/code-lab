@@ -2,40 +2,58 @@
 //	lightbox 1.0
 //	Depend on jQuery v1.7.2+
 //	Code by Warren Chen on 2014-7-9
-//	issues：ie6 image resize has faults
+//	issues：ie6 image resize has faults,
+//			全屏下有滚动条时拖拽定位问题
 /*========================================================*/
 
 ;(function ($) {
-
+	browserAgent=navigator.userAgent,
+	browser={
+		isIE6: function(){
+			return /msie 6/i.test(browserAgent);
+		},
+		isIE7: function(){
+			return /msie 7/i.test(browserAgent);
+		},
+		isIE8: function(){
+			return /msie 8/i.test(browserAgent);
+		},
+		isIE9: function(){
+			return /msie 9/i.test(browserAgent);
+		}
+	};
 	$.fn.lightBox = function lightBox(options){
-		/*console.log('===>'+lightBox.name)*/
+		//console.log('===>'+lightBox.name)
 		var defaults={
-				box:'.lightbox',/*弹层 class 名*/
-				boxWrapper:'.wrapper',/*盒子 class 名*/
-				picHolder:'.picholder',/*图片占位层 class 名*/
-				origPicSrcAttr:'href',/*原图src属性名*/
-				mask:true,/*是否开启遮罩层*/
-				masker:'.masker',/*遮罩层 class 名*/
-				maskerBgColor:'#000',/*是否开启遮罩层*/
-				maskerZIndex:1001,/*遮罩层层级*/
-				maskerOpacity:.5,/*遮罩透明度*/
-				navPrevHTML:'<div class="nav nav-prev"></div>',/*导航上一张触发层 HTML*/
-				navNextHTML:'<div class="nav nav-next"></div>',/*导航下一张触发层 HTML*/
-				btnPrevHTML:'<a class="btn" title="上一张"><i class="ico"></i>上一张</a>',/*导航翻上一张按钮 HTML*/
-				btnNextHTML:'<a class="btn" title="下一张">下一张<i class="ico"></i></a>',/*导航翻下一张按钮 HTML*/
-				btnCloseHTML:'<a class="btn btn-close" title="关闭"><i class="ico"></i>关闭</a>',/*关闭按钮 HTML*/
-				ref:window,/*定位及尺寸参照元素对象*/
-				refPaddingFixX:10,/*定位及尺寸参照元素的内边距修正*/
-				refPaddingFixY:10,/*定位及尺寸参照元素的内边距修正*/
-				effectDuration:300,/*动画持续时长*/
-				checkFreq:200,/*检查图片状态的频率*/
-				picResize:true/*是否随参照元素调整图片大小（等比例）*/
+				boxClass:'.lightbox',//弹层 class 名
+				boxWrapperClass:'.wrapper',//盒子 class 名
+				picHolderClass:'.picholder',//图片占位层 class 名
+				fullScreen:true,//是否开启全屏展示功能
+				fullStageClass:'.lightbox-fullstage',//图片占位层 class 名
+				origPicSrcAttr:'href',//原图src属性名
+				mask:true,//是否开启遮罩层
+				masker:'.masker',//遮罩层 class 名
+				maskerBgColor:'#000',//是否开启遮罩层
+				maskerZIndex:1001,//遮罩层层级
+				maskerOpacity:.5,//遮罩透明度
+				navPrevHTML:'<div class="nav nav-prev"></div>',//导航上一张触发层 HTML
+				navNextHTML:'<div class="nav nav-next"></div>',//导航下一张触发层 HTML
+				btnPrevHTML:'<a class="btn" title="上一张"><i class="ico"></i>上一张</a>',//导航翻上一张按钮 HTML
+				btnNextHTML:'<a class="btn" title="下一张">下一张<i class="ico"></i></a>',//导航翻下一张按钮 HTML
+				btnCloseHTML:'<a class="btn btn-close" title="关闭"><i class="ico"></i>关闭</a>',//关闭按钮 HTML
+				btnFullHTML:'<a class="btn btn-full" title="全屏"><i class="ico"></i>全屏</a>',//全屏按钮 HTML
+				ref:window,//定位及尺寸参照元素对象
+				refPaddingFixX:10,//定位及尺寸参照元素的内边距修正
+				refPaddingFixY:10,//定位及尺寸参照元素的内边距修正
+				effectDuration:300,//动画持续时长
+				checkFreq:200,//检查图片状态的频率
+				picResize:true//是否随参照元素调整图片大小（等比例）
 			},
 			opts=$.extend(defaults,options),
 			boxHTML=''+
-				'<div class="'+opts.box.replace('.','')+'">'+
-				'	<div class="'+opts.boxWrapper.replace('.','')+'">'+
-				'		<div class="'+opts.picHolder.replace('.','')+'"><div class="loader"></div></div>'+
+				'<div class="'+opts.boxClass.replace('.','')+'">'+
+				'	<div class="'+opts.boxWrapperClass.replace('.','')+'">'+
+				'		<div class="'+opts.picHolderClass.replace('.','')+'"><div class="loader"></div></div>'+
 				'		<div class="info">'+
 				'			<div class="tit"></div>'+
 				'			<div class="page"></div>'+
@@ -44,10 +62,10 @@
 				'	</div>'+
 				'</div>',
 			_box=$(boxHTML),
-			_boxWrapper=_box.find(opts.boxWrapper),
+			_boxWrapper=_box.find(opts.boxWrapperClass),
 			_ref=$(opts.ref),
 			_refProto=_ref.get(0),
-			_picHolder=_box.find(opts.picHolder),
+			_picHolder=_box.find(opts.picHolderClass),
 			_img=$('<img class="pic" src="" alt="">'),
 			_imgProto=_img.get(0),
 			_loader=_picHolder.find('.loader'),
@@ -59,6 +77,10 @@
 			_next=$(opts.navNextHTML),
 			_btnNext=$(opts.btnNextHTML),
 			_btnClose=$(opts.btnCloseHTML),
+			_btnFull=$(opts.btnFullHTML),
+			_fullStage=$('<div class="lightbox-fullstage"></div>'),
+			_fullPic=$('<div class="lightbox-fullpic"><img alt=""></div>'),
+			_fullPicDragPointer=$('<div class="dragpointer"></div>'),
 			maskerCSS='position:absolute; display:none; padding:0; margin:0; border:none; top:0; left:0; width:auto; height:auto',
 			maskerHTML='<div class="'+opts.masker.replace('.','')+'" style="'+maskerCSS+'"></div>',
 			_masker=$(maskerHTML),
@@ -70,6 +92,8 @@
 			refLeft=0,
 			refWidth=0,
 			refHeight=0,
+			windowOrigOverflow='auto',
+			windowOrigScrollTop='0',
 			origPicSrc=[],
 			title=[],
 			picOrigWidth=0,
@@ -89,13 +113,11 @@
 			title[i]=_trigger.eq(i).attr('title');
 		}
 
-		/*
-		console.log(
-			'selector: '+triggerSelector+'\n'+
-			'title: '+title+'\n'+
-			'origPicSrc:'+origPicSrc
-		);
-		*/
+		//console.log(
+		//	'selector: '+triggerSelector+'\n'+
+		//	'title: '+title+'\n'+
+		//	'origPicSrc:'+origPicSrc
+		//);
 
 		/********** functions **********/
 		function init(){
@@ -103,36 +125,30 @@
 			clearTimeout(boxResizeDelay);
 			clearTimeout(boxPositionDelay);
 			clearTimeout(loadedFixDelay);
-			_img.attr('src','');
-			_img.css({
+			_img.attr('src','').css({
 				'width':'auto',
 				'height':'auto'
 			});
 			if(opts.picResize){
-				if(opts.ref===window){
-					$('html').css('overflow','hidden');
-				}else{
-					_ref.css('overflow','hidden');
-				}
+				(opts.ref===window?$('html'):_ref).css('overflow','hidden');
 			};
 		}
 		function checkKey(key,currentKey){
 			var keyLen=key.length;
 			for(var i=0; i<keyLen; i++){
 				if(currentKey===key[i]){
-					return true;
+					return;
 				}
 			}
 		}
 		function isLoaded(obj){
-			/*
-			console.log(
-				'checking: '+
-				'[obj.complete: '+obj.complete+'], '+
-				'[obj.readyState: '+obj.readyState+'], '+
-				'[obj.readyState: '+obj.readyState+']'
-			);
-			*/
+			//console.log(
+			//	'checking: '+
+			//	'[obj.complete: '+obj.complete+'], \n'+
+			//	'[obj.readyState: '+obj.readyState+'], \n'+
+			//	'[obj.readyState: '+obj.readyState+']\n'
+			//);
+			
 			return obj.complete || obj.readyState === 'complete' || obj.readyState === 'loaded';
 		}
 		function boxInit(current){
@@ -149,10 +165,13 @@
 			}
 			maskerPosition();
 			maskerResize();
-			_btnClose.appendTo(_exec);
+			if(opts.fullScreen){
+				_btnFull.appendTo(_exec);
+			};
 			_prev.appendTo(_boxWrapper).append(_btnPrev);
 			_next.appendTo(_boxWrapper).append(_btnNext);
-			$(opts.box).removeClass('active');
+			_btnClose.appendTo(_exec);
+			$(opts.boxClass).removeClass('active');
 			_box.addClass('active').css({
 				'display':'none',
 				'position':'absolute',
@@ -298,20 +317,21 @@
 			};
 		}
 		function changePic(current){
-			/*console.log('===>'+current+': '+origPicSrc[current]);*/
+			//console.log('===>'+current+': '+origPicSrc[current]);
 			_loader.stop(false,true).fadeIn(opts.effectDuration);
 			_img.stop(false,true).fadeOut(opts.effectDuration,function(){
 				init();
 				_trigger.removeClass('current').eq(current).addClass('current');
 				_img.attr('src',origPicSrc[current]);
 				checkPicLoadStatus=setInterval(function(){
+					//console.log(isLoaded(_imgProto))
 					if(isLoaded(_imgProto)){
 						maskerPosition();
 						maskerResize();
+						picOrigWidth=picWidth=_img.outerWidth();
+						picOrigHeight=picHeight=_img.outerHeight();
+						//console.log(picOrigWidth+', '+picOrigHeight);
 						loadedFixDelay=setTimeout(function(){
-							picOrigWidth=picWidth=_img.outerWidth();
-							picOrigHeight=picHeight=_img.outerHeight();
-							/*console.log(picOrigWidth+', '+picOrigHeight);*/
 							_boxWrapper.children().not(_picHolder).show();
 							_loader.stop(false,true).fadeOut(opts.effectDuration);
 							boxResize(picOrigWidth,picOrigHeight);
@@ -325,7 +345,7 @@
 						}
 						events.windowResize();
 						events.keyBoardNav();
-						events.bindElementEvents();
+						events.bindBoxElementEvents();
 						clearInterval(checkPicLoadStatus);
 						checkPicLoadStatus=null;
 					}
@@ -335,22 +355,46 @@
 			_page.html(current+1+'/'+triggerLen);
 		}
 
-		function open(current){
+		function openBox(current){
+			windowOrigOverflow=$('html').css('overflow');
 			boxInit(current);
 			if(opts.mask){
 				_masker.stop(false,true).fadeTo(opts.effectDuration,opts.maskerOpacity);
 			}
 			_box.stop(false,true).fadeTo(opts.effectDuration,1);
-			var otherBoxs=_box.siblings(opts.box),
+			var otherBoxs=_box.siblings(opts.boxClass),
 				otherMasker=_masker.siblings(opts.masker);
 			if(otherBoxs.length<1){
 				changePic(current);
 			}else{
-				close(otherBoxs,otherMasker,function(){
+				closeBox(otherBoxs,otherMasker,function(){
 					changePic(current);
 				});
 			}
 			events.keyBoardEsc();
+		}
+		function closeBox(boxObj,maskerObj,callback){
+			boxObj=typeof(boxObj)==='undefined'?_box.siblings(opts.boxClass).andSelf():boxObj;
+			maskerObj=typeof(maskerObj)==='undefined'?_masker.siblings(opts.masker).andSelf():maskerObj;
+			callback=typeof(callback)!=='function'?function(){}:callback;
+			events.clearEvents();
+			boxObj.stop(false,true).fadeOut(opts.effectDuration,function(){
+				boxObj.removeClass('active').remove();
+				boxObj.prev(opts.boxClass).addClass('active');
+				init();
+				(opts.ref===window?$('html'):_ref).css('overflow',windowOrigOverflow);
+				//console.log('closed');
+				callback();
+			});
+			if(opts.mask){
+				maskerObj.stop(false,true).fadeOut(opts.effectDuration,function(){
+					maskerObj.remove();
+				});
+			}else{
+				$(opts.masker).stop(false,true).fadeOut(opts.effectDuration,function(){
+					$(opts.masker).remove();
+				});
+			}
 		}
 		function prev(){
 			if(current<=0){
@@ -364,33 +408,146 @@
 			}
 			changePic(current+=1);
 		}
-		function close(boxObj,maskerObj,callback){
-			boxObj=typeof(boxObj)==='undefined'?_box.siblings(opts.box).andSelf():boxObj;
-			maskerObj=typeof(maskerObj)==='undefined'?_masker.siblings(opts.masker).andSelf():maskerObj;
-			callback=typeof(callback)!=='function'?function(){}:callback;
-			events.clearEvents();
-			boxObj.stop(false,true).fadeOut(opts.effectDuration,function(){
-				boxObj.removeClass('active').remove();
-				boxObj.prev(opts.box).addClass('active');
-				init();
-				if(opts.ref===window){
-					$('html').css('overflow','auto');
-				}else{
-					_ref.css('overflow','auto');
-				}
-				/*console.log('closed');*/
-				callback();
+		function fullStageInit(){
+			_fullStage.css({
+				'background-color':'#fff',
+				'position':'absolute',
+				'top':'0',
+				'left':'0',
+				'z-index':opts.maskerZIndex+2,
+				'display':'none',
+				'overflow':'auto'
 			});
-			if(opts.mask){
-				maskerObj.stop(false,true).fadeOut(opts.effectDuration,function(){
-					maskerObj.remove();
-				});
-			}else{
-				$(opts.masker).stop(false,true).fadeOut(opts.effectDuration,function(){
-					$(opts.masker).remove();
+			fullStageResize();
+			_fullPic.css({
+				'position':'absolute',
+				'width':picOrigWidth+'px',
+				'height':picOrigHeight+'px',
+				'left':(_fullStage.width()-picOrigWidth)/2+'px',
+				'top':(_fullStage.height()-picOrigHeight)/2+'px'
+			}).append(_fullPicDragPointer);
+			_fullPic.find('img').attr('src',origPicSrc[current]).css({
+				'width':'100%',
+				'height':'100%'
+			});
+			_fullPicDragPointer.css({
+				'position':'absolute',
+				'width':'100%',
+				'height':'100%',
+				'left':'0',
+				'top':'0',
+				'background':'#fff',
+				'cursor':'move'
+			}).fadeTo(0,0);
+			drag(_fullPic,_fullPicDragPointer,_fullStage);
+			_fullStage.append(_fullPic).appendTo('body');
+		}
+		function fullStageResize(){
+			_fullStage.css({
+				'width':$(window).width(),
+				'height':$(window).height()
+			});
+		}
+		function openFullStage(){
+			windowOrigScrollTop=$(window).scrollTop();
+			$('html').css({
+				'overflow':'hidden'
+			});
+			fullStageInit();
+			_fullStage.siblings(opts.fullStageClass).remove();
+			_fullStage.stop(false,true).fadeIn(opts.effectDuration);
+			$('html,body').scrollTop(0);
+			$(window).on('scroll.lightbox-fullstage',function(){
+				$('html,body').scrollTop(0);
+			});
+		}
+		function closeFullStage(){
+			$('html').css({
+				'overflow':windowOrigOverflow
+			});
+			_fullStage.stop(false,true).fadeOut(opts.effectDuration,function(){
+				_fullPic.remove();
+				_fullStage.remove();
+			});
+			$(window).off('scroll.lightbox-fullstage');
+			$('html,body').scrollTop(windowOrigScrollTop);
+		}
+		function drag(dragObj,triggerObj,stageObj){
+			dragObj=$(dragObj);
+			triggerObj=dragObj.find(triggerObj);
+			stageObj=typeof(stageObj)==='undefined'?$(window):$(stageObj);
+			var x=0,y=0,oX=0,oY=0,
+				fixX=0,fixY=0;
+			//var minX=minY=0;
+			var islteIE9=browser.isIE6()||browser.isIE7()||browser.isIE8()||browser.isIE9();
+			//var maxX=$(window).width();
+			//var maxY=$(window).height();
+			function selectSwitchOff(){
+				islteIE9?$('body').on('selectstart.drag',function(){return false;}):$('body').addClass('noselect onmove');
+			}
+			function selectSwitchOn(){
+				islteIE9?$('body').off('selectstart.drag'):$('body').removeClass('noselect onmove');
+			}
+			function draging(x,y){
+				//console.log('draging, x:'+x+', y:'+y);
+				reposition(x,y)
+			}
+			function reposition(x,y){
+				dragObj.css({'left':x+'px','top':y+'px'});
+			}
+			function dragStart(){
+				//console.log('dragstart');
+				selectSwitchOff();
+				oX=parseInt(dragObj.css('left'),10)+$(window).scrollLeft();
+				oY=parseInt(dragObj.css('top'),10)+$(window).scrollTop();
+				$(document).on({
+					'mousedown.drag':
+					function(e){
+						$(this).click();
+						fixX=e.pageX-oX;
+						fixY=e.pageY-oY;
+						x=e.pageX-fixX;
+						y=e.pageY-fixY;
+					},
+					'mousemove.drag':
+					function(e){
+						x=e.pageX-fixX;
+						y=e.pageY-fixY;
+						if(e.pageX<0){
+							x=-fixX;
+						}else if(e.pageX>$(window).width()+$(window).scrollLeft()){
+							x=$('body').width()-fixX;
+						}
+						if(e.pageY<0){
+							y=-fixY;
+						}else if(e.pageY>$(window).height()+$(window).scrollTop()){
+							y=$('body').height()-fixY;
+						}
+						draging(x,y);
+					},
+					'mouseup.drag':
+					function(){
+						x=x-$(window).scrollLeft();
+						y=y-$(window).scrollTop();
+						dragOver();
+					}
 				});
 			}
-		}
+			function dragOver(){
+				$(document).off('mousemove.drag mousedown.drag mouseup.drag');
+				if(x!==0){
+					reposition(x,y);
+				}
+				selectSwitchOn();
+				//console.log('dragover');
+			}
+			
+			triggerObj.mousedown(function(){
+				dragStart();
+			});
+			
+
+		};
 
 		/********** events **********/
 		events={
@@ -408,6 +565,9 @@
 						boxPositionDelay=setTimeout(function(){
 							boxPosition(picWidth,picHeight);
 						},100);
+						if(opts.fullScreen&&_fullStage.is(':visible')){
+							fullStageResize();
+						};
 					}
 				});
 			},
@@ -456,19 +616,32 @@
 							e.preventDefault();
 						}
 						if(keyCode===27){
-							close();
+							if (_fullStage.is(':visible')) {
+								closeFullStage();
+							}else{
+								closeBox();
+							}
 						}
 					}
 				});
 			},
-			bindElementEvents:function(){
+			bindBoxElementEvents:function(){
 				_btnClose.off('click.lightbox').on({
 					'click.lightbox':
 					function(e){
-						close();
+						closeBox();
 						e.preventDefault();
 					}
 				});
+				if(opts.fullScreen){
+					_btnFull.off('click.lightbox').on({
+						'click.lightbox':
+						function(e){
+							openFullStage();
+							e.preventDefault();
+						}
+					});
+				}
 				_btnPrev.off('click.lightbox').on({
 					'click.lightbox':
 					function(e){
@@ -513,6 +686,9 @@
 				_ref.off('scroll.lightbox-boxPosition scroll.lightbox-maskerPosition');
 				$(document).off('keydown.lightbox-keyBoardEsc keydown.lightbox-keyBoardNav');
 				_btnClose.off('.lightbox');
+				if(opts.fullScreen){
+					_btnFull.off('.lightbox');
+				};
 				_btnPrev.off('.lightbox');
 				_btnNext.off('.lightbox');
 				_prev.off('.lightbox');
@@ -523,7 +699,7 @@
 		/********** exec **********/
 		_trigger.off('click.lightbox').on('click.lightbox',function(e){
 			current=$(this).index(triggerSelector);
-			open(current);
+			openBox(current);
 			e.preventDefault();
 		});
 

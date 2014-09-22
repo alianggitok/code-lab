@@ -95,69 +95,73 @@
 		selectStyleInit: function (obj) {
 			$(obj).each(function () {
 
-				var $_obj = $(this);
-				$_obj.find('.current,.pointer').remove();
-				$_obj.prepend('<div class="current"><p class="txt"></p></div><div class="pointer"><i class="ico"></i></div>');
+				$(this).find('.current,.pointer').remove();
+				$(this).prepend('<div class="current"><p class="txt"></p></div><div class="pointer"><i class="ico"></i></div>');
 
-				var $_currentObj = $_obj.find('.current'),
-					$_currentTxtObj = $_currentObj.find('.txt'),
-					$_itemsObj = $_obj.find('.items'),
-					$_defaultObj = $_itemsObj.find('.selected'),
-					$_valObj = $_obj.find('input'),
-					$_pointerObj = $_obj.find('.pointer'),
-					$_pointerIcoObj = $_pointerObj.find('.ico'),
+				var obj = $(this),
+					currentObj = obj.find('.current'),
+					currentTxtObj = currentObj.find('.txt'),
+					itemsObj = obj.find('.items'),
+					defaultObj = itemsObj.find('.selected'),
+					valObj = obj.find('input'),
+					pointerObj = obj.find('.pointer'),
+					pointerIcoObj = pointerObj.find('.ico'),
 					effectDuration = 150;
-				var width = $_obj.width(),
-					height = $_obj.height(),
-					zindex = $_obj.css('z-index') || 0,
-					paddingLeft = parseInt($_obj.css('padding-left'), 10) || 0;
-				var currentPaddingLeft = parseInt($_currentObj.css('padding-left'), 10) || 0,
-					currentPaddingRight = parseInt($_currentObj.css('padding-right'), 10) || 0,
-					currentWidth = width - currentPaddingLeft - currentPaddingRight,
-					pointerWidth = $_pointerObj.outerWidth();
+
+				var objWidth = obj.width(),
+					objHeight = obj.height(),
+					objOuterWidth = obj.outerWidth(),
+					objOuterHeight = obj.outerHeight(),
+					zIndex = obj.css('z-index') || 0,
+					objPaddingLeft = parseInt(obj.css('padding-left'), 10) || 0,
+					objBorderX=parseInt(obj.css('border-left-width'),10)+parseInt(obj.css('border-right-width'),10),
+					currentPaddingLeft = parseInt(currentObj.css('padding-left'),10)||0,
+					currentPaddingRight = parseInt(currentObj.css('padding-right'),10)||0,
+					currentWidth=objOuterWidth-currentPaddingLeft-currentPaddingRight-objBorderX,
+					pointerWidth = pointerObj.outerWidth();
 
 				/*init*/
-				var defaultValue = $_defaultObj.attr('data-value'),
-					defaultTxt = $_defaultObj.text();
+				var defaultValue = defaultObj.attr('data-value'),
+					defaultTxt = defaultObj.length<1?'请选择':defaultObj.text();
 
-				$_currentTxtObj.html(defaultTxt);
-				$_valObj.attr('value', defaultValue).val(defaultValue);
-				$_obj.css({
-					'line-height': height + 'px'
+				currentTxtObj.html(defaultTxt);
+				valObj.attr('value', defaultValue).val(defaultValue);
+				obj.css({
+					'line-height': objHeight + 'px'
 				});
-				$_itemsObj.children(':last').addClass('last');
-				$_itemsObj.css({
-					'top': height + 'px'
+				itemsObj.children(':last').addClass('last');
+				itemsObj.css({
+					'top': objHeight + 'px'
 				});
-				$_pointerObj.css({
-					'height': height + 'px'
+				pointerObj.css({
+					'height': objHeight + 'px'
 				});
-				$_pointerIcoObj.css({
-					'margin-top': ($_pointerObj.height() - $_pointerIcoObj.height()) / 2 + 'px',
-					'margin-left': ($_pointerObj.width() - $_pointerIcoObj.width()) / 2 + 'px'
+				pointerIcoObj.css({
+					'margin-top': (pointerObj.height() - pointerIcoObj.height()) / 2 + 'px',
+					'margin-left': (pointerObj.width() - pointerIcoObj.width()) / 2 + 'px'
 				});
-				$_currentObj.css({
+				currentObj.css({
 					'width': currentWidth + 'px',
-					'height': height + 'px'
+					'height': objHeight + 'px'
 				});
-				$_currentTxtObj.css({
-					'width': currentWidth - pointerWidth + currentPaddingRight + 'px',
-					'height': height + 'px',
-					'line-height': height + 'px'
+				currentTxtObj.css({
+					'width': currentWidth - pointerWidth+currentPaddingRight + 'px',
+					'height': objHeight + 'px',
+					'line-height': objHeight + 'px'
 				});
 
 				/*exec*/
-				$_itemsObj.children().off('click.ua-select').on({
+				itemsObj.children().off('click.ua-select').on({
 					'click.ua-select':
 					function () {
-						var value = $(this).attr('data-value');
-						var txt = $(this).text();
-						$_currentTxtObj.html(txt);
-						$_valObj.attr('value', value).val(value);
+						var value = $(this).attr('data-value'),
+							txt = $(this).text();
+						currentTxtObj.html(txt);
+						valObj.focus().attr('value', value).val(value).focus().blur();
 						$(this).addClass('selected').siblings().removeClass('selected');
 					}
 				});
-				$_itemsObj.children().off('mouseenter.ua-select mouseleave.ua-select').on({
+				itemsObj.children().off('mouseenter.ua-select mouseleave.ua-select').on({
 					'mouseenter.ua-select':
 					function () {
 						$(this).addClass('hover');
@@ -167,35 +171,35 @@
 						$(this).removeClass('hover');
 					}
 				});
-				$_obj.off('click.ua-select').on({
+				obj.off('click.ua-select').on({
 					'click.ua-select':
 					function () {
-						var itemsWidth = $_itemsObj.width();
-						if (itemsWidth < (width + paddingLeft + paddingLeft)) {
-							$_itemsObj.width(width + paddingLeft + paddingLeft);
+						var itemsWidth = itemsObj.width();
+						if (itemsWidth < (objWidth + objPaddingLeft + objPaddingLeft)) {
+							itemsObj.width(objWidth + objPaddingLeft + objPaddingLeft);
 						}
-						if (!$_itemsObj.is(':visible')) {
-							$_obj.addClass('active').css('z-index', '+=1');
-							$_itemsObj.slideDown(effectDuration);
+						if (!itemsObj.is(':visible')) {
+							obj.addClass('active').css('z-index', '+=1');
+							itemsObj.slideDown(effectDuration);
 						} else {
-							$_itemsObj.slideUp(effectDuration, function () {
-								$_obj.removeClass('active').css('z-index', zindex);
+							itemsObj.slideUp(effectDuration, function () {
+								obj.removeClass('active').css('z-index', zIndex);
 							});
 						}
 						$(obj).not(this).find('.items').slideUp(effectDuration, function () {
-							$(this).closest($_obj).removeClass('active').css('z-index', zindex);
+							$(this).closest(obj).removeClass('active').css('z-index', zIndex);
 						});
+						valObj.focus().blur();
 					}
 				});
 
-				$(document).on('click.ua-select', function (e) {
-					if (($(e.target).closest($_obj).is($_obj) || $(e.target).is($_obj)) === false) {
+				$(document).click(function (e) {
+					if (($(e.target).closest(obj).is(obj) || $(e.target).is(obj)) === false) {
 						$(obj).find('.items').slideUp(effectDuration, function () {
-							$(this).closest($_obj).removeClass('active').css('z-index', zindex);
+							$(this).closest(obj).removeClass('active').css('z-index', zIndex);
 						});
 					}
 				});
-
 			});
 		},
 
