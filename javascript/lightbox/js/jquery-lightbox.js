@@ -38,10 +38,14 @@
 				maskerOpacity:.5,//遮罩透明度
 				navPrevHTML:'<div class="nav nav-prev"></div>',//导航上一张触发层 HTML
 				navNextHTML:'<div class="nav nav-next"></div>',//导航下一张触发层 HTML
-				btnPrevHTML:'<a class="btn" title="上一张"><i class="ico"></i>上一张</a>',//导航翻上一张按钮 HTML
-				btnNextHTML:'<a class="btn" title="下一张">下一张<i class="ico"></i></a>',//导航翻下一张按钮 HTML
-				btnCloseHTML:'<a class="btn btn-close" title="关闭"><i class="ico"></i>关闭</a>',//关闭按钮 HTML
-				btnFullHTML:'<a class="btn btn-full" title="全屏"><i class="ico"></i>全屏</a>',//全屏按钮 HTML
+				btnPrevHTML:'<a class="btn" title="上一张"><i class="ico"></i><span class="tit">上一张</span></a>',//导航翻上一张按钮 HTML
+				btnNextHTML:'<a class="btn" title="下一张"><span class="tit">下一张</span><i class="ico"></i></a>',//导航翻下一张按钮 HTML
+				btnCloseHTML:'<a class="btn btn-close" title="关闭"><i class="ico"></i><span class="tit">关闭</span></a>',//关闭按钮 HTML
+				btnFullHTML:'<a class="btn btn-full" title="全屏"><i class="ico"></i><span class="tit">全屏</span></a>',//全屏按钮 HTML
+				btnZoomInHTML:'<a class="btn btn-zoomin" title="放大"><i class="ico"></i><span class="tit">放大</span></a>',//全屏下放大按钮 HTML
+				btnZoomOutHTML:'<a class="btn btn-zoomout" title="缩小"><i class="ico"></i><span class="tit">缩小</span></a>',//全屏下缩小按钮 HTML
+				btnResetHTML:'<a class="btn btn-reset" title="还原"><i class="ico"></i><span class="tit">还原</span></a>',//全屏下图片大小还原按钮 HTML
+				btnCloseFullHTML:'<a class="btn btn-closefull" title="退出全屏"><i class="ico"></i><span class="tit">退出全屏</span></a>',//退出全屏按钮 HTML
 				ref:window,//定位及尺寸参照元素对象
 				refPaddingFixX:10,//定位及尺寸参照元素的内边距修正
 				refPaddingFixY:10,//定位及尺寸参照元素的内边距修正
@@ -78,7 +82,11 @@
 			_btnNext=$(opts.btnNextHTML),
 			_btnClose=$(opts.btnCloseHTML),
 			_btnFull=$(opts.btnFullHTML),
-			_fullStage=$('<div class="lightbox-fullstage"></div>'),
+			_btnZoomIn=$(opts.btnZoomInHTML),
+			_btnZoomOut=$(opts.btnZoomOutHTML),
+			_btnReset=$(opts.btnResetHTML),
+			_btnCloseFull=$(opts.btnCloseFullHTML),
+			_fullStage=$('<div class="lightbox-fullstage"><div class="exec"></div></div>'),
 			_fullPic=$('<div class="lightbox-fullpic"><img alt=""></div>'),
 			_fullPicDragPointer=$('<div class="dragpointer"></div>'),
 			maskerCSS='position:absolute; display:none; padding:0; margin:0; border:none; top:0; left:0; width:auto; height:auto',
@@ -106,6 +114,7 @@
 			boxResizeDelay=null,
 			boxPositionDelay=null,
 			loadedFixDelay=null,
+			zoomTimer=null,
 			events={};
 
 		for(var i=0; i<triggerLen; i++){
@@ -377,7 +386,7 @@
 			boxObj=typeof(boxObj)==='undefined'?_box.siblings(opts.boxClass).andSelf():boxObj;
 			maskerObj=typeof(maskerObj)==='undefined'?_masker.siblings(opts.masker).andSelf():maskerObj;
 			callback=typeof(callback)!=='function'?function(){}:callback;
-			events.clearEvents();
+			events.clearBoxEvents();
 			boxObj.stop(false,true).fadeOut(opts.effectDuration,function(){
 				boxObj.removeClass('active').remove();
 				boxObj.prev(opts.boxClass).addClass('active');
@@ -410,14 +419,13 @@
 		}
 		function fullStageInit(){
 			_fullStage.css({
-				'background-color':'#fff',
-				'position':'absolute',
-				'top':'0',
-				'left':'0',
 				'z-index':opts.maskerZIndex+2,
-				'display':'none',
-				'overflow':'auto'
+				'display':'none'
 			});
+			_fullStage.find('.exec').css({
+				'z-index':opts.maskerZIndex+3
+			});
+			_fullStage.find('.exec').append(_btnZoomIn).append(_btnZoomOut).append(_btnReset).append(_btnCloseFull);
 			fullStageResize();
 			_fullPic.css({
 				'position':'absolute',
@@ -460,6 +468,7 @@
 			$(window).on('scroll.lightbox-fullstage',function(){
 				$('html,body').scrollTop(0);
 			});
+			events.bindFullStageEvents();
 		}
 		function closeFullStage(){
 			$('html').css({
@@ -471,6 +480,43 @@
 			});
 			$(window).off('scroll.lightbox-fullstage');
 			$('html,body').scrollTop(windowOrigScrollTop);
+			events.clearFullStageEvents();
+		}
+		function zoomIn(){
+			var width=_fullPic.width(),
+				height=_fullPic.height(),
+				zoomWidth=width+width*.3,
+				zoomHeight=height+height*.3,
+				top=parseInt(_fullPic.css('top'),10)+(height-zoomHeight)/2,
+				left=parseInt(_fullPic.css('left'),10)+(width-zoomWidth)/2;
+			_fullPic.stop().animate({
+				'width':zoomWidth+'px',
+				'height':zoomHeight+'px',
+				'top':top+'px',
+				'left':left+'px'
+			})
+		}
+		function zoomOut(){
+			var width=_fullPic.width(),
+				height=_fullPic.height(),
+				zoomWidth=width-width*.3,
+				zoomHeight=height-height*.3,
+				top=parseInt(_fullPic.css('top'),10)+(height-zoomHeight)/2,
+				left=parseInt(_fullPic.css('left'),10)+(width-zoomWidth)/2;
+			_fullPic.stop().animate({
+				'width':zoomWidth+'px',
+				'height':zoomHeight+'px',
+				'top':top+'px',
+				'left':left+'px'
+			})
+		}
+		function resetFullPic() {
+			_fullPic.stop(false,true).animate({
+				'width':picOrigWidth+'px',
+				'height':picOrigHeight+'px',
+				'left':(_fullStage.width()-picOrigWidth)/2+'px',
+				'top':(_fullStage.height()-picOrigHeight)/2+'px'
+			})
 		}
 		function drag(dragObj,triggerObj,stageObj){
 			dragObj=$(dragObj);
@@ -681,7 +727,7 @@
 					}
 				});
 			},
-			clearEvents:function(){
+			clearBoxEvents:function(){
 				$(window).off('resize.lightbox-resize');
 				_ref.off('scroll.lightbox-boxPosition scroll.lightbox-maskerPosition');
 				$(document).off('keydown.lightbox-keyBoardEsc keydown.lightbox-keyBoardNav');
@@ -693,6 +739,64 @@
 				_btnNext.off('.lightbox');
 				_prev.off('.lightbox');
 				_next.off('.lightbox');
+			},
+			bindFullStageEvents:function(){
+				_btnZoomIn.off('click.lightbox').on({
+					'click.lightbox':
+					function(){
+						zoomIn();
+					}
+				})
+				_btnZoomOut.off('click.lightbox').on({
+					'click.lightbox':
+					function(){
+						zoomOut();
+					}
+				})
+				_btnReset.off('click.lightbox').on({
+					'click.lightbox':
+					function(){
+						resetFullPic();
+					}
+				})
+				_btnCloseFull.off('click.lightbox').on({
+					'click.lightbox':
+					function(){
+						closeFullStage();
+					}
+				})
+				_fullPic.off('mousewheel.lightbox DOMMouseScroll.lightbox').on({
+					'mousewheel.lightbox DOMMouseScroll.lightbox':
+					function(e) {
+						var wheelOrien=null;
+						if(e.originalEvent.wheelDelta){
+							wheelOrien=e.originalEvent.wheelDelta>0?'up':'down'
+						}else{
+							wheelOrien=e.originalEvent.detail>0?'down':'up'
+						}
+						if (wheelOrien==='up') {
+							zoomIn();
+						}else{
+							zoomOut();
+						}
+						e.preventDefault();
+						e.stopPropagation();
+					}
+				})
+				_fullStage.off('mousewheel.lightbox DOMMouseScroll.lightbox').on({
+					'mousewheel.lightbox DOMMouseScroll.lightbox':
+					function(e) {
+						e.preventDefault();
+					}
+				})
+			},
+			clearFullStageEvents:function(){
+				_btnZoomIn.off('.lightbox');
+				_btnZoomOut.off('.lightbox');
+				_btnReset.off('.lightbox');
+				_btnCloseFull.off('.lightbox');
+				_fullPic.off('.lightbox');
+				_fullStage.off('.lightbox');
 			}
 		};
 

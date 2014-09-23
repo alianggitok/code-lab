@@ -76,8 +76,10 @@ h2{margin-top:20px}
 .lightbox .exec .btn{margin-left:6px}
 .lightbox .btn-full .ico{background-position: -12px 0}
 .lightbox .btn-close .ico{background-position: 0 0}
-
-
-
-
+.lightbox-fullstage{background-color:#000; position:absolute; top:0; left:0; overflow:hidden}
+.lightbox-fullstage .exec{position: absolute; text-align: center; bottom: 0; right: 0; padding: 5px 5px 5px 0; height: 32px; background:rgba(2, 0, 0, 0.20); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#14000000,endColorstr=#14000000)}
+.lightbox-fullstage .exec .btn{border:1px solid #fff; margin-left:5px; background: #fff}
+.lightbox-fullstage .exec .btn:hover{border-color:#000}
+.lightbox-fullstage .exec .btn .ico{width: 30px; height:30px; }
+.lightbox-fullstage .exec .btn .tit{height:16px; line-height: 16px; display: none}
 
