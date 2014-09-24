@@ -117,6 +117,7 @@
 			boxPositionDelay=null,
 			loadedFixDelay=null,
 			zoomTimer=null,
+			verticalAlignPatchHTML='<span style="display:inline-block; font-size:0; width:0; overflow:hidden; vertical-align:middle; visibility:hidden">&nbsp;</span>',
 			events={};
 
 		for(var i=0; i<triggerLen; i++){
@@ -179,8 +180,8 @@
 			if(opts.fullScreen){
 				_btnFull.appendTo(_exec);
 			};
-			_prev.appendTo(_boxWrapper).append(_btnPrev);
-			_next.appendTo(_boxWrapper).append(_btnNext);
+			_prev.appendTo(_boxWrapper).append(_btnPrev).append(verticalAlignPatchHTML);
+			_next.appendTo(_boxWrapper).append(_btnNext).append(verticalAlignPatchHTML);
 			_btnClose.appendTo(_exec);
 			$(opts.boxClass).removeClass('active');
 			_box.addClass('active').css({
@@ -746,26 +747,30 @@
 			bindFullStageEvents:function(){
 				_btnZoomIn.off('click.lightbox').on({
 					'click.lightbox':
-					function(){
+					function(e){
 						zoomIn();
+						e.preventDefault();
 					}
 				})
 				_btnZoomOut.off('click.lightbox').on({
 					'click.lightbox':
-					function(){
+					function(e){
 						zoomOut();
+						e.preventDefault();
 					}
 				})
 				_btnReset.off('click.lightbox').on({
 					'click.lightbox':
-					function(){
+					function(e){
 						resetFullPic();
+						e.preventDefault();
 					}
 				})
 				_btnCloseFull.off('click.lightbox').on({
 					'click.lightbox':
-					function(){
+					function(e){
 						closeFullStage();
+						e.preventDefault();
 					}
 				})
 				_fullPic.off('mousewheel.lightbox DOMMouseScroll.lightbox').on({
