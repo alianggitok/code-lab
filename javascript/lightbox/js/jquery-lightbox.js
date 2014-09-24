@@ -41,7 +41,7 @@
 				btnPrevHTML:'<a class="btn" title="上一张"><i class="ico"></i><span class="tit">上一张</span></a>',//导航翻上一张按钮 HTML
 				btnNextHTML:'<a class="btn" title="下一张"><span class="tit">下一张</span><i class="ico"></i></a>',//导航翻下一张按钮 HTML
 				btnCloseHTML:'<a class="btn btn-close" title="关闭"><i class="ico"></i><span class="tit">关闭</span></a>',//关闭按钮 HTML
-				btnFullHTML:'<a class="btn btn-full" title="全屏"><i class="ico"></i><span class="tit">全屏</span></a>',//全屏按钮 HTML
+				btnFullHTML:'<a class="btn btn-full" title="全屏"><i class="ico"></i><span class="tit">[全屏]</span></a>',//全屏按钮 HTML
 				btnZoomInHTML:'<a class="btn btn-zoomin" title="放大"><i class="ico"></i><span class="tit">放大</span></a>',//全屏下放大按钮 HTML
 				btnZoomOutHTML:'<a class="btn btn-zoomout" title="缩小"><i class="ico"></i><span class="tit">缩小</span></a>',//全屏下缩小按钮 HTML
 				btnResetHTML:'<a class="btn btn-reset" title="还原"><i class="ico"></i><span class="tit">还原</span></a>',//全屏下图片大小还原按钮 HTML
