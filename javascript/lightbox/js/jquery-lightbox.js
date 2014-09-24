@@ -46,6 +46,7 @@
 				btnZoomOutHTML:'<a class="btn btn-zoomout" title="缩小"><i class="ico"></i><span class="tit">缩小</span></a>',//全屏下缩小按钮 HTML
 				btnResetHTML:'<a class="btn btn-reset" title="还原"><i class="ico"></i><span class="tit">还原</span></a>',//全屏下图片大小还原按钮 HTML
 				btnCloseFullHTML:'<a class="btn btn-closefull" title="退出全屏"><i class="ico"></i><span class="tit">退出全屏</span></a>',//退出全屏按钮 HTML
+				zoomRate:.3,
 				ref:window,//定位及尺寸参照元素对象
 				refPaddingFixX:10,//定位及尺寸参照元素的内边距修正
 				refPaddingFixY:10,//定位及尺寸参照元素的内边距修正
@@ -100,6 +101,7 @@
 			refLeft=0,
 			refWidth=0,
 			refHeight=0,
+			windowOverflowWhenboxOpen='auto',
 			windowOrigOverflow='auto',
 			windowOrigScrollTop='0',
 			origPicSrc=[],
@@ -457,6 +459,7 @@
 			});
 		}
 		function openFullStage(){
+			windowOverflowWhenboxOpen=$('html').css('overflow');
 			windowOrigScrollTop=$(window).scrollTop();
 			$('html').css({
 				'overflow':'hidden'
@@ -472,7 +475,7 @@
 		}
 		function closeFullStage(){
 			$('html').css({
-				'overflow':windowOrigOverflow
+				'overflow':windowOverflowWhenboxOpen
 			});
 			_fullStage.stop(false,true).fadeOut(opts.effectDuration,function(){
 				_fullPic.remove();
@@ -485,8 +488,8 @@
 		function zoomIn(){
 			var width=_fullPic.width(),
 				height=_fullPic.height(),
-				zoomWidth=width+width*.3,
-				zoomHeight=height+height*.3,
+				zoomWidth=width+width*opts.zoomRate,
+				zoomHeight=height+height*opts.zoomRate,
 				top=parseInt(_fullPic.css('top'),10)+(height-zoomHeight)/2,
 				left=parseInt(_fullPic.css('left'),10)+(width-zoomWidth)/2;
 			_fullPic.stop().animate({
@@ -499,8 +502,8 @@
 		function zoomOut(){
 			var width=_fullPic.width(),
 				height=_fullPic.height(),
-				zoomWidth=width-width*.3,
-				zoomHeight=height-height*.3,
+				zoomWidth=width-width*opts.zoomRate,
+				zoomHeight=height-height*opts.zoomRate,
 				top=parseInt(_fullPic.css('top'),10)+(height-zoomHeight)/2,
 				left=parseInt(_fullPic.css('left'),10)+(width-zoomWidth)/2;
 			_fullPic.stop().animate({
@@ -529,10 +532,10 @@
 			//var maxX=$(window).width();
 			//var maxY=$(window).height();
 			function selectSwitchOff(){
-				islteIE9?$('body').on('selectstart.drag',function(){return false;}):$('body').addClass('noselect onmove');
+				islteIE9?$('body').on('selectstart.drag',function(){return false;}):$('body').addClass('lightbox-noselect lightbox-onmove');
 			}
 			function selectSwitchOn(){
-				islteIE9?$('body').off('selectstart.drag'):$('body').removeClass('noselect onmove');
+				islteIE9?$('body').off('selectstart.drag'):$('body').removeClass('lightbox-noselect lightbox-onmove');
 			}
 			function draging(x,y){
 				//console.log('draging, x:'+x+', y:'+y);
