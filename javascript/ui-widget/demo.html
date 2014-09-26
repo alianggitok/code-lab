@@ -11,13 +11,26 @@
 
 <h2>select</h2>
 <div class="section">
-	<div class="ui-select">
-		<ul class="items">
-			<li class="selected default" data-value="">请选择</li>
-			<li data-value="aaa">品牌</li>
+	<div class="ui-select" style="width: 300px">
+		<ul class="items" style="width: 300px">
+			<li data-value="aaa">品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌</li>
 			<li data-value="bbb">商品</li>
 		</ul>
-		<input class="ui-select-result" value="" type="text">
+		<input class="selected-result" value="" type="text">
+	</div>
+	<div class="ui-select">
+		<ul class="items">
+			<li data-value="aaa" class="selected">品牌</li>
+			<li data-value="bbb">商品</li>
+		</ul>
+		<input class="selected-result" value="" type="text">
+	</div>
+	<div class="ui-select" style="width: 120px">
+		<ul class="items" style="width: 120px">
+			<li data-value="aaa" title="品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌"><a href="#">品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌品牌</a></li>
+			<li data-value="bbb" title="商品"><a href="#">商品</a></li>
+		</ul>
+		<input class="selected-result" value="" type="text">
 	</div>
 </div>
 
@@ -33,10 +46,12 @@
 		<ul class="tabs">
 			<li class="tab"><a href="#">tab1</a></li>
 			<li class="tab"><a href="#">tab2</a></li>
+			<li class="tab"><a href="#">tab3</a></li>
 		</ul>
 		<div class="conts">
 			<div class="cont">1</div>
-			<div class="cont">2</div>
+			<div class="cont">22</div>
+			<div class="cont">333</div>
 		</div>
 	</div>
 	
@@ -44,10 +59,12 @@
 		<ul class="tabs">
 			<li class="tab"><a href="#">tab1</a></li>
 			<li class="tab"><a href="#">tab2</a></li>
+			<li class="tab"><a href="#">tab3</a></li>
 		</ul>
 		<div class="conts">
 			<div class="cont">1</div>
-			<div class="cont">2</div>
+			<div class="cont">22</div>
+			<div class="cont">333</div>
 		</div>
 	</div>
 </div>
@@ -92,7 +109,7 @@
 SyntaxHighlighter.all();
 
 $(function(){
-	ui.selectStyleInit('.ui-select');
+	ui.selector('.ui-select');
 	ui.wordsEllipsis('.words','<span class="ellipsissymb">…</span>',10);
 	ui.tabbox('.ui-tabbox-hover','hover');
 	ui.tabbox('.ui-tabbox-click','click');

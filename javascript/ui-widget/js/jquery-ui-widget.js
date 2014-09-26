@@ -60,30 +60,30 @@
 			var n = 0;
 			var objLen = $(obj).length;
 			function exec() {
-				if (n >= objLen) { return false; }
-				$_execObj = $(obj).eq(n);
-				var objMaxHeight = parseInt($_execObj.css('max-height'), 10),
-					objHeight = $_execObj.height(),
-					objLineHeight = parseInt($_execObj.css('line-height'), 10),
+				if (n >= objLen) { return; }
+				_execObj = $(obj).eq(n);
+				var objMaxHeight = parseInt(_execObj.css('max-height'), 10),
+					objHeight = _execObj.height(),
+					objLineHeight = parseInt(_execObj.css('line-height'), 10),
 					heightFix = objHeight / objLineHeight,
 					wrapperClassName = 'ua-maxlen-wrapper',
-					wrapper = '<div class="' + wrapperClassName + '">';
-				if (!$_execObj.children('.' + wrapperClassName).is('.' + wrapperClassName)) {
-					$_execObj.wrapInner(wrapper);
+					wrapper = '<div class="' + wrapperClassName + '" style="visibility: hidden"></div>';
+				if (!_execObj.children('.' + wrapperClassName).is('.' + wrapperClassName)) {
+					_execObj.wrapInner(wrapper);
 				}
-				var $_wrapperObj = $_execObj.children('.' + wrapperClassName);
-				$_wrapperObj.html($_wrapperObj.html().replace(ellipsisSymb, '').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+				var _wrapperObj = _execObj.children('.' + wrapperClassName);
+				_wrapperObj.html(_wrapperObj.html().replace(ellipsisSymb, '').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
 
 				setTimeout(function () {
-					var len = $_wrapperObj.html().length;
-					while ($_wrapperObj.height() - heightFix > objHeight || $_wrapperObj.height() - heightFix > objMaxHeight) {
+					var len = _wrapperObj.html().length;
+					while (_wrapperObj.height() - heightFix > objHeight || _wrapperObj.height() - heightFix > objMaxHeight) {
 						len--;
-						$_wrapperObj.html($_wrapperObj.html().replace(ellipsisSymb, '').substr(0, len));
-						if ($_wrapperObj.height() - heightFix <= objHeight || $_wrapperObj.height() - heightFix <= objMaxHeight) {
-							$_wrapperObj.html($_wrapperObj.html().replace(ellipsisSymb, '').substr(0, len - adjustLen*2) + ellipsisSymb);
+						_wrapperObj.html(_wrapperObj.html().replace(ellipsisSymb, '').substr(0, len));
+						if (_wrapperObj.height() - heightFix <= objHeight || _wrapperObj.height() - heightFix <= objMaxHeight) {
+							_wrapperObj.html(_wrapperObj.html().replace(ellipsisSymb, '').substr(0, len - adjustLen*2) + ellipsisSymb);
 						}
 					}
-					$_execObj.html($_wrapperObj.html());
+					_execObj.html(_wrapperObj.html());
 					n++;
 					exec();
 				}, 10);
@@ -92,104 +92,139 @@
 		},
 
 		/*select*/
-		selectStyleInit: function (obj) {
+		selector: function (obj) {
 			$(obj).each(function () {
 
 				$(this).find('.current,.pointer').remove();
 				$(this).prepend('<div class="current"><p class="txt"></p></div><div class="pointer"><i class="ico"></i></div>');
 
-				var obj = $(this),
-					currentObj = obj.find('.current'),
-					currentTxtObj = currentObj.find('.txt'),
-					itemsObj = obj.find('.items'),
-					defaultObj = itemsObj.find('.selected'),
-					valObj = obj.find('input'),
-					pointerObj = obj.find('.pointer'),
-					pointerIcoObj = pointerObj.find('.ico'),
+				var _obj = $(this),
+					_currentObj = _obj.find('.current'),
+					_currentTxtObj = _currentObj.find('.txt'),
+					_itemsObj = _obj.find('.items'),
+					_itemObj=_itemsObj.children(),
+					_defaultObj = _itemsObj.find('.selected'),
+					_valObj = _obj.find('input'),
+					_pointerObj = _obj.find('.pointer'),
+					_pointerIcoObj = _pointerObj.find('.ico'),
 					effectDuration = 150;
 
-				var objWidth = obj.width(),
-					objHeight = obj.height(),
-					objOuterWidth = obj.outerWidth(),
-					objOuterHeight = obj.outerHeight(),
-					zIndex = obj.css('z-index') || 0,
-					objPaddingLeft = parseInt(obj.css('padding-left'), 10) || 0,
-					objBorderX=parseInt(obj.css('border-left-width'),10)+parseInt(obj.css('border-right-width'),10),
-					currentPaddingLeft = parseInt(currentObj.css('padding-left'),10)||0,
-					currentPaddingRight = parseInt(currentObj.css('padding-right'),10)||0,
+				var objWidth = _obj.width(),
+					objHeight = _obj.height(),
+					objOuterWidth = _obj.outerWidth(),
+					objOuterHeight = _obj.outerHeight(),
+					zIndex = _obj.css('z-index') || 0,
+					objPaddingLeft = parseInt(_obj.css('padding-left'), 10) || 0,
+					objBorderX=parseInt(_obj.css('border-left-width'),10)+parseInt(_obj.css('border-right-width'),10),
+					currentPaddingLeft = parseInt(_currentObj.css('padding-left'),10)||0,
+					currentPaddingRight = parseInt(_currentObj.css('padding-right'),10)||0,
 					currentWidth=objOuterWidth-currentPaddingLeft-currentPaddingRight-objBorderX,
-					pointerWidth = pointerObj.outerWidth();
+					pointerWidth = _pointerObj.outerWidth();
+				
+				/*input value change events*/
+				function mutationObserver() {
+					var observeObj=_valObj.get(0),
+						mutationObserver = window.WebKitMutationObserver || window.MozMutationObserver || window.MutationObserver,
+						reset=function(){
+							var resetItemObj=_itemObj.filter('[data-value="'+_valObj.val()+'"]');
+							if (resetItemObj.length) {
+								_currentTxtObj.html(resetItemObj.text());
+								resetItemObj.addClass('selected').siblings().removeClass('selected');
+							}else{
+								_currentTxtObj.html('请选择');
+								_itemObj.removeClass('selected');
+							}
+						};
+					if (mutationObserver) {
+						var observer = new mutationObserver(function(){
+							reset();
+						});
+						observer.observe(observeObj,{
+							'attributes':true
+						});
+					}else{
+						_valObj.off('propertychange.ui-selector DOMAttrModified.ui-selector').on({
+							'propertychange.ui-selector DOMAttrModified.ui-selector':
+							function () {
+								reset();
+							}
+						});
+					};
+				};
+				if (_valObj.length>0) {
+					mutationObserver();
+				};
 
 				/*init*/
-				var defaultValue = defaultObj.attr('data-value'),
-					defaultTxt = defaultObj.length<1?'请选择':defaultObj.text();
+				var defaultValue = _defaultObj.attr('data-value'),
+					defaultTxt = _defaultObj.length<1?'请选择':_defaultObj.text();
 
-				currentTxtObj.html(defaultTxt);
-				valObj.attr('value', defaultValue).val(defaultValue);
-				obj.css({
+				_currentTxtObj.html(defaultTxt);
+				_valObj.attr('value', defaultValue).val(defaultValue).hide();
+				_obj.css({
 					'line-height': objHeight + 'px'
 				});
-				itemsObj.children(':last').addClass('last');
-				itemsObj.css({
+				_itemObj.filter(':last').addClass('last');
+				_itemsObj.css({
 					'top': objHeight + 'px'
 				});
-				pointerObj.css({
+				_pointerObj.css({
 					'height': objHeight + 'px'
 				});
-				pointerIcoObj.css({
-					'margin-top': (pointerObj.height() - pointerIcoObj.height()) / 2 + 'px',
-					'margin-left': (pointerObj.width() - pointerIcoObj.width()) / 2 + 'px'
+				_pointerIcoObj.css({
+					'margin-top': (_pointerObj.height() - _pointerIcoObj.height()) / 2 + 'px',
+					'margin-left': (_pointerObj.width() - _pointerIcoObj.width()) / 2 + 'px'
 				});
-				currentObj.css({
+				_currentObj.css({
 					'width': currentWidth + 'px',
 					'height': objHeight + 'px'
 				});
-				currentTxtObj.css({
+				_currentTxtObj.css({
 					'width': currentWidth - pointerWidth+currentPaddingRight + 'px',
 					'height': objHeight + 'px',
 					'line-height': objHeight + 'px'
 				});
 
 				/*exec*/
-				itemsObj.children().off('click.ua-select').on({
-					'click.ua-select':
+				_itemObj.off('click.ui-selector').on({
+					'click.ui-selector':
 					function () {
 						var value = $(this).attr('data-value'),
 							txt = $(this).text();
-						currentTxtObj.html(txt);
-						valObj.focus().attr('value', value).val(value).focus().blur();
+						_currentTxtObj.html(txt);
+						_valObj.focus().attr('value', value).val(value).focus().blur();
 						$(this).addClass('selected').siblings().removeClass('selected');
 					}
 				});
-				itemsObj.children().off('mouseenter.ua-select mouseleave.ua-select').on({
-					'mouseenter.ua-select':
+				_itemObj.off('mouseenter.ui-selector mouseleave.ui-selector').on({
+					'mouseenter.ui-selector':
 					function () {
 						$(this).addClass('hover');
 					},
-					'mouseleave.ua-select':
+					'mouseleave.ui-selector':
 					function () {
 						$(this).removeClass('hover');
 					}
 				});
-				obj.off('click.ua-select').on({
-					'click.ua-select':
+				_obj.off('click.ui-selector').on({
+					'click.ui-selector':
 					function () {
-						var itemsWidth = itemsObj.width();
+						var itemsWidth = _itemsObj.width();
 						if (itemsWidth < (objWidth + objPaddingLeft + objPaddingLeft)) {
-							itemsObj.width(objWidth + objPaddingLeft + objPaddingLeft);
+							_itemsObj.width(objWidth + objPaddingLeft + objPaddingLeft);
 						}
-						if (!itemsObj.is(':visible')) {
-							obj.addClass('active').css('z-index', '+=1');
-							itemsObj.slideDown(effectDuration);
+						if (!_itemsObj.is(':visible')) {
+							_obj.addClass('active').css('z-index', '+=1');
+							_itemsObj.slideDown(effectDuration);
 						} else {
-							itemsObj.slideUp(effectDuration, function () {
-								obj.removeClass('active').css('z-index', zIndex);
+							_itemsObj.slideUp(effectDuration, function () {
+								_obj.removeClass('active').css('z-index', zIndex);
 							});
 						}
 						$(obj).not(this).find('.items').slideUp(effectDuration, function () {
 							$(this).closest(obj).removeClass('active').css('z-index', zIndex);
 						});
-						valObj.focus().blur();
+						_valObj.focus().blur();
 					}
 				});
 
@@ -200,6 +235,7 @@
 						});
 					}
 				});
+				
 			});
 		},
 
@@ -286,13 +322,13 @@
 					if (itemN >= objLen) {
 						clearTimeout(loadDelay);
 						loadDelay = null;
-						return false;
+						return;
 					}
 					$_execObj = $_obj.eq(itemN);
 					if (!checkInRange($_execObj)) {
 						clearTimeout(loadDelay);
 						loadDelay = null;
-						return false;
+						return;
 					}
 					if ($.trim($_execObj.attr('src')) === '') {
 						$_loaderObj = $(loaderHTML);

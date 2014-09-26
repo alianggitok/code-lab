@@ -100,22 +100,24 @@ h2{margin-top:20px}
 .ellipsissymb{color:red}
 
 /*select*/
-.ui-select{display:inline-block; zoom:1; *display:inline; position:relative; border:1px solid #e5e5e5; white-space:nowrap; vertical-align:middle; width:100px; background:#fff; height:24px; line-height:24px; text-align:left; z-index:200}
+.ui-select{display:inline-block; zoom:1; *display:inline; position:relative; border:1px solid #ccc; border-right-color:#e1e1e1; border-bottom-color:#e1e1e1; white-space:nowrap; vertical-align:top; width:120px; background:#fff; height:22px; line-height:22px; text-align:left; z-index:200}
 .ui-select .current{position:absolute; top:0; left:0; cursor:pointer; overflow:hidden; padding:0 3px; z-index:100; background:#fff}
-.ui-select .current .txt{text-overflow:ellipsis; white-space:nowrap; overflow:hidden; float:left; margin:0}
-.ui-select:hover .current .txt{color:#90b830}
+.ui-select .current .txt{text-overflow:ellipsis; white-space:nowrap; overflow:hidden; float:left; margin: 0}
+.ui-select:hover{border-color:#90b830}
+.ui-select:hover .current .txt{color:#90b830; transition-property:color}
 .ui-select .pointer{position:absolute; top:0; right:0; width:20px; z-index:101; cursor:pointer; background:#fff; text-align:left}
-.ui-select .pointer .ico{background-position:0 0; width:12px; height:12px; vertical-align:top; display:block}
+.ui-select .pointer .ico{background-position:0 0; width:12px; height:12px; vertical-align:top}
 .ui-select:hover .pointer .ico{background-position:-12px 0}
-.ui-select .items{position:absolute; left:-1px; z-index:99; line-height:23px; border:1px solid #693; display:none; background:#fff}
-.ui-select .items li{float:none; padding:0 3px; cursor:default; border-bottom:1px dotted #ccc}
-.ui-select .items li:hover{background-color:#90b830; color:#fff}
+.ui-select .items{position:absolute; left:-1px; z-index:99; line-height:22px; border:1px solid #8a3; display:none; background:#fff; max-height:86px; overflow:auto; box-shadow: 0 0 8px rgba(0,0,0,.2)}
+.ui-select .items li{float:none; padding:0 3px; cursor:default; border-bottom:1px dotted #ccc; text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
+.ui-select .items li a{display: block; text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
+.ui-select .items li.hover{background-color:#90b830; color:#fff; transition-property:color,background-color}
 .ui-select .items li a:hover{color:#fff;}
 .ui-select .items .last{border:none}
 .ui-select .items .selected{background-color:#F8F6EF; color:#000}
 .ui-select .items .default{display:none}
-.ui-select .ui-select-result{display:none}
-.ui-select.active{border-color:#693}
+.ui-select .select-result{display:none}
+.ui-select.active{border-color:#8a3!important; box-shadow: 0 0 8px rgba(0,0,0,.2)}
 .ui-select.active .current{border-bottom:1px dotted #ccc}
 .ui-select.active .pointer .ico{background-position:-36px 0}
 
