@@ -121,38 +121,37 @@
 					currentWidth=objOuterWidth-currentPaddingLeft-currentPaddingRight-objBorderX,
 					pointerWidth = _pointerObj.outerWidth();
 				
-				/*input value change events*/
-				function mutationObserver() {
-					var observeObj=_valObj.get(0),
-						mutationObserver = window.WebKitMutationObserver || window.MozMutationObserver || window.MutationObserver,
-						reset=function(){
-							var resetItemObj=_itemObj.filter('[data-value="'+_valObj.val()+'"]');
-							if (resetItemObj.length) {
-								_currentTxtObj.html(resetItemObj.text());
-								resetItemObj.addClass('selected').siblings().removeClass('selected');
-							}else{
-								_currentTxtObj.html('请选择');
-								_itemObj.removeClass('selected');
-							}
-						};
+				/*mutationobserver*/
+				function mutationObserver(observeObj,callback) {
+					var mutationObserver = window.WebKitMutationObserver || window.MozMutationObserver || window.MutationObserver;
 					if (mutationObserver) {
 						var observer = new mutationObserver(function(){
-							reset();
+							callback();
 						});
-						observer.observe(observeObj,{
+						observer.observe(observeObj.get(0),{
 							'attributes':true
 						});
 					}else{
-						_valObj.off('propertychange.ui-selector DOMAttrModified.ui-selector').on({
+						observeObj.off('propertychange.ui-selector DOMAttrModified.ui-selector').on({
 							'propertychange.ui-selector DOMAttrModified.ui-selector':
 							function () {
-								reset();
+								callback();
 							}
 						});
 					};
 				};
+				function reset(){
+					var resetItemObj=_itemObj.filter('[data-value="'+_valObj.val()+'"]');
+					if (resetItemObj.length) {
+						_currentTxtObj.html(resetItemObj.text());
+						resetItemObj.addClass('selected').siblings().removeClass('selected');
+					}else{
+						_currentTxtObj.html('请选择');
+						_itemObj.removeClass('selected');
+					}
+				};
 				if (_valObj.length>0) {
-					mutationObserver();
+					mutationObserver(_valObj,reset);
 				};
 
 				/*init*/
@@ -213,7 +212,7 @@
 						if (itemsWidth < (objWidth + objPaddingLeft + objPaddingLeft)) {
 							_itemsObj.width(objWidth + objPaddingLeft + objPaddingLeft);
 						}
-						if (!_itemsObj.is(':visible')) {
+						if (!_itemsObj.is(':visible')&&!_obj.is('.disabled')) {
 							_obj.addClass('active').css('z-index', '+=1');
 							_itemsObj.slideDown(effectDuration);
 						} else {

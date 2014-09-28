@@ -28,6 +28,7 @@
 				boxClass:'.lightbox',//弹层 class 名
 				boxWrapperClass:'.wrapper',//盒子 class 名
 				picHolderClass:'.picholder',//图片占位层 class 名
+				boxDrag:true,//box可否拖拽
 				fullScreen:true,//是否开启全屏展示功能
 				fullStageClass:'.lightbox-fullstage',//图片占位层 class 名
 				origPicSrcAttr:'href',//原图src属性名
@@ -60,7 +61,7 @@
 				'	<div class="'+opts.boxWrapperClass.replace('.','')+'">'+
 				'		<div class="'+opts.picHolderClass.replace('.','')+'"><div class="loader"></div></div>'+
 				'		<div class="info">'+
-				'			<div class="tit"></div>'+
+				'			<div class="title"></div>'+
 				'			<div class="page"></div>'+
 				'		</div>'+
 				'		<div class="exec"></div>'+
@@ -74,7 +75,7 @@
 			_img=$('<img class="pic" src="" alt="">'),
 			_imgProto=_img.get(0),
 			_loader=_picHolder.find('.loader'),
-			_title=_box.find('.info .tit'),
+			_title=_box.find('.info .title'),
 			_page=_box.find('.info .page'),
 			_exec=_box.find('.exec'),
 			_prev=$(opts.navPrevHTML),
@@ -216,6 +217,9 @@
 			_btnNext.css({
 				'display':'none'
 			});
+			if (opts.boxDrag) {
+				drag(_box,_boxWrapper);
+			}
 		}
 		function navInit(navRefWidth,navRefHeight){
 			_prev.stop(false,true).animate({
@@ -540,7 +544,7 @@
 			}
 			function draging(x,y){
 				//console.log('draging, x:'+x+', y:'+y);
-				reposition(x,y)
+				reposition(x,y);
 			}
 			function reposition(x,y){
 				dragObj.css({'left':x+'px','top':y+'px'});
@@ -561,24 +565,22 @@
 					},
 					'mousemove.drag':
 					function(e){
-						x=e.pageX-fixX;
-						y=e.pageY-fixY;
+						x=e.pageX-fixX-$(window).scrollLeft();
+						y=e.pageY-fixY-$(window).scrollTop();
 						if(e.pageX<0){
 							x=-fixX;
 						}else if(e.pageX>$(window).width()+$(window).scrollLeft()){
-							x=$('body').width()-fixX;
+							x=stageObj.width()-fixX;
 						}
 						if(e.pageY<0){
 							y=-fixY;
 						}else if(e.pageY>$(window).height()+$(window).scrollTop()){
-							y=$('body').height()-fixY;
+							y=stageObj.height()-fixY;
 						}
 						draging(x,y);
 					},
 					'mouseup.drag':
 					function(){
-						x=x-$(window).scrollLeft();
-						y=y-$(window).scrollTop();
 						dragOver();
 					}
 				});
