@@ -13,6 +13,17 @@
 
 
 	global.ui = {
+		/*window unload*/
+		windowUnload:function(confirmMsg,fn){
+			fn=typeof(fn)==='undefined'?function(){}:fn;
+			confirmMsg=typeof(confirmMsg)==='undefined'?'':confirmMsg;
+			window.onbeforeunload=function(e){
+				fn();
+				(e||window.event).returnValue=confirmMsg;
+				return confirmMsg;
+			}
+		},
+		
 		/*vertical middle fix for ie*/
 		vAlignMiddleFix: function (obj) {
 			$(obj).each(function () {
@@ -297,7 +308,7 @@
 					removeLoader(loaderObj, maskerObj);
 				};
 				protoObj.onerror = function () {
-					console.log(imgSrc + ' loading is failed.');
+					//console.log(imgSrc + ' loading is failed.');
 				};
 			}
 			function changeSrc(execObj, loaderObj, maskerObj) {

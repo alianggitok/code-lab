@@ -218,7 +218,7 @@
 				'display':'none'
 			});
 			if (opts.boxDrag) {
-				drag(_box,_boxWrapper);
+				drag(_box,_boxWrapper,_ref);
 			}
 		}
 		function navInit(navRefWidth,navRefHeight){
@@ -530,7 +530,8 @@
 			dragObj=$(dragObj);
 			triggerObj=dragObj.find(triggerObj);
 			stageObj=typeof(stageObj)==='undefined'?$(window):$(stageObj);
-			var x=0,y=0,oX=0,oY=0,
+			var x=0,y=0,
+				oX=0,oY=0,
 				fixX=0,fixY=0;
 			//var minX=minY=0;
 			var islteIE9=browser.isIE6()||browser.isIE7()||browser.isIE8()||browser.isIE9();
@@ -552,35 +553,39 @@
 			function dragStart(){
 				//console.log('dragstart');
 				selectSwitchOff();
-				oX=parseInt(dragObj.css('left'),10)+$(window).scrollLeft();
-				oY=parseInt(dragObj.css('top'),10)+$(window).scrollTop();
+				oX=parseInt(dragObj.css('left'),10)+stageObj.scrollLeft();
+				oY=parseInt(dragObj.css('top'),10)+stageObj.scrollTop();
 				$(document).on({
 					'mousedown.drag':
 					function(e){
 						$(this).click();
 						fixX=e.pageX-oX;
 						fixY=e.pageY-oY;
-						x=e.pageX-fixX;
-						y=e.pageY-fixY;
 					},
 					'mousemove.drag':
 					function(e){
-						x=e.pageX-fixX-$(window).scrollLeft();
-						y=e.pageY-fixY-$(window).scrollTop();
-						if(e.pageX<0){
-							x=-fixX;
-						}else if(e.pageX>$(window).width()+$(window).scrollLeft()){
-							x=stageObj.width()-fixX;
+						x=e.pageX-fixX;
+						y=e.pageY-fixY;
+						stageLeft=stageObj.offset()?stageObj.offset().left:0;
+						stageTop=stageObj.offset()?stageObj.offset().top:0;
+						stageScrollLeft=stageObj.scrollLeft();
+						stageScrollTop=stageObj.scrollTop();
+						if(e.pageX<stageLeft){
+							x=-fixX+stageLeft+stageScrollLeft;
+						}else if(e.pageX>stageLeft+stageObj.width()+stageScrollLeft){
+							x=stageObj.width()-fixX+stageLeft+stageScrollLeft;
 						}
-						if(e.pageY<0){
-							y=-fixY;
-						}else if(e.pageY>$(window).height()+$(window).scrollTop()){
-							y=stageObj.height()-fixY;
+						if(e.pageY<stageTop){
+							y=-fixY+stageTop+stageScrollTop;
+						}else if(e.pageY>stageTop+stageObj.height()+stageScrollTop){
+							y=stageObj.height()-fixY+stageTop+stageScrollTop;
 						}
+						x=x-stageScrollLeft;
+						y=y-stageScrollTop;
 						draging(x,y);
 					},
 					'mouseup.drag':
-					function(){
+					function(e){
 						dragOver();
 					}
 				});
