@@ -56,6 +56,7 @@
 				picResize:true//是否随参照元素调整图片大小（等比例）
 			},
 			opts=$.extend(defaults,options),
+			verticalAlignPatchHTML='<span style="display:inline-block; font-size:0; width:0; overflow:hidden; vertical-align:middle; visibility:hidden">&nbsp;</span>',
 			boxHTML=''+
 				'<div class="'+opts.boxClass.replace('.','')+'">'+
 				'	<div class="'+opts.boxWrapperClass.replace('.','')+'">'+
@@ -73,24 +74,33 @@
 			_refProto=_ref.get(0),
 			_picHolder=_box.find(opts.picHolderClass),
 			_img=$('<img class="pic" src="" alt="">'),
-			_imgProto=_img.get(0),
 			_loader=_picHolder.find('.loader'),
 			_title=_box.find('.info .title'),
 			_page=_box.find('.info .page'),
 			_exec=_box.find('.exec'),
 			_prev=$(opts.navPrevHTML),
-			_btnPrev=$(opts.btnPrevHTML),
 			_next=$(opts.navNextHTML),
-			_btnNext=$(opts.btnNextHTML),
+			_btnPrev=$(opts.btnPrevHTML+verticalAlignPatchHTML),
+			_btnNext=$(verticalAlignPatchHTML+opts.btnNextHTML),
 			_btnClose=$(opts.btnCloseHTML),
 			_btnFull=$(opts.btnFullHTML),
+			fullStageHTML=''+
+				'<div class="'+opts.fullStageClass.replace('.','')+'">'+
+				'	<div class="exec"></div>'+
+				'</div>',
+			_fullStage=$(fullStageHTML),
+			_fullPic=$('<div class="lightbox-fullpic"><img alt=""><div class="loader"></div></div>'),
+			_fullImg=_fullPic.find('img'),
+			_fullPicDragPointer=$('<div class="dragpointer"></div>'),
+			_fullLoader=_fullPic.find('.loader'),
+			_fullPrev=$('<div class="nav nav-prev"></div>'),
+			_fullNext=$('<div class="nav nav-next"></div>'),
+			_btnFullPrev=$('<a class="btn" title="上一张"><i class="ico"></i><span class="tit">上一张</span></a>'+verticalAlignPatchHTML),
+			_btnFullNext=$(verticalAlignPatchHTML+'<a class="btn" title="下一张"><span class="tit">下一张</span><i class="ico"></i></a>'),
 			_btnZoomIn=$(opts.btnZoomInHTML),
 			_btnZoomOut=$(opts.btnZoomOutHTML),
 			_btnReset=$(opts.btnResetHTML),
 			_btnCloseFull=$(opts.btnCloseFullHTML),
-			_fullStage=$('<div class="lightbox-fullstage"><div class="exec"></div></div>'),
-			_fullPic=$('<div class="lightbox-fullpic"><img alt=""></div>'),
-			_fullPicDragPointer=$('<div class="dragpointer"></div>'),
 			maskerCSS='position:absolute; display:none; padding:0; margin:0; border:none; top:0; left:0; width:auto; height:auto',
 			maskerHTML='<div class="'+opts.masker.replace('.','')+'" style="'+maskerCSS+'"></div>',
 			_masker=$(maskerHTML),
@@ -118,7 +128,6 @@
 			boxPositionDelay=null,
 			loadedFixDelay=null,
 			zoomTimer=null,
-			verticalAlignPatchHTML='<span style="display:inline-block; font-size:0; width:0; overflow:hidden; vertical-align:middle; visibility:hidden">&nbsp;</span>',
 			events={};
 
 		for(var i=0; i<triggerLen; i++){
@@ -181,8 +190,8 @@
 			if(opts.fullScreen){
 				_btnFull.appendTo(_exec);
 			};
-			_prev.appendTo(_boxWrapper).append(_btnPrev).append(verticalAlignPatchHTML);
-			_next.appendTo(_boxWrapper).append(_btnNext).append(verticalAlignPatchHTML);
+			_prev.appendTo(_boxWrapper).append(_btnPrev);
+			_next.appendTo(_boxWrapper).append(_btnNext);
 			_btnClose.appendTo(_exec);
 			$(opts.boxClass).removeClass('active');
 			_box.addClass('active').css({
@@ -217,9 +226,6 @@
 			_btnNext.css({
 				'display':'none'
 			});
-			if (opts.boxDrag) {
-				drag(_box,_boxWrapper,_ref);
-			}
 		}
 		function navInit(navRefWidth,navRefHeight){
 			_prev.stop(false,true).animate({
@@ -332,16 +338,17 @@
 				});
 			};
 		}
-		function changePic(current){
+		function changeBoxPic(current){
 			//console.log('===>'+current+': '+origPicSrc[current]);
 			_loader.stop(false,true).fadeIn(opts.effectDuration);
 			_img.stop(false,true).fadeOut(opts.effectDuration,function(){
 				init();
 				_trigger.removeClass('current').eq(current).addClass('current');
 				_img.attr('src',origPicSrc[current]);
+				_fullLoader.stop(false,true).fadeIn(opts.effectDuration);
 				checkPicLoadStatus=setInterval(function(){
-					//console.log(isLoaded(_imgProto))
-					if(isLoaded(_imgProto)){
+					//console.log(isLoaded(_img.get(0)))
+					if(isLoaded(_img.get(0))){
 						maskerPosition();
 						maskerResize();
 						picOrigWidth=picWidth=_img.outerWidth();
@@ -352,6 +359,16 @@
 							_loader.stop(false,true).fadeOut(opts.effectDuration);
 							boxResize(picOrigWidth,picOrigHeight);
 							boxPosition(picWidth,picHeight);
+							_fullImg.attr('src',origPicSrc[current]).css({
+								'width':'100%',
+								'height':'100%'
+							});
+							resetFullPic(function(){
+								_fullLoader.stop(false,true).fadeOut(opts.effectDuration);
+							});
+							if (opts.boxDrag) {
+								drag(_box,_boxWrapper,_ref);
+							}
 						},opts.checkFreq);
 						if(opts.picResize){
 							events.refScrollBoxPosition();
@@ -381,10 +398,10 @@
 			var otherBoxs=_box.siblings(opts.boxClass),
 				otherMasker=_masker.siblings(opts.masker);
 			if(otherBoxs.length<1){
-				changePic(current);
+				changeBoxPic(current);
 			}else{
 				closeBox(otherBoxs,otherMasker,function(){
-					changePic(current);
+					changeBoxPic(current);
 				});
 			}
 			events.keyBoardEsc();
@@ -416,15 +433,17 @@
 			if(current<=0){
 				return;
 			}
-			changePic(current-=1);
+			changeBoxPic(current-=1);
 		}
 		function next(){
 			if(current+1>=triggerLen){
 				return;
 			}
-			changePic(current+=1);
+			changeBoxPic(current+=1);
 		}
+		
 		function fullStageInit(){
+			//_fullStage.remove();
 			_fullStage.css({
 				'z-index':opts.maskerZIndex+2,
 				'display':'none'
@@ -441,7 +460,7 @@
 				'left':(_fullStage.width()-picOrigWidth)/2+'px',
 				'top':(_fullStage.height()-picOrigHeight)/2+'px'
 			}).append(_fullPicDragPointer);
-			_fullPic.find('img').attr('src',origPicSrc[current]).css({
+			_fullImg.attr('src',origPicSrc[current]).css({
 				'width':'100%',
 				'height':'100%'
 			});
@@ -454,14 +473,20 @@
 				'background':'#fff',
 				'cursor':'move'
 			}).fadeTo(0,0);
+			_fullLoader.hide();
+			_fullPrev.append(_btnFullPrev);
+			_fullNext.append(_btnFullNext);
+			_fullStage.append(_fullPic).append(_fullPrev).append(_fullNext);
+			$('body').append(_fullStage);
 			drag(_fullPic,_fullPicDragPointer,_fullStage);
-			_fullStage.append(_fullPic).appendTo('body');
 		}
 		function fullStageResize(){
 			_fullStage.css({
 				'width':$(window).width(),
 				'height':$(window).height()
 			});
+			_fullPrev.css('line-height',$(window).height()+'px');
+			_fullNext.css('line-height',$(window).height()+'px');
 		}
 		function openFullStage(){
 			windowOverflowWhenboxOpen=$('html').css('overflow');
@@ -518,13 +543,16 @@
 				'left':left+'px'
 			})
 		}
-		function resetFullPic() {
+		function resetFullPic(callback) {
+			callback=typeof(callback)==='undefined'?function(){}:callback;
 			_fullPic.stop(false,true).animate({
 				'width':picOrigWidth+'px',
 				'height':picOrigHeight+'px',
 				'left':(_fullStage.width()-picOrigWidth)/2+'px',
 				'top':(_fullStage.height()-picOrigHeight)/2+'px'
-			})
+			},opts.effectDuration,function(){
+				callback();
+			});
 		}
 		function drag(dragObj,triggerObj,stageObj){
 			dragObj=$(dragObj);
@@ -561,6 +589,7 @@
 						$(this).click();
 						fixX=e.pageX-oX;
 						fixY=e.pageY-oY;
+						_ref.off('scroll.lightbox-boxPosition');
 					},
 					'mousemove.drag':
 					function(e){
@@ -586,6 +615,7 @@
 					},
 					'mouseup.drag':
 					function(e){
+						$(this).mousemove();
 						dragOver();
 					}
 				});
@@ -596,6 +626,9 @@
 					reposition(x,y);
 				}
 				selectSwitchOn();
+				if(opts.picResize){
+					events.refScrollBoxPosition();
+				}
 				//console.log('dragover');
 			}
 			
@@ -804,6 +837,20 @@
 						e.preventDefault();
 					}
 				})
+				_btnFullPrev.off('click.lightbox').on({
+					'click.lightbox':
+					function(e){
+						prev();
+						e.preventDefault();
+					}
+				});
+				_btnFullNext.off('click.lightbox').on({
+					'click.lightbox':
+					function(e){
+						next();
+						e.preventDefault();
+					}
+				});
 			},
 			clearFullStageEvents:function(){
 				_btnZoomIn.off('.lightbox');
