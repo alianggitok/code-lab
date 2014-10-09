@@ -443,7 +443,6 @@
 		}
 		
 		function fullStageInit(){
-			//_fullStage.remove();
 			_fullStage.css({
 				'z-index':opts.maskerZIndex+2,
 				'display':'none'
