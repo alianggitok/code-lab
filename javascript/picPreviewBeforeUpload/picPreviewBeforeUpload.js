@@ -3,15 +3,16 @@
 //2013-9-6
 
 function picPreviewBeforeUpload(inputObj,previewObj,previewObjWidth,blankSrcforIE) {//图片上传前的本地预览
-	var Browser_Name = navigator.appName;
-	var is_IE = (Browser_Name == "Microsoft Internet Explorer");
-	var url='';
+	var Browser_Name = navigator.appName,
+		is_IE = (Browser_Name == "Microsoft Internet Explorer"),
+		url='';
 	previewObj.hide();
 	if (is_IE) {
 		// IE
+		var fixImgSizeRef=$('<div class="fixImgSizeRef"></div>');
 		url=inputObj.value;
-		previewObj.parent().append('<div class="fixImgSizeRef"></div>');
-		previewObj.siblings('.fixImgSizeRef').css({
+		previewObj.parent().append(fixImgSizeRef);
+		fixImgSizeRef.css({
 			"position":"absolute",
 			"z-index":"1000",
 			"width":"100%",
@@ -19,9 +20,9 @@ function picPreviewBeforeUpload(inputObj,previewObj,previewObjWidth,blankSrcforI
 			'filter':'progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled="true",sizingMethod="image",src=\"'+url+'\")',
 			"visibility":"hidden"
 		}).hide('300',function(){
-			var oWidth=previewObj.siblings('.fixImgSizeRef').width();
-			var oHeight=previewObj.siblings('.fixImgSizeRef').height();
-			var sizeRateWH=oWidth/oHeight;
+			var oWidth=fixImgSizeRef.width(),
+				oHeight=fixImgSizeRef.height(),
+				sizeRateWH=oWidth/oHeight;
 			previewObj.attr('src',blankSrcforIE).css({
 				'width':(previewObjWidth=='auto'?oWidth:previewObjWidth)+'px',
 				'height':(previewObjWidth=='auto'?oHeight:(previewObjWidth/sizeRateWH))+'px',
