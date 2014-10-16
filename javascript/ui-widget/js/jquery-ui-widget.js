@@ -174,7 +174,7 @@
 				_obj.css({
 					'line-height': objHeight + 'px'
 				});
-				_itemObj.filter(':last').addClass('last');
+				_itemObj.removeClass('last').filter(':last').addClass('last');
 				_itemsObj.css({
 					'top': objHeight + 'px'
 				});
