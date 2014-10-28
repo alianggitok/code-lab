@@ -1,0 +1,12 @@
+@charset "utf-8";
+
+/*lightbox*/
+.lightbox-noselect{
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.lightbox-onmove{cursor: move}
+
+.lightbox{font-size:12px; line-height:16px; letter-spacing:0; font-family:"微软雅黑", "Arial", "Helvetica", "sans-serif"; background:#fff; color:#000; cursor:default; vertical-align:baseline; word-wrap:break-word; word-break:break-all}
