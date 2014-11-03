@@ -1,0 +1,253 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>table header fixed</title>
+	<style>
+		table{border-collapse:collapse; border-spacing:0}
+		th,td{padding:0; margin: 0}
+		
+		.table{position: relative; overflow: hidden; border:1px solid #000; padding-top: 23px}
+		.table th,
+		.table td{line-height: 23px; border: 1px solid #000; border-right: none; border-top:none}
+		.table th:first-child,
+		.table td:first-child{border-left: none; }
+
+		.thead{position: absolute; top: 0; left: 0; width:100%; background-color: #aaa; color: #000; border-bottom: 1px solid #000}
+		.thead th,
+		.thead td{border-bottom:none}
+		
+		.tbody{overflow: auto; height: 300px}
+		.tbody table{width:100%}
+		.tbody .odd th,
+		.tbody .odd td{background-color: #eee }
+	</style>
+</head>
+<body>
+
+<div class="table">
+	<div class="thead">
+		<table>
+			<thead>
+				<tr>
+					<th>列1</th>
+					<th>列2</th>
+					<th>列3</th>
+					<th>列4</th>
+					<th>列5</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+	<div class="tbody">
+		<table>
+			<tbody>
+				<tr>
+					<td>内容1内容1内容1内容1内容1</td>
+					<td style="white-space: nowrap">内容2内容2内容2内容2内容2内容2</td>
+					<td style="white-space: nowrap">内容3内容3内容3内容3内容3</td>
+					<td style="white-space: nowrap">内容4</td>
+					<td style="white-space: nowrap">内容5内容5内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+				<tr>
+					<td>内容1</td>
+					<td>内容2</td>
+					<td>内容3</td>
+					<td>内容4</td>
+					<td>内容5</td>
+				</tr>
+			</tbody>
+		</table>
+		
+	</div>
+</div>
+
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+<script>
+	function tableInit(){
+		var table=$('.table'),
+			thead=table.find('.thead'),
+			tbody=table.find('.tbody'),
+			//theadBody=thead.find('table'),
+			tbodyBody=tbody.find('table'),
+			theadItem=thead.find('th,td'),
+			tbodyItem=tbody.find('th,td'),
+			tbodyTr=tbody.find('tr');
+		table.css({
+			'padding-top':thead.outerHeight()+'px'
+		});
+		thead.css({
+			'width':tbodyBody.width()+'px'
+		});
+		theadItem.each(function(n){
+			$(this).width(tbodyItem.eq(n).width());
+		});
+		tbodyTr.filter(':odd').addClass('odd');
+	}
+	function theadPosition(){
+		var thead=$('.table .thead'),
+			tbody=$('.table .tbody');
+		tbody.on('scroll',function(){
+			thead.css({
+				'left':'-'+tbody.scrollLeft()+'px'
+			});
+		});
+	}
+	$(function(){
+		tableInit();
+		theadPosition();
+	});
+	$(window).on({
+		'load':function(){
+			tableInit();
+		},
+		'resize':function(){
+			tableInit();
+		}
+	});
+
+</script>
+
+</body>
+</html>
