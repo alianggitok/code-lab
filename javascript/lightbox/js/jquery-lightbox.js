@@ -2,7 +2,7 @@
 //	lightbox 1.0
 //	Depend on jQuery v1.7.2+
 //	Code by Warren Chen on 2014-7-9
-//	issues：ie6 image resize has faults,
+//	issues: ie6 image resize has faults,
 //			全屏下有滚动条时拖拽定位问题
 /*========================================================*/
 
