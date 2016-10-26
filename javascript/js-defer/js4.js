@@ -1,2 +1,2 @@
 // JavaScript Document
-alert('This is the forth javascript\'s code.');
+console.warn('This is the forth javascript\'s code.');

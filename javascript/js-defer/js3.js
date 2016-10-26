@@ -1,2 +1,2 @@
 // JavaScript Document
-alert('This is the third javascript\'s code.');
+console.warn('This is the third javascript\'s code.');

@@ -13,16 +13,16 @@
 		'js6.js',
 	];
 	for(var i in jsgroup){
-		alert(jsgroup[i]);
+		console.log(jsgroup[i]);
 		var script=document.createElement('script');
 		
 		script.onload=function(){//ff,opera,chrome,safari
-			alert(this.src+' loaded!');
+			console.log(this.src+' loaded!');
 		};
 		script.onreadystatechange=function(){//ie
 			if(script.readyState=='loaded'||script.readyState=='complete'){
 				script.onreadystatechange=null;
-				alert(this.src+' loaded!');
+				console.log(this.src+' loaded!');
 			};
 		};
 		
