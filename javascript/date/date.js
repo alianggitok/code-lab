@@ -1,9 +1,9 @@
 /** 日期处理
  * 确保入参是有效的日期时间格式（2017/11/30、2017/11/30 00:00:00）
  * @param {String} dateString - 毫秒数、日期等规范的有效时间格式的字符类型
- * @example utils.date('2017/11/30 00:00:00').format('YYYY-MM-DD 00:00:00')
- * 			utils.date('2017/11/30')
- * 			utils.date(1023778923197)
+ * @example utils.date('2017/11/30 00:00:00').format('YYYY-MM-DD hh:mm:ss')
+ * 			utils.date('2000/11/30').age()//计算年龄
+ * 			utils.date(1023778923197).realDate//返回以键值对构成的日期对象，数值型
  */
 var date = function(dateString) {
 	var DATE = (function(){
@@ -20,9 +20,14 @@ var date = function(dateString) {
 		};
 
 	return {
-		getDate: function() {
-			return DATE;
-		},
+		/**
+		 * 原始日期对象
+		 */
+		date:DATE,
+		/**
+		 * 返回以键值对构成的日期对象，数值型
+		 */
+		realDate: date,
 		/** 格式化日期
 		 * @param {string} format - 格式化模板
 		 */
@@ -54,6 +59,9 @@ var date = function(dateString) {
 				switch (formats[i]) {
 					case 'YYYY':
 						temp += pad(date.year, padding);
+						break;
+					case 'Y':
+						temp += date.year;
 						break;
 					case 'MM':
 						temp += pad(date.month, padding);
@@ -91,10 +99,55 @@ var date = function(dateString) {
 				temp += splitter;
 			}
 			return temp;//返回的是string类型
+		},
+		/**
+		 * @todo 未做日期有效性验证，比如输入的是2010/2/30日这样的无效日期时，年龄依旧可以得到，这是不对的
+		 * @param {string} endDateString - 配置计算年龄的截止日期
+		 */
+		age:function(endDateString){
+			var startDate=date,
+				endDate=(function(){
+					var endDate=endDateString?new Date(endDateString):new Date();
+					return{
+						year:endDate.getFullYear(),
+						month:endDate.getMonth()+1,
+						day:endDate.getDate()
+					};
+				})(),
+				age=0,
+				i,
+				baseAge=endDate.year-startDate.year;
+
+			function check(){
+				var temp=true;
+				if(startDate.month>endDate.month){//月份大于当前月份
+					temp=false;
+				}else if(startDate.month===endDate.month){
+					if(startDate.day>endDate.day){//日大于当日
+						temp=false;
+					}
+				}
+				return temp;
+			}
+
+			if(baseAge>0){
+				if(check()){
+					age=baseAge;
+				}else{//如果检查不满年则未满岁
+					age=baseAge-1;
+				}
+			}else{
+				age=0;
+			}
+
+			// console.log(age)
+			return age;
+
 		}
 	}
 };
 var dateStr='2017/11/8';//在ie下以“-”来分割年月日的形式（“2017-11-8”）是无效的所以要用“/”分割
 console.log(date(dateStr).format('YYYY/MM/DD hh:mm:ss'));
+console.log(date('2000/11/30').age());
 // console.log(date(dateStr).date());
 
